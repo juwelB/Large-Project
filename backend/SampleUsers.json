@@ -1,0 +1,48 @@
+{
+  "Users": [
+    {
+      "firstname": "Sarah",
+      "lastname": "Williams",
+      "userName": "sarah.williams",
+      "password": "sarahpassword123",
+      "email": "sarah.williams@example.com",
+      "role": 1,
+      "clubList": [
+        "60d0fe4f5311236168a109cf"
+      ]
+    },
+    {
+      "firstname": "John",
+      "lastname": "Smith",
+      "userName": "john.smith",
+      "password": "johnpassword123",
+      "email": "john.smith@example.com",
+      "role": 0,
+      "clubList": []
+    },
+    {
+      "firstname": "Charlie",
+      "lastname": "Brown",
+      "userName": "charlieb",
+      "password": "charliepassword",
+      "email": "charlie@example.com",
+      "role": 1,
+      "clubList": [
+        "60d0fe4f5311236168a109cd",
+        "60d0fe4f5311236168a109ce",
+        "60d0fe4f5311236168a109cf"
+      ]
+    },
+    {
+      "firstname": "Bob",
+      "lastname": "Johnson",
+      "userName": "bobjohnson",
+      "password": "bobpassword",
+      "email": "bob@example.com",
+      "role": 1,
+      "clubList": [
+        "60d0fe4f5311236168a109cc"
+      ]
+    }
+  ]
+}
