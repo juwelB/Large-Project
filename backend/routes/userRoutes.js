@@ -8,7 +8,7 @@ const controller = require('../controllers/userController');
 // create a new express router
 const router = express.Router();
 
-// prep fuc for export
+// prep func for export
 const {
     validateUser,
     registerUser
