@@ -7,6 +7,15 @@ const User = require('./Model/User');
 const Event = require('./Model/Event');
 const Club = require('./Model/Club');
 
+// import the club routes
+const clubRoutes = require('./routes/clubRoutes');
+
+// middleware
+app.use(express.json());
+
+// routes
+app.use('/clubs', clubRoutes);
+
 
 // connect to mongodb
 connectDB();
