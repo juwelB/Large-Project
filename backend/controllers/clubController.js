@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 
 // import the club model
-const Club = require('../models/club');
+const Club = require('../Model/Club');
 
 // import express
 const express = require('express');
@@ -33,7 +33,7 @@ const createClub = async (req, res) => {
 
         // return the saved club
         res.json(savedClub);
-    } 
+    }
     catch (err) {
         // return an error if there is one
         res.json({ message: err });
