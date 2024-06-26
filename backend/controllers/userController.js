@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-//Controller for user-related routes
-
-=======
->>>>>>> 2f8b5d101435158da9a28a8c90fd1200ca5303f6
 const User = require('../Model/User');
 
 
@@ -30,7 +25,7 @@ const validateUser = async (req, res) => {
 
 }
 
-<<<<<<< HEAD
+// login user
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -56,10 +51,4 @@ module.exports = {
     registerUser,
     validateUser,
     loginUser
-=======
-
-module.exports = {
-    registerUser,
-    validateUser
->>>>>>> 2f8b5d101435158da9a28a8c90fd1200ca5303f6
-}
+};
