@@ -1,6 +1,31 @@
 //Controller for user-related routes
 
-const User = require('../models/User');
+const User = require('../Model/User');
+
+
+// create/register new user
+const registerUser = async (req, res) => {
+    const userData = new User(req.body);
+
+
+    try {
+        //add user to db
+        const newUser = await userData.save();
+        res.status(201).json(newUser.get)
+    } catch (err) {
+        res.status(400).json({
+            message: err.message
+        })
+
+    }
+
+
+}
+
+// login/validate exisiting user
+const validateUser = async (req, res) => {
+
+}
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -21,3 +46,10 @@ const loginUser = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+
+
+module.exports = {
+    registerUser,
+    validateUser,
+    loginUser
+}
