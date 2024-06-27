@@ -1,46 +1,42 @@
-const connectDB = require('./dbConnect')
-const express = require('express');
+const connectDB = require('./dbConnect');
 const mongoose = require('mongoose');
+const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require("dotenv").config();
-// const User = require('./Model/User');
-// const Event = require('./Model/Event');
-// const Club = require('./Model/Club');
 
-// import the club routes
-const clubRoutes = require('./routes/clubRoutes');
-
-// import user routes
-const userRoutes = require('./routes/userRoutes');
+// import the club, user and event routes
 const eventRoutes = require('./routes/eventRoutes');
+const clubRoutes = require('./routes/clubRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 let PORT = process.env.PORT || 5050;
 
-// connect to mongodb
-connectDB();
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// routes
-app.use('/api/clubs', clubRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/events',eventRoutes);
-// app.use('/', (req, res) => {
-//     res.send(`<h1> Hello World! </h1>`);
-// }
-// )
+// using the routes
+app.use('/api/v1/clubs', clubRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/events', eventRoutes);
+
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Root route to serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 
-// const user1 = new User({
-
-// })
-
-
-
+// connect to mongodb
+connectDB();
 mongoose.connection.once('open', () => {
     console.log('MongoDB connected...');
 

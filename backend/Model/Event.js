@@ -8,10 +8,11 @@ const eventSchema = new Schema(
             type: String,
             required: true
         },
+
         date: {
             type: Date,
-        }
-        ,
+        },
+
         location: {
             type: Object,
             required: false
@@ -29,11 +30,11 @@ const eventSchema = new Schema(
                 }
             }
         ],
+
         timeCreated: {
             type: Date,
             default: Date.now
         }
-
 
     });
 

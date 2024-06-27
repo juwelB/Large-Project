@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
     {
-        firstname: {
+        firstName: {
             type: String,
             required: true
         },
 
-        lastname: {
+        lastName: {
             type: String,
             required: function () { return (this.role !== 0) }
         },
@@ -41,11 +41,21 @@ const userSchema = new Schema(
             {
                 type: mongoose.Types.ObjectId
             }
-        ]
+        ],
+        adminOf: {
+            type: mongoose.Types.ObjectId
+        }
 
 
 
 
     });
+userSchema.methods.setClubsAdmin = function (clubId) {
+    if (this.role != 1)
+        throw new Error('Only admins can have adminOf attribute.');
+    this.adminOf = clubId;
+    return true;
+
+}
 
 module.exports = mongoose.model('User', userSchema);

@@ -43,6 +43,22 @@
       "clubList": [
         "60d0fe4f5311236168a109cc"
       ]
+    },
+    {
+      "firstName": "Sophia",
+      "lastName": "Garcia",
+      "userName": "sophia.garcia",
+      "password": "p@ssw0rd!",
+      "email": "sophia.garcia@example.com",
+      "role": 1
+    },
+    {
+      "firstName": "Liam",
+      "lastName": "Nguyen",
+      "userName": "liam.nguyen",
+      "password": "securepass123",
+      "email": "liam.nguyen@example.com",
+      "role": 0
     }
   ]
 }
