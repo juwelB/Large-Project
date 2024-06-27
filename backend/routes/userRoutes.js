@@ -10,13 +10,12 @@ const router = express.Router();
 
 // prep func for export
 const {
-    validateUser,
-    registerUser
+    registerUser,
+    loginUser
 } = controller;
 
-//Post to register new user
-
-router.post('/login', validateUser);
+//Post to register/login new user
+router.post('/login', loginUser);
 router.post('/register', registerUser);
 
 module.exports = router;
