@@ -12,7 +12,7 @@ const clubRoutes = require('./routes/clubRoutes');
 
 // import user routes
 const userRoutes = require('./routes/userRoutes');
-
+const eventRoutes = require('./routes/eventRoutes');
 
 let PORT = process.env.PORT || 5050;
 
@@ -27,6 +27,7 @@ app.use(express.json());
 // routes
 app.use('/api/clubs', clubRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/events',eventRoutes);
 // app.use('/', (req, res) => {
 //     res.send(`<h1> Hello World! </h1>`);
 // }
