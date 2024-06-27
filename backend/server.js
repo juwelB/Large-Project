@@ -3,14 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require("dotenv").config();
-// const User = require('./Model/User');
-// const Event = require('./Model/Event');
-// const Club = require('./Model/Club');
 
-// import the club routes
+// import the routes
 const clubRoutes = require('./routes/clubRoutes');
-
-// import user routes
 const userRoutes = require('./routes/userRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 
@@ -18,40 +13,33 @@ let PORT = process.env.PORT || 5050;
 
 // connect to mongodb
 connectDB();
+
+// express app
 const app = express();
 
-// Middleware
+// Enable CORS
 app.use(cors());
+
 app.use(express.json());
 
-// routes
-app.use('/api/clubs', clubRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/events',eventRoutes);
-// app.use('/', (req, res) => {
-//     res.send(`<h1> Hello World! </h1>`);
-// }
-// )
-
-
-
-// const user1 = new User({
-
-// })
-
-
-
-mongoose.connection.once('open', () => {
-    console.log('MongoDB connected...');
-
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
 });
 
-
-app.listen(PORT, () => {
-
-    console.log(`The Server is running on PORT: ${PORT}`);
-
-});
+// connect to db
+console.log('MONGO_URI:', process.env.MONGO_URI); // Debugging line
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('connected to database');
+    // listen to port
+    app.listen(process.env.PORT, () => {
+      console.log('listening for requests on port', process.env.PORT);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 
 
