@@ -33,8 +33,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// connect to db
-
 
 // connect to mongodb
 connectDB();
