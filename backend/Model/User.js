@@ -45,7 +45,10 @@ const userSchema = new Schema(
         adminOf: {
             type: mongoose.Types.ObjectId
         }
-
+        , isVerifed: {
+            type: Boolean,
+            default: false
+        }
 
 
 
