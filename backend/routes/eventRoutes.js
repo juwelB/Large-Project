@@ -8,20 +8,32 @@ const clubController = require('../controllers/eventController');
 
 // create a new express router
 const {
-    // create events
-    // delete events
-    // update events
-    // view events
-    // join event
-    // un-join event
-
-
+    createEvent,
+    deleteEvent,
+    updateEvent,
+    viewEvent,
+    joinEvent,
+    unjoinEvent
 } = clubController;
 
 const router = express.Router();
 
-// add http op
+// POST request to create a new event
+router.post('/createevent', createEvent);
 
+// DELETE request to delete an event
+router.delete('/deleteevent', deleteEvent);
 
+// PATCH request to update an event
+router.patch('/updateevent', updateEvent);
+
+// GET request to view an event
+router.get('/viewevent', viewEvent);
+
+// POST request to join an event
+router.post('/joinevent', joinEvent);
+
+// POST request to unjoin an event
+router.post('/unjoinevent', unjoinEvent);
 
 module.exports = router;
