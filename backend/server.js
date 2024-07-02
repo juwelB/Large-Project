@@ -25,24 +25,25 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
 
 
-// Serve static files from the "public" directory
+// Serve static files from the "public" dir
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Root route to serve index.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// connect to db
-console.log('MONGO_URI:', process.env.MONGO_URI); // Debugging line
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('connected to database');
-    // listen to port
-    app.listen(process.env.PORT, () => {
-      console.log('listening for requests on port', process.env.PORT);
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+
+// connect to mongodb
+connectDB();
+mongoose.connection.once('open', () => {
+  console.log('MongoDB connected...');
+
+});
+
+
+app.listen(PORT, () => {
+
+  console.log(`The Server is running on PORT: ${PORT}`);
+
+});
