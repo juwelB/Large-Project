@@ -14,7 +14,9 @@ const {
     viewClubMembers,
     viewAllClubs,
     viewMyClubs,
-    viewClubEvents
+    viewClubEvents,
+    joinClub,
+    leaveClub
 } = clubController;
 
 const router = express.Router();
@@ -30,5 +32,8 @@ router.get('/viewClubMembers', viewClubMembers);
 router.get('/viewAllClubs', viewAllClubs);
 router.get('/viewMyClubs', viewMyClubs);
 router.get('/viewClubEvents', viewClubEvents);
+router.post('/joinClub', joinClub);
+router.post('/leaveClub', leaveClub);
+
 // export the router
 module.exports = router;

@@ -1,19 +1,10 @@
 //Controller for club-related routes
 
-// import mongoose
-const mongoose = require('mongoose');
 
-// import axios
-const axios = require('axios');
-
-// import the club model
+// import the club & User model
 const Club = require('../Model/Club');
+const User = require('../Model/User');
 
-// import express
-const express = require('express');
-
-// import dotenv for environment variables
-require('dotenv').config();
 
 // create a new club
 const createClub = async (req, res) => {
@@ -40,20 +31,19 @@ const createClub = async (req, res) => {
     }
 }
 
-const deleteClub = async(req, res) => {
-    const {clubId} = req.body;
+const deleteClub = async (req, res) => {
+    const { clubId } = req.body;
     try {
         const deletedClub = await Club.findByIdAndDelete(clubId);
 
         //Check if club was found
-        if(!deletedClub)
-        {
-            return res.status(404).json({message:"Club not found"});
+        if (!deletedClub) {
+            return res.status(404).json({ message: "Club not found" });
         }
-        res.json ({message:"Club deleted"});
+        res.json({ message: "Club deleted" });
     }
-    catch (err){
-        res.json({message: err});
+    catch (err) {
+        res.json({ message: err });
     }
 }
 
@@ -85,38 +75,36 @@ const updateClub = async (req, res) => {
 };
 
 const viewClubMembers = async (req, res) => {
-    const {clubId} = req.body;
-    try{
+    const { clubId } = req.body;
+    try {
         const club = await Club.findById(clubId).populate('memberList');
 
-        if(!club)
-        {
-            return res.status(404).json({message : "Club not found"});
+        if (!club) {
+            return res.status(404).json({ message: "Club not found" });
         }
 
         res.json(club.memberList);
     }
-    catch (err){
-        res.status(500).json({message: err.message});
+    catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
 const viewAllClubs = async (req, res) => {
-    const {search} = req.body;
-    try{
+    const { search } = req.body;
+    try {
         let query = {};
-        if(search)
-        {
-            query = {name : {$regex:search, $options: 'i'}};
+        if (search) {
+            query = { name: { $regex: search, $options: 'i' } };
         }
 
         const clubs = await Club.find(query);
 
         res.json(clubs);
     }
-    catch (err){
-        res.status(500).json({message: err.message});
-    }   
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
 const viewMyClubs = async (req, res) => {
@@ -145,34 +133,127 @@ const viewMyClubs = async (req, res) => {
     }
 };
 
-
 const viewClubEvents = async (req, res) => {
-    const {clubId} = req.body;
-    try{
+    const { clubId } = req.body;
+    try {
         const club = await Club.findById(clubId).populate('eventList');
 
-        if(!club)
-        {
-            return res.status(404).json({message : "Club not found"});
+        if (!club) {
+            return res.status(404).json({ message: "Club not found" });
         }
 
         res.json(club.eventList);
     }
-    catch (err){
-        res.status(500).json({message: err.message});
+    catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
 const joinClub = async (req, res) => {
-    
+    const { userObjId, clubObjId } = req.body;
+
+    try {
+        //check if aready udpated
+        const club = await Club.findById(clubObjId);
+        const user = await User.findById(userObjId);
+
+        if (!user)
+            return res.status(404).json({ error: 'User not found' });
+        if (!club)
+            return res.status(404).json({ error: 'Club not found' });
+
+        if (club.memberList.includes(userObjId))
+            return res.status(400).json({ error: 'User already in the club' });
+
+        if (user.clubList.includes(clubObjId))
+            return res.status(400).json({ error: 'Club already in user\'s list' });
+
+
+
+        // Update user's clubList
+        const updateUser = await User.findByIdAndUpdate(
+            userObjId,
+            { $push: { clubList: clubObjId } },
+            { new: true } // To return the updated document
+        );
+
+
+
+        // Update club's memberList
+        const updateClubMember = await Club.findByIdAndUpdate(
+            clubObjId,
+            { $push: { memberList: userObjId } },
+            { new: true } // To return the updated document
+        );
+
+
+
+        // Return successful response
+        return res.status(201).json({
+            user: updateUser,
+            club: updateClubMember
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server Error' });
+    }
 };
 
 const leaveClub = async (req, res) => {
-    
+    const { userObjId, clubObjId } = req.body;
+
+    try {
+        // Check if both user and club exist
+        const user = await User.findById(userObjId);
+        const club = await Club.findById(clubObjId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (!club) {
+            return res.status(404).json({ error: 'Club not found' });
+        }
+
+        // Check if user is in club's memberList
+        if (!club.memberList.includes(userObjId)) {
+            return res.status(400).json({ error: 'User not in the club' });
+        }
+
+        // Check if club is in user's clubList
+        if (!user.clubList.includes(clubObjId)) {
+            return res.status(400).json({ error: 'Club not in user\'s list' });
+        }
+
+        // Update user to remove club from clubList
+        const updateUser = await User.findByIdAndUpdate(
+            userObjId,
+            { $pull: { clubList: clubObjId } },
+            { new: true } // To return the updated document
+        );
+
+        // Update club to remove user from memberList
+        const updateClub = await Club.findByIdAndUpdate(
+            clubObjId,
+            { $pull: { memberList: userObjId } },
+            { new: true } // To return the updated document
+        );
+
+        // Return successful response
+        return res.status(200).json({
+            user: updateUser,
+            club: updateClub
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server Error' });
+    }
 };
 
 const manageClub = async (req, res) => {
-    
+
 };
 
 
