@@ -38,7 +38,6 @@ app.get('/', (req, res) => {
 connectDB();
 mongoose.connection.once('open', () => {
   console.log('MongoDB connected...');
-
 });
 
 
