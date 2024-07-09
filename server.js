@@ -25,12 +25,12 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
 
 
-// Serve static files from the "public" dir
-app.use(express.static(path.join(__dirname, 'backend/public')));
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'frontend/build')));
 
 // Root route to serve index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'backend/public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
 });
 
 
