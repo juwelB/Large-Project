@@ -1,66 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import ClubCard from './ClubCard';
+import EventCard from './EventCard';
+import ClubModal from './ClubModal';
 
-function LandingPage() {
-  const [clubs, setClubs] = useState([]);
-  const [events, setEvents] = useState([]);
+const LandingPage = () => {
+  const clubs = [
+    { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png' },
+    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png' },
+    { name: 'AI@UCF', logo: '/images/club-logos/aiUcf-Logo.png' },
+  ];
 
-  useEffect(() => {
-    // Fetch clubs
-    axios.get('/api/v1/clubs')
-      .then(response => {
-        setClubs(response.data);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the clubs!', error);
-      });
+  const events = [
+    { name: 'UCF Football', date: '2023-05-01', image: '/images/events-images/ucfsports-image.jpg' },
+    { name: 'UCF Baseball', date: '2023-05-15', image: '/images/events-images/ucfsports-image.jpg' },
+    { name: 'UCF Basketball', date: '2023-05-30', image: '/images/events-images/ucfsports-image.jpg' },
+  ];
 
-    // Fetch events
-    axios.get('/api/v1/events')
-      .then(response => {
-        setEvents(response.data);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the events!', error);
-      });
-  }, []);
+  const [selectedClub, setSelectedClub] = useState(null);
 
   return (
-    <div className="landing-page">
-      <header className="flex justify-between items-center p-4 bg-white shadow-md">
-        <img src="/path/to/logo.png" alt="Logo" className="h-12" />
-        <nav>
-          <a href="/signup" className="mx-2 text-black">Sign-Up</a>
-          <a href="/login" className="mx-2 text-black">Login</a>
-        </nav>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-black text-white p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="text-2xl font-bold">UCF</div>
+          <nav>
+            <a href="/" className="mx-2 hover:text-gray-300">Home</a>
+            <a href="/signup" className="mx-2 hover:text-gray-300">Sign-Up</a>
+            <a href="/login" className="mx-2 hover:text-gray-300">Login</a>
+          </nav>
+        </div>
       </header>
-      <section className="text-center bg-cover bg-center text-white py-20" style={{ backgroundImage: 'url(/path/to/hero-image.jpg)' }}>
-        <h1 className="text-4xl font-bold">Welcome to the Knights Events & Clubs Portal</h1>
-        <p className="text-xl mt-4">Explore. Connect. Engage.</p>
-      </section>
-      <section className="p-8">
-        <h2 className="text-2xl font-bold mb-4">Our Clubs</h2>
-        <div className="flex flex-wrap justify-around">
-          {clubs.map(club => (
-            <div key={club._id} className="bg-gray-100 p-4 m-2 rounded-lg text-center w-48">
-              <img src={club.logoUrl} alt={club.name} className="w-full h-32 object-cover rounded-lg" />
-              <p className="mt-2">{club.name}</p>
+      <main>
+        <section 
+          className="bg-cover bg-center h-96 flex items-center justify-center text-white relative"
+          style={{ backgroundImage: "url('/images/LPBackground.png')" }}
+        >
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="text-center relative z-10">
+            <h1 className="text-4xl font-bold mb-4" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
+              Welcome to the UCF Club & Events Portal
+            </h1>
+            <p className="text-xl" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
+              Explore. Connect. Engage.
+            </p>
+          </div>
+        </section>
+        <section className="container mx-auto py-12 px-4">
+          <h2 className="text-3xl font-bold mb-6 text-center">Our Clubs</h2>
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {clubs.map((club, index) => (
+                <ClubCard
+                  key={index}
+                  name={club.name}
+                  logo={club.logo}
+                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
+                  onClick={() => setSelectedClub(club)}
+                />
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
-      <section className="p-8">
-        <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
-        <div className="flex flex-wrap justify-around">
-          {events.map(event => (
-            <div key={event._id} className="bg-gray-100 p-4 m-2 rounded-lg text-center w-48">
-              <p>{event.name}</p>
+          </div>
+          <button className="mt-8 mx-auto block bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
+            Sign Up To View More
+          </button>
+        </section>
+        <section className="container mx-auto py-12 px-4">
+          <h2 className="text-3xl font-bold mb-6 text-center">Upcoming Events</h2>
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {events.map((event, index) => (
+                <EventCard
+                  key={index}
+                  name={event.name}
+                  date={event.date}
+                  image={event.image}
+                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
+                />
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
+      </main>
+      {selectedClub && (
+        <ClubModal
+          club={selectedClub}
+          onClose={() => setSelectedClub(null)}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default LandingPage;
