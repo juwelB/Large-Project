@@ -12,7 +12,6 @@ const userRoutes = require('./backend/routes/userRoutes');
 
 let PORT = process.env.PORT || 5050;
 
-
 const app = express();
 
 // Middleware
@@ -23,7 +22,6 @@ app.use(express.json());
 app.use('/api/v1/clubs', clubRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
-
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'frontend/build')));
@@ -38,16 +36,12 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
 });
 
-
 // connect to mongodb
 connectDB();
 mongoose.connection.once('open', () => {
   console.log('MongoDB connected...');
 });
 
-
 app.listen(PORT, () => {
-
   console.log(`The Server is running on PORT: ${PORT}`);
-
 });
