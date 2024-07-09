@@ -33,6 +33,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
 });
 
+// Catch-all route to serve index.html for any unknown routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+});
+
 
 // connect to mongodb
 connectDB();
