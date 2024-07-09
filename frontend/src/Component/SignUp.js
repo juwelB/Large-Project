@@ -21,7 +21,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5050/api/v1/users/register', {
+      const response = await axios.post('http://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/users/register', {
         email,
         password,
         userName,
