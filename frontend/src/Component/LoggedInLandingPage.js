@@ -27,6 +27,11 @@ const LoggedInLandingPage = () => {
     console.log(`Joining club: ${club.name}`);
   };
 
+  const handleRSVPEvent = (event) => {
+    // Logic to RSVP for the event
+    console.log(`RSVPing for event: ${event.name}`);
+  };
+
   const filteredClubs = clubs.filter(club =>
     club.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
