@@ -18,7 +18,7 @@ const Login = () => {
         password
       });
       if (response.status === 201) {
-        login(response.data);
+        login({ name: response.data.name }); // Pass the user data to the login function
         navigate('/dashboard'); // Navigate to the logged-in landing page
       }
     } catch (error) {

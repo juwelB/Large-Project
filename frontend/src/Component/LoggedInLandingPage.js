@@ -20,16 +20,16 @@ const LoggedInLandingPage = () => {
   ];
 
   const [selectedClub, setSelectedClub] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleJoinClub = (club) => {
     // Logic to join the club
     console.log(`Joining club: ${club.name}`);
   };
 
-  const handleRSVPEvent = (event) => {
-    // Logic to RSVP for the event
-    console.log(`RSVPing for event: ${event.name}`);
-  };
+  const filteredClubs = clubs.filter(club =>
+    club.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -40,7 +40,7 @@ const LoggedInLandingPage = () => {
             <Link to="/calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <Link to="/clubs" className="mx-2 hover:text-gray-300">Clubs</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <span className="mx-2">Hey, {user ? user.firstName : 'Guest'}</span>
+            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
           </nav>
         </div>
       </header>
@@ -57,13 +57,22 @@ const LoggedInLandingPage = () => {
             <p className="text-xl" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
               Explore. Connect. Engage.
             </p>
+            <div className="mt-6">
+              <input
+                type="text"
+                placeholder="Enter Your Search Here"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
         </section>
         <section className="container mx-auto py-12 px-4">
           <h2 className="text-3xl font-bold mb-6 text-center">Discover Clubs</h2>
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {clubs.map((club, index) => (
+              {filteredClubs.map((club, index) => (
                 <ClubCard
                   key={index}
                   name={club.name}
@@ -71,7 +80,6 @@ const LoggedInLandingPage = () => {
                   description={club.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
-                  onJoin={() => handleJoinClub(club)}
                 />
               ))}
             </div>
@@ -101,6 +109,7 @@ const LoggedInLandingPage = () => {
         <ClubModal
           club={selectedClub}
           onClose={() => setSelectedClub(null)}
+          onJoin={handleJoinClub}
         />
       )}
     </div>

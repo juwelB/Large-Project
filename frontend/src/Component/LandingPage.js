@@ -5,9 +5,9 @@ import ClubModal from './ClubModal';
 
 const LandingPage = () => {
   const clubs = [
-    { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png' },
-    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png' },
-    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-logo.png' },
+    { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png', description: 'A club for experimental rocketry enthusiasts.' },
+    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png', description: 'A club for hackathon enthusiasts.' },
+    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-logo.png', description: 'A club for AI enthusiasts.' },
   ];
 
   const events = [
@@ -24,9 +24,9 @@ const LandingPage = () => {
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF</div>
           <nav>
-            <a href="/" className="mx-2 hover:text-gray-300">Home</a>
-            <a href="/signup" className="mx-2 hover:text-gray-300">Sign-Up</a>
-            <a href="/login" className="mx-2 hover:text-gray-300">Login</a>
+            <Link to="/" className="mx-2 hover:text-gray-300">Home</Link>
+            <Link to="/signup" className="mx-2 hover:text-gray-300">Sign-Up</Link>
+            <Link to="/login" className="mx-2 hover:text-gray-300">Login</Link>
           </nav>
         </div>
       </header>
@@ -54,15 +54,13 @@ const LandingPage = () => {
                   key={index}
                   name={club.name}
                   logo={club.logo}
+                  description={club.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                 />
               ))}
             </div>
           </div>
-          <button className="mt-8 mx-auto block bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
-            Sign Up To View More
-          </button>
         </section>
         <section className="container mx-auto py-12 px-4">
           <h2 className="text-3xl font-bold mb-6 text-center">Upcoming Events</h2>

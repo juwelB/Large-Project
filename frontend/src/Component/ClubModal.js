@@ -1,33 +1,50 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
-const ClubModal = ({ club, onClose }) => {
+const ClubModal = ({ club, onClose, onJoin }) => {
+  const { user } = useContext(AuthContext);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">{club.name}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+        <h2 className="text-2xl font-bold mb-4">{club.name}</h2>
         <img src={club.logo} alt={`${club.name} logo`} className="w-24 h-24 mx-auto mb-4" />
-        <p className="text-gray-600 mb-6">
-          {club.description || "No description available."}
-        </p>
-        <Link 
-          to="/signup" 
-          className="block w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded text-center"
-        >
-          Sign Up To Join!
-        </Link>
-        <button 
+        <p className="text-gray-600 mb-4">{club.description}</p>
+        {user ? (
+          <button
+            onClick={() => {
+              onJoin(club);
+              onClose();
+            }}
+            className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+            style={{ backgroundColor: '#FFD700' }}
+          >
+            Join Club
+          </button>
+        ) : (
+          <>
+            <p className="text-gray-600 mb-4">Sign up to join this club and participate in its activities.</p>
+            <Link
+              to="/signup"
+              className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded block text-center"
+              style={{ backgroundColor: '#FFD700' }}
+            >
+              Sign Up to Join
+            </Link>
+            <Link
+              to="/"
+              className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded block text-center"
+            >
+              Back to Home
+            </Link>
+          </>
+        )}
+        <button
           onClick={onClose}
-          className="mt-4 block w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded text-center"
+          className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
         >
-          Back to Home
+          Close
         </button>
       </div>
     </div>

@@ -1,18 +1,45 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
 const ClubList = () => {
   const { user } = useContext(AuthContext);
-  const [clubs, setClubs] = useState([
-    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png', role: 'Member' },
-    { name: 'I.E.E.E', logo: '/images/club-logos/ieee-logo.png', role: 'Admin' },
-  ]);
+  const [clubs, setClubs] = useState([]);
   const [sortOption, setSortOption] = useState('All Clubs');
+  const [newClub, setNewClub] = useState({ name: '', industry: '', description: '' });
+
+  useEffect(() => {
+    const fetchClubs = async () => {
+      try {
+        const response = await axios.get(`/api/v1/clubs/user/${user._id}`);
+        setClubs(response.data);
+      } catch (error) {
+        console.error('Error fetching clubs:', error);
+      }
+    };
+
+    fetchClubs();
+  }, [user]);
 
   const handleJoinLeaveClub = (clubName) => {
     // Logic to join/leave the club
     console.log(`Toggling membership for club: ${clubName}`);
+  };
+
+  const handleCreateClub = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post('/api/v1/clubs/create', {
+        ...newClub,
+        adminId: user._id,
+      });
+      setClubs([...clubs, response.data]);
+      setNewClub({ name: '', industry: '', description: '' });
+    } catch (error) {
+      console.error('Error creating club:', error);
+    }
   };
 
   const filteredClubs = sortOption === 'All Clubs' ? clubs : clubs.filter(club => club.role === sortOption);
@@ -62,6 +89,50 @@ const ClubList = () => {
               </button>
             </div>
           ))}
+        </div>
+        <div className="max-w-4xl mx-auto mt-6">
+          <h3 className="text-2xl font-bold mb-4">Create a New Club</h3>
+          <form onSubmit={handleCreateClub} className="bg-white rounded-lg shadow-md p-4">
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Club Name</label>
+              <input
+                type="text"
+                id="name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                value={newClub.name}
+                onChange={(e) => setNewClub({ ...newClub, name: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="industry" className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+              <input
+                type="text"
+                id="industry"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                value={newClub.industry}
+                onChange={(e) => setNewClub({ ...newClub, industry: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                id="description"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                value={newClub.description}
+                onChange={(e) => setNewClub({ ...newClub, description: e.target.value })}
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+              style={{ backgroundColor: '#FFD700' }}
+            >
+              Create Club
+            </button>
+          </form>
         </div>
       </main>
     </div>
