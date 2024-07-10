@@ -100,9 +100,13 @@ const loginUser = async (req, res) => {
                     userId: user._id,
                     token: crypto.randomBytes(32).toString("hex")
                 }).save();
-                const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+                const url = `${process.env.BASE_URL}api/v1/users/${user._id}/verify/${token.token}`;
                 await sendEmail(user.email,"Verify Email",url);
         
+            }
+            else{
+                const url = `${process.env.BASE_URL}api/v1/users/${user._id}/verify/${token.token}`;
+                await sendEmail(user.email,"Verify Email",url);
             }
             return res.status(400).json({message: "An email was sent to your account please verify"});
         }
