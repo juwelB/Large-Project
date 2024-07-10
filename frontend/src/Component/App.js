@@ -5,6 +5,7 @@ import Login from './Login';
 import LandingPage from './LandingPage';
 import ForgotPassword from './ForgotPassword';
 import EmailVerification from './EmailVerification';
+import LoggedInLandingPage from './LoggedInLandingPage';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<EmailVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/dashboard" element={<LoggedInLandingPage />} />
         {/* Other routes */}
       </Routes>
     </Router>
