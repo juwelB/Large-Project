@@ -1,7 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-const EmailVerification = ({ email }) => {
+const EmailVerification = () => {
+  const location = useLocation();
+  const { email } = location.state || {};
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96 text-center">

@@ -8,7 +8,7 @@ const LoggedInLandingPage = () => {
   const clubs = [
     { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png' },
     { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png' },
-    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-Logo.png' },
+    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-logo.png' },
   ];
 
   const events = [
