@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle forgot password logic here
-    console.log('Forgot Password submitted', { email });
+
+    try {
+      const response = await axios.post('https://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/users/forgot-password', {
+        email
+      });
+      if (response.status === 200) {
+        navigate('/forgot-password-verification', { state: { email: email } }); // Navigate to ForgotPasswordVerification with email
+      }
+    } catch (error) {
+      console.error('Error during password reset request:', error);
+      alert('Password reset request failed');
+    }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">Forgot Your Password?</h2>
-        <p className="text-center mb-6">Enter your Account's Email Address and We'll send a message for you to reset!</p>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Forgot Password</h2>
+          <Link to="/" className="text-blue-600 hover:underline">
+            Back to Home
+          </Link>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -36,14 +52,6 @@ const ForgotPassword = () => {
             Reset Password
           </button>
         </form>
-        <div className="mt-4 text-center">
-          <Link to="/login" className="text-sm text-blue-600 hover:underline flex items-center justify-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            Back to Login
-          </Link>
-        </div>
       </div>
     </div>
   );

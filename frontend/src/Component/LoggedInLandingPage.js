@@ -1,23 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import ClubCard from './ClubCard';
 import EventCard from './EventCard';
 import ClubModal from './ClubModal';
+import { AuthContext } from '../context/AuthContext';
 
 const LoggedInLandingPage = () => {
+  const { user } = useContext(AuthContext);
   const clubs = [
-    { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png' },
-    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png' },
-    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-logo.png' },
+    { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png', description: 'A club for experimental rocketry enthusiasts.' },
+    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png', description: 'A club for hackathon enthusiasts.' },
+    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-logo.png', description: 'A club for AI enthusiasts.' },
   ];
 
   const events = [
-    { name: 'UCF Football', date: '2023-05-01', image: '/images/events-images/ucfsports-image.jpg' },
-    { name: 'UCF Baseball', date: '2023-05-15', image: '/images/events-images/ucfsports-image.jpg' },
-    { name: 'UCF Basketball', date: '2023-05-30', image: '/images/events-images/ucfsports-image.jpg' },
+    { name: 'UCF Football', date: '2023-05-01', image: '/images/events-images/ucfsports-image.jpg', description: 'Join us for a thrilling football game!', location: 'UCF Stadium' },
+    { name: 'UCF Baseball', date: '2023-05-15', image: '/images/events-images/ucfsports-image.jpg', description: 'Come watch the baseball team in action!', location: 'UCF Baseball Field' },
+    { name: 'UCF Basketball', date: '2023-05-30', image: '/images/events-images/ucfsports-image.jpg', description: 'Cheer on the basketball team!', location: 'UCF Arena' },
   ];
 
   const [selectedClub, setSelectedClub] = useState(null);
+
+  const handleJoinClub = (club) => {
+    // Logic to join the club
+    console.log(`Joining club: ${club.name}`);
+  };
+
+  const handleRSVPEvent = (event) => {
+    // Logic to RSVP for the event
+    console.log(`RSVPing for event: ${event.name}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -28,7 +40,7 @@ const LoggedInLandingPage = () => {
             <Link to="/calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <Link to="/clubs" className="mx-2 hover:text-gray-300">Clubs</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <span className="mx-2">Hey, *Name*</span>
+            <span className="mx-2">Hey, {user ? user.firstName : 'Guest'}</span>
           </nav>
         </div>
       </header>
@@ -56,8 +68,10 @@ const LoggedInLandingPage = () => {
                   key={index}
                   name={club.name}
                   logo={club.logo}
+                  description={club.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
+                  onJoin={() => handleJoinClub(club)}
                 />
               ))}
             </div>
@@ -73,7 +87,10 @@ const LoggedInLandingPage = () => {
                   name={event.name}
                   date={event.date}
                   image={event.image}
+                  description={event.description}
+                  location={event.location}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
+                  onRSVP={() => handleRSVPEvent(event)}
                 />
               ))}
             </div>
