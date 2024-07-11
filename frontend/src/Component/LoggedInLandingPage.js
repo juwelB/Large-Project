@@ -67,6 +67,7 @@ const LoggedInLandingPage = () => {
                 type="text"
                 placeholder="Enter Your Search Here"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                style={{ color: 'black', backgroundColor: 'white' }} // css for text search input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
