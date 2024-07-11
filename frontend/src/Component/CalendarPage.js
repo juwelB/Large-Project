@@ -8,6 +8,7 @@ const CalendarPage = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedClub, setSelectedClub] = useState('All Clubs');
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const clubs = [
     { name: 'Knights Experimental Rocketry' },
@@ -21,9 +22,15 @@ const CalendarPage = () => {
   ];
 
   const filteredEvents = selectedClub === 'All Clubs' ? events : events.filter(event => event.club === selectedClub);
+  
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
+  };
+
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+    setSelectedEvent(null); // Clear selected event if needed
   };
 
   const renderHeader = () => {
@@ -86,9 +93,14 @@ const CalendarPage = () => {
         const cloneDay = day;
         days.push(
           <div
-            className={`p-2 text-center ${!isSameMonth(day, monthStart) ? 'text-gray-400' : ''} ${isSameDay(day, new Date()) ? 'bg-blue-200' : ''}`}
+            className={`p-2 text-center cursor-pointer ${!isSameMonth(day, monthStart) ? 'text-gray-400' : ''} 
+              ${isSameDay(day, new Date()) ? 'bg-blue-200' : ''} 
+              ${selectedDate && isSameDay(day, selectedDate) ? 'bg-gray-300' : ''} hover:bg-gray-200`}
             key={day}
-            onClick={() => handleEventClick(cloneDay)}
+            onClick={() => {
+              setSelectedDate(cloneDay);
+              setSelectedEvent(cloneDay);
+            }}
           >
             <span>{formattedDate}</span>
             {filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
@@ -143,6 +155,9 @@ const CalendarPage = () => {
         {selectedEvent && (
           <div className="bg-white rounded-lg shadow-md p-6 mt-6">
             <h3 className="text-2xl font-bold mb-4">{selectedEvent.name}</h3>
+            {selectedDate && (
+              <p className="mb-4"><strong>Date Selected:</strong> {format(selectedDate, 'MMMM d, yyyy')}</p>
+            )}
             <p className="mb-4"><strong>Description:</strong> {selectedEvent.description}</p>
             <p className="mb-4"><strong>When:</strong> {selectedEvent.date}</p>
             <p className="mb-4"><strong>Where:</strong> {selectedEvent.location}</p>
