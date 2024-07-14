@@ -19,12 +19,20 @@ const ClubList = () => {
       }
     };
 
-    fetchClubs();
+    if (user && user._id) {
+      fetchClubs();
+    }
   }, [user]);
 
-  const handleJoinLeaveClub = (clubName) => {
+  const handleJoinLeaveClub = async (clubName) => {
     // Logic to join/leave the club
     console.log(`Toggling membership for club: ${clubName}`);
+    try {
+      const response = await axios.post('/api/v1/clubs/join-leave', { clubName, userId: user._id });
+      setClubs(response.data); // Update clubs state with the new data
+    } catch (error) {
+      console.error('Error toggling club membership:', error);
+    }
   };
 
   const handleCreateClub = async (e) => {
@@ -71,24 +79,28 @@ const ClubList = () => {
           </select>
         </div>
         <div className="max-w-4xl mx-auto">
-          {filteredClubs.map((club, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
-              <div className="flex items-center">
-                <img src={club.logo} alt={`${club.name} logo`} className="w-12 h-12 mr-4" />
-                <div>
-                  <h3 className="text-xl font-semibold">{club.name}</h3>
-                  <p className="text-gray-600">Role: {club.role}</p>
+          {filteredClubs.length > 0 ? (
+            filteredClubs.map((club, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
+                <div className="flex items-center">
+                  <img src={club.logo} alt={`${club.name} logo`} className="w-12 h-12 mr-4" />
+                  <div>
+                    <h3 className="text-xl font-semibold">{club.name}</h3>
+                    <p className="text-gray-600">Role: {club.role}</p>
+                  </div>
                 </div>
+                <button
+                  onClick={() => handleJoinLeaveClub(club.name)}
+                  className="bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+                  style={{ backgroundColor: '#FFD700' }}
+                >
+                  {club.role ? 'Leave Club' : 'Join Club'}
+                </button>
               </div>
-              <button
-                onClick={() => handleJoinLeaveClub(club.name)}
-                className="bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
-                style={{ backgroundColor: '#FFD700' }}
-              >
-                {club.role ? 'Leave Club' : 'Join Club'}
-              </button>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No clubs found</p>
+          )}
         </div>
         <div className="max-w-4xl mx-auto mt-6">
           <h3 className="text-2xl font-bold mb-4">Create a New Club</h3>
