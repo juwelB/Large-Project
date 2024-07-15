@@ -1,14 +1,25 @@
 const nodemailer = require("nodemailer");
+require('dotenv').config(); // Ensure this is at the very top
 
 module.exports = async (email, subject, text) => {
     try {
+        // Log the environment variables to verify they are being read correctly
+        console.log('Environment Variables:', {
+            HOST: process.env.HOST,
+            SERVICE: process.env.SERVICE,
+            EMAIL_PORT: process.env.EMAIL_PORT,
+            SECURE: process.env.SECURE,
+            EMAIL_USER: process.env.EMAIL_USER,
+            PASS: process.env.PASS
+        });
+
         const transporter = nodemailer.createTransport({
             host: process.env.HOST,
             service: process.env.SERVICE,
             port: Number(process.env.EMAIL_PORT),
             secure: Boolean(process.env.SECURE),
             auth: {
-                user: process.env.USER,
+                user: process.env.EMAIL_USER,
                 pass: process.env.PASS
             }
         });
@@ -18,11 +29,11 @@ module.exports = async (email, subject, text) => {
             service: process.env.SERVICE,
             port: Number(process.env.EMAIL_PORT),
             secure: Boolean(process.env.SECURE),
-            user: process.env.USER
+            user: process.env.EMAIL_USER
         });
 
         const info = await transporter.sendMail({
-            from: process.env.USER,
+            from: process.env.EMAIL_USER,
             to: email,
             subject: subject,
             text: text

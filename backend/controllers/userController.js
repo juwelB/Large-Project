@@ -4,6 +4,7 @@ const Token = require("../Model/Token");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
+require('dotenv').config(); // Ensure this is at the very top
 
 // create/register new user
 const registerUser = async (req, res) => {
@@ -59,6 +60,9 @@ const verifyUser = async (req, res) => {
         //console.log("Token found", token);
         await Token.deleteOne({ _id: token._id });
         //console.log("Token removed", token);
+
+        // Send verification email
+        await sendEmail(user.email, 'Email Verified', 'Your email has been successfully verified.');
 
         res.status(200).json({ message: "Email verified successfully" });
     } catch (err) {
@@ -140,11 +144,13 @@ const forgotPassword = async (req, res) => {
 
         const url = `${process.env.BASE_URL}api/v1/users/${user._id}/resetpassword/${token.token}`;
 
+        console.log(`Sending forgot password email to ${email} with URL: ${url}`);
+
         await sendEmail(user.email, "Forgot Password", url);
 
         res.status(202).json({ message: "An email was sent to your account please reset password" });
     } catch (err) {
-        console.error(err);
+        console.error('Error in forgotPassword:', err); // Log the error details
         res.status(500).json({ message: "Internal Server Error" });
     }
 };

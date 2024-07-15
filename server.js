@@ -1,9 +1,10 @@
+require('dotenv').config(); // Ensure this is at the very top
+
 const connectDB = require('./backend/dbConnect');
 const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-require("dotenv").config();
 
 // import the club, user and event routes
 const eventRoutes = require('./backend/routes/eventRoutes');
