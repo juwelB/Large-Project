@@ -19,7 +19,7 @@ const {
 router.post('/login', loginUser);
 router.post('/register', registerUser);
 router.get('/:id/verify/:token', verifyUser);
-router.put('/forgotpassword', forgotPassword);
+router.put('/forgot-password', forgotPassword);
 router.post('/:userId/resetpassword/:token', resetPassword);
 
 

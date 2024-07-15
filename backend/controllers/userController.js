@@ -19,19 +19,11 @@ const registerUser = async (req, res) => {
         //add user to db
         const newUser = await userData.save();
 
-        const token = await new Token({
+        const Token = await new Token({
             userId: newUser._id,
             token: crypto.randomBytes(32).toString("hex")
         }).save();
-        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${token.token}`;
-        await sendEmail(newUser.email,"Verify Email",url);
-
-
-        const token = await new Token({
-            userId: newUser._id,
-            token: crypto.randomBytes(32).toString("hex")
-        }).save();
-        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${token.token}`;
+        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${Token.token}`;
         await sendEmail(newUser.email,"Verify Email",url);
 
         // const result = await User.findOne({ newUser }).select('-password'); // help here!
@@ -132,14 +124,12 @@ const loginUser = async (req, res) => {
     }
 };
 
-const forgotPassword = async (req,res) => {
-    const {email} = req.body;
-    try
-    {
-        let user = await User.findOne({email});
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        let user = await User.findOne({ email });
 
-        if(!user)
-        {
+        if (!user) {
             return res.status(400).json({ msg: 'Invalid Credentials' });
         }
 
@@ -150,10 +140,10 @@ const forgotPassword = async (req,res) => {
 
         const url = `${process.env.BASE_URL}api/v1/users/${user._id}/resetpassword/${token.token}`;
 
-        await sendEmail(user.email,"Forgot Password",url);
+        await sendEmail(user.email, "Forgot Password", url);
 
-        res.status(202).json({message: "An email was sent to your account please reset password"});
-    }catch(err){
+        res.status(202).json({ message: "An email was sent to your account please reset password" });
+    } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
     }

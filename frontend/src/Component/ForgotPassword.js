@@ -13,7 +13,7 @@ const ForgotPassword = () => {
       const response = await axios.post('https://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/users/forgot-password', {
         email
       });
-      if (response.status === 200) {
+      if (response.status === 202) {
         navigate('/forgot-password-verification', { state: { email: email } }); // Navigate to ForgotPasswordVerification with email
       }
     } catch (error) {

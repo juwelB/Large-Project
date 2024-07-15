@@ -46,7 +46,6 @@ const userSchema = new Schema(
             type: mongoose.Types.ObjectId
         }
         , isVerified: {
-        , isVerified: {
             type: Boolean,
             default: false
         }
