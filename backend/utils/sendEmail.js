@@ -8,7 +8,7 @@ module.exports = async (email, subject, text) => {
             port: Number(process.env.EMAIL_PORT),
             secure: Boolean(process.env.SECURE),
             auth: {
-                user: process.env.user,
+                user: process.env.USER,
                 pass: process.env.PASS
             }
         });
@@ -18,11 +18,11 @@ module.exports = async (email, subject, text) => {
             service: process.env.SERVICE,
             port: Number(process.env.EMAIL_PORT),
             secure: Boolean(process.env.SECURE),
-            user: process.env.user
+            user: process.env.USER
         });
 
         const info = await transporter.sendMail({
-            from: process.env.user,
+            from: process.env.USER,
             to: email,
             subject: subject,
             text: text
