@@ -61,10 +61,8 @@ const verifyUser = async (req, res) => {
         await Token.deleteOne({ _id: token._id });
         //console.log("Token removed", token);
 
-        // Send verification email
-        await sendEmail(user.email, 'Email Verified', 'Your email has been successfully verified.');
-
-        res.status(200).json({ message: "Email verified successfully" });
+        // Redirect to the email verified page
+        res.redirect(`${process.env.BASE_URL}/email-verified`);
     } catch (err) {
         console.error("Error in verifyUser:", err);
         res.status(500).json({ message: "Internal Server Error" });

@@ -11,6 +11,7 @@ import CalendarPage from './CalendarPage';
 import ClubList from './ClubList';
 import EventList from './EventList';
 import ResetPassword from './ResetPassword';
+import EmailVerified from './EmailVerified';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/clubs" element={<ClubList />} />
         <Route path="/events" element={<EventList />} />
         <Route path="/reset-password/:userId/:token" element={<ResetPassword />} />
+        <Route path="/email-verified" element={<EmailVerified />} />
         {/* Other routes */}
       </Routes>
     </Router>
