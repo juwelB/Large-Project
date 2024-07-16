@@ -164,7 +164,7 @@ const forgotPassword = async (req, res) => {
         console.log("Token generated and saved:", token);
 
         // Send the email
-        const resetUrl = `${process.env.BASE_URL}/reset-password/${user._id}/${token}`;
+        const resetUrl = `${process.env.BASE_URL}reset-password/${user._id}/${token}`;
         console.log("Sending email to:", email, "with reset URL:", resetUrl);
         await sendEmail(email, 'Password Reset', `Please use the following link to reset your password: ${resetUrl}`);
 
