@@ -24,7 +24,7 @@ const registerUser = async (req, res) => {
             userId: newUser._id,
             token: crypto.randomBytes(32).toString("hex")
         }).save();
-        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${Token.token}`;
+        const url = `${process.env.BASE_URL}/api/v1/users/${newUser._id}/verify/${Token.token}`;
         await sendEmail(newUser.email,"Verify Email",url);
 
         // const result = await User.findOne({ newUser }).select('-password'); // help here!
