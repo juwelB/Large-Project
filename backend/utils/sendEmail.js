@@ -3,8 +3,7 @@ require('dotenv').config(); // Ensure this is at the very top
 
 module.exports = async (email, subject, text) => {
     try {
-        // Log the environment variables to verify they are being read correctly
-        console.log('Environment Variables:', {
+        console.log('Loading environment variables:', {
             HOST: process.env.HOST,
             SERVICE: process.env.SERVICE,
             EMAIL_PORT: process.env.EMAIL_PORT,
@@ -14,7 +13,7 @@ module.exports = async (email, subject, text) => {
         });
 
         const transporter = nodemailer.createTransport({
-            host: process.env.HOST,
+            host: process.env.HOST.trim(), // Trim any extra spaces
             service: process.env.SERVICE,
             port: Number(process.env.EMAIL_PORT),
             secure: Boolean(process.env.SECURE),
@@ -25,7 +24,7 @@ module.exports = async (email, subject, text) => {
         });
 
         console.log('Sending email with the following configuration:', {
-            host: process.env.HOST,
+            host: process.env.HOST.trim(), // Trim any extra spaces
             service: process.env.SERVICE,
             port: Number(process.env.EMAIL_PORT),
             secure: Boolean(process.env.SECURE),
