@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const ResetPassword = () => {
   const { userId, token } = useParams();
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
     try {
       const response = await axios.post(`/api/v1/users/${userId}/resetpassword/${token}`, { newPassword });
       if (response.status === 200) {
+        toast.success('Password reset successfully');
         navigate('/login');
       }
     } catch (error) {
       console.error('Error resetting password:', error);
-      setError('Password reset failed');
+      toast.error('Password reset failed');
     }
   };
 
@@ -31,7 +32,6 @@ const ResetPassword = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6">Reset Password</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
@@ -39,6 +39,7 @@ const ResetPassword = () => {
               type="password"
               id="newPassword"
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="Enter New Password Here"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
@@ -50,6 +51,7 @@ const ResetPassword = () => {
               type="password"
               id="confirmPassword"
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="Confirm Password Here"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required

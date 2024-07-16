@@ -8,32 +8,42 @@ require('dotenv').config(); // Ensure this is at the very top
 
 // create/register new user
 const registerUser = async (req, res) => {
-    const userData = new User(req.body);
-
-    //apply ecryption using bcrypt
+    const { email, userName, password, firstName, lastName } = req.body;
 
     try {
-        //apply hash() using bcrypt
+        // Check if the email already exists
+        let existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email already in use' });
+        }
+
+        // Check if the username already exists
+        existingUser = await User.findOne({ userName });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username already in use' });
+        }
+
+        // Create new user
+        const userData = new User({ email, userName, password, firstName, lastName });
+
+        // Apply encryption using bcrypt
         let salt = await bcrypt.genSalt(10);
         userData.password = await bcrypt.hash(userData.password, salt);
 
-        //add user to db
+        // Add user to db
         const newUser = await userData.save();
         const userToken = await new Token({
             userId: newUser._id,
             token: crypto.randomBytes(32).toString("hex")
         }).save();
         const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${userToken.token}`;
-        await sendEmail(newUser.email,"Verify Email",url);
+        await sendEmail(newUser.email, "Verify Email", url);
 
-        // const result = await User.findOne({ newUser }).select('-password'); // help here!
-        const result = await User.findOne({_id: newUser._id}).select('-password -email');
-
-        res.status(201).json({message: "An email was sent to your account please verify"});
+        res.status(201).json({ message: "An email was sent to your account please verify" });
     } catch (err) {
         res.status(400).json({
             message: err.message
-        })
+        });
     }
 }
 

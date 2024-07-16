@@ -36,7 +36,13 @@ const SignUp = () => {
     } catch (error) {
       console.error('Error during registration:', error);
       if (error.response && error.response.data && error.response.data.message) {
-        toast.error(error.response.data.message);
+        if (error.response.data.message === 'Email already in use') {
+          toast.error('Email already in use');
+        } else if (error.response.data.message === 'Username already in use') {
+          toast.error('Username already in use');
+        } else {
+          toast.error(error.response.data.message);
+        }
       } else {
         toast.error('Registration failed');
       }
