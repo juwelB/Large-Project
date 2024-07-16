@@ -142,10 +142,20 @@ const forgotPassword = async (req, res) => {
         console.log("Generating token for user:", user._id);
         // Generate a token
         const token = crypto.randomBytes(32).toString("hex");
-        await new Token({
-            userId: user._id,
-            token: token
-        }).save();
+
+        // Find existing token or create a new one
+        let userToken = await Token.findOne({ userId: user._id });
+        if (userToken) {
+            userToken.token = token;
+        } else {
+            userToken = new Token({
+                userId: user._id,
+                token: token
+            });
+        }
+
+        console.log("Saving token:", userToken);
+        await userToken.save();
 
         console.log("Token generated and saved:", token);
 
