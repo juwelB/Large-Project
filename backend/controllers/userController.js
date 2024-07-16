@@ -130,27 +130,27 @@ const loginUser = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
-    try {
-        let user = await User.findOne({ email });
 
+    try {
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ msg: 'Invalid Credentials' });
+            return res.status(404).json({ message: "User not found" });
         }
 
-        const token = await new Token({
+        // Generate a token
+        const token = crypto.randomBytes(32).toString("hex");
+        await new Token({
             userId: user._id,
-            token: crypto.randomBytes(32).toString("hex")
+            token: token
         }).save();
 
-        const url = `${process.env.BASE_URL}api/v1/users/${user._id}/resetpassword/${token.token}`;
+        // Send the email
+        const resetUrl = `${process.env.BASE_URL}/reset-password/${user._id}/${token}`;
+        await sendEmail(email, 'Password Reset', `Please use the following link to reset your password: ${resetUrl}`);
 
-        console.log(`Sending forgot password email to ${email} with URL: ${url}`);
-
-        await sendEmail(user.email, "Forgot Password", url);
-
-        res.status(202).json({ message: "An email was sent to your account please reset password" });
-    } catch (err) {
-        console.error('Error in forgotPassword:', err); // Log the error details
+        res.status(202).json({ message: "Password reset email sent", email });
+    } catch (error) {
+        console.error("Error during password reset request:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
