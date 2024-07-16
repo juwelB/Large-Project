@@ -62,7 +62,7 @@ const verifyUser = async (req, res) => {
         //console.log("Token removed", token);
 
         // Redirect to the email verified page
-        res.redirect(`${process.env.BASE_URL}/email-verified`);
+        res.redirect(`${process.env.FRONTEND_URL}/email-verified`);
     } catch (err) {
         console.error("Error in verifyUser:", err);
         res.status(500).json({ message: "Internal Server Error" });
