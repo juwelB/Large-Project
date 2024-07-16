@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,8 +23,12 @@ const Login = () => {
         navigate('/dashboard'); // Navigate to the logged-in landing page
       }
     } catch (error) {
-      console.error('Error during login:', error);
-      alert('Login failed');
+      if (error.response && error.response.status === 400 && error.response.data.message === "An email was sent to your account please verify") {
+        toast.error(`Please Verify Your Account. An email has been sent to ${email}`);
+      } else {
+        console.error('Error during login:', error);
+        toast.error('Login failed');
+      }
     }
   };
 

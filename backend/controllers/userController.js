@@ -19,12 +19,11 @@ const registerUser = async (req, res) => {
 
         //add user to db
         const newUser = await userData.save();
-
-        const Token = await new Token({
+        const userToken = await new Token({
             userId: newUser._id,
             token: crypto.randomBytes(32).toString("hex")
         }).save();
-        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${Token.token}`;
+        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${userToken.token}`;
         await sendEmail(newUser.email,"Verify Email",url);
 
         // const result = await User.findOne({ newUser }).select('-password'); // help here!
@@ -95,23 +94,20 @@ const loginUser = async (req, res) => {
         if (!validPassword)
             return res.status(400).json({ msg: 'Invalid Credentials' });
 
-        if(!user.isVerified){
-            let token = await Token.findOne({userId: user._id});
-            if(!token)
-            {
-                token = await new Token({
-                    userId: user._id,
-                    token: crypto.randomBytes(32).toString("hex")
-                }).save();
-                const url = `${process.env.BASE_URL}api/v1/users/${user._id}/verify/${token.token}`;
-                await sendEmail(user.email,"Verify Email",url);
-        
+        if (!user.isVerified) {
+            let token = await Token.findOne({ userId: user._id });
+            if (!token) {
+              token = await new Token({
+                userId: user._id,
+                token: crypto.randomBytes(32).toString("hex")
+              }).save();
+              const url = `${process.env.BASE_URL}api/v1/users/${user._id}/verify/${token.token}`;
+              await sendEmail(user.email, "Verify Email", url);
+            } else {
+              const url = `${process.env.BASE_URL}api/v1/users/${user._id}/verify/${token.token}`;
+              await sendEmail(user.email, "Verify Email", url);
             }
-            else{
-                const url = `${process.env.BASE_URL}api/v1/users/${user._id}/verify/${token.token}`;
-                await sendEmail(user.email,"Verify Email",url);
-            }
-            return res.status(400).json({message: "An email was sent to your account please verify"});
+            return res.status(400).json({ message: "An email was sent to your account please verify" });
         }
 
         // successfull resond msg

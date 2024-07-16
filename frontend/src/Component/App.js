@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SignUp from './SignUp';
 import Login from './Login';
 import LandingPage from './LandingPage';
@@ -31,6 +33,7 @@ const App = () => {
         <Route path="/email-verified" element={<EmailVerified />} />
         {/* Other routes */}
       </Routes>
+      <ToastContainer />
     </Router>
   );
 };

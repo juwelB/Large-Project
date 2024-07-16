@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -34,7 +35,11 @@ const SignUp = () => {
       }
     } catch (error) {
       console.error('Error during registration:', error);
-      alert('Registration failed');
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Registration failed');
+      }
     }
   };
 
@@ -128,6 +133,11 @@ const SignUp = () => {
             Sign Up
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <Link to="/login" className="text-sm text-blue-600 hover:underline">
+            Already have an account?
+          </Link>
+        </div>
       </div>
     </div>
   );
