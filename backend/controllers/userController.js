@@ -132,11 +132,14 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
+        console.log("Finding user with email:", email);
         const user = await User.findOne({ email });
         if (!user) {
+            console.log("User not found");
             return res.status(404).json({ message: "User not found" });
         }
 
+        console.log("Generating token for user:", user._id);
         // Generate a token
         const token = crypto.randomBytes(32).toString("hex");
         await new Token({
@@ -144,10 +147,14 @@ const forgotPassword = async (req, res) => {
             token: token
         }).save();
 
+        console.log("Token generated and saved:", token);
+
         // Send the email
         const resetUrl = `${process.env.BASE_URL}/reset-password/${user._id}/${token}`;
+        console.log("Sending email to:", email, "with reset URL:", resetUrl);
         await sendEmail(email, 'Password Reset', `Please use the following link to reset your password: ${resetUrl}`);
 
+        console.log("Password reset email sent to:", email);
         res.status(202).json({ message: "Password reset email sent", email });
     } catch (error) {
         console.error("Error during password reset request:", error);
