@@ -10,6 +10,7 @@ import LoggedInLandingPage from './LoggedInLandingPage';
 import CalendarPage from './CalendarPage';
 import ClubList from './ClubList';
 import EventList from './EventList';
+import ResetPassword from './ResetPassword';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/clubs" element={<ClubList />} />
         <Route path="/events" element={<EventList />} />
+        <Route path="/reset-password/:userId/:token" element={<ResetPassword />} />
         {/* Other routes */}
       </Routes>
     </Router>
