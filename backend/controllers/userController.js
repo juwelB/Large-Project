@@ -1,6 +1,6 @@
 const User = require('../Model/User');
 const bcrypt = require('bcrypt');
-const Token = require("../Model/Token");
+const Token = require("../Model/myToken"); // Updated the path to match the correct file name
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
