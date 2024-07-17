@@ -1,7 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay } from 'date-fns';
+import axios from 'axios';
+import EventModal from './EventModal';
 
 const CalendarPage = () => {
   const { user } = useContext(AuthContext);
@@ -9,6 +11,8 @@ const CalendarPage = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedClub, setSelectedClub] = useState('All Clubs');
   const [selectedDate, setSelectedDate] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const clubs = [
     { name: 'Knights Experimental Rocketry' },
@@ -16,21 +20,44 @@ const CalendarPage = () => {
     { name: 'AI@UCF' },
   ];
 
-  const events = [
-    { name: 'Knight Hacks GBM', date: '2023-05-01', description: 'General Body Meeting for Knight Hacks', location: 'Room 101', club: 'Knight Hacks' },
-    { name: 'AI@UCF Workshop', date: '2023-05-03', description: 'AI Workshop', location: 'Room 202', club: 'AI@UCF' },
-  ];
+  useEffect(() => {
+    // Fetch events from backend
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('/api/v1/events');
+        setEvents(response.data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const filteredEvents = selectedClub === 'All Clubs' ? events : events.filter(event => event.club === selectedClub);
-  
-
-  const handleEventClick = (event) => {
-    setSelectedEvent(event);
-  };
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setSelectedEvent(null); // Clear selected event if needed
+  };
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setSelectedDate(null); // Clear selected date if needed
+  };
+
+  const handleFormSubmit = async (eventData) => {
+    const eventToAdd = {
+      ...eventData,
+      date: selectedDate,
+    };
+    try {
+      const response = await axios.post('/api/v1/events/createevent', eventToAdd);
+      setEvents([...events, response.data]);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error adding event:', error);
+    }
   };
 
   const renderHeader = () => {
@@ -53,6 +80,12 @@ const CalendarPage = () => {
             <option key={index} value={club.name}>{club.name}</option>
           ))}
         </select>
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="ml-auto bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Add Event
+        </button>
       </div>
     );
   };
@@ -95,21 +128,22 @@ const CalendarPage = () => {
           <div
             className={`p-2 text-center cursor-pointer ${!isSameMonth(day, monthStart) ? 'text-gray-400' : ''} 
               ${isSameDay(day, new Date()) ? 'bg-blue-200' : ''} 
-              ${selectedDate && isSameDay(day, selectedDate) ? 'bg-gray-300' : ''} hover:bg-gray-200`}
+              ${selectedDate && isSameDay(day, selectedDate) ? 'bg-gray-300' : ''} 
+              hover:bg-gray-200`}
             key={day}
-            onClick={() => {
-              setSelectedDate(cloneDay);
-              setSelectedEvent(cloneDay);
-            }}
+            onClick={() => handleDateClick(cloneDay)}
           >
             <span>{formattedDate}</span>
             {filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
               <div
                 key={idx}
                 className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer"
-                onClick={() => handleEventClick(event)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering date click
+                  handleEventClick(event);
+                }}
               >
-                {event.name}
+                {event.Ename}
               </div>
             ))}
           </div>
@@ -154,10 +188,10 @@ const CalendarPage = () => {
         {renderCells()}
         {selectedEvent && (
           <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            <h3 className="text-2xl font-bold mb-4">{selectedEvent.name}</h3>
             {selectedDate && (
               <p className="mb-4"><strong>Date Selected:</strong> {format(selectedDate, 'MMMM d, yyyy')}</p>
             )}
+            <h3 className="text-2xl font-bold mb-4">{selectedEvent.name}</h3>
             <p className="mb-4"><strong>Description:</strong> {selectedEvent.description}</p>
             <p className="mb-4"><strong>When:</strong> {selectedEvent.date}</p>
             <p className="mb-4"><strong>Where:</strong> {selectedEvent.location}</p>
@@ -168,6 +202,14 @@ const CalendarPage = () => {
               Close
             </button>
           </div>
+        )}
+        {isModalOpen && (
+          <EventModal
+            clubs={clubs}
+            selectedDate={selectedDate}
+            onClose={() => setIsModalOpen(false)}
+            onSubmit={handleFormSubmit}
+          />
         )}
       </main>
     </div>

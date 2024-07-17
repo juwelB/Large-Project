@@ -1,36 +1,75 @@
-import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import ClubCard from './ClubCard';
 import EventCard from './EventCard';
 import ClubModal from './ClubModal';
 import { AuthContext } from '../context/AuthContext';
 
 const LoggedInLandingPage = () => {
-  const { user } = useContext(AuthContext);
-  const clubs = [
-    { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png', description: 'A club for experimental rocketry enthusiasts.' },
-    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png', description: 'A club for hackathon enthusiasts.' },
-    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-logo.png', description: 'A club for AI enthusiasts.' },
-  ];
-
-  const events = [
-    { name: 'UCF Football', date: '2023-05-01', image: '/images/events-images/ucfsports-image.jpg', description: 'Join us for a thrilling football game!', location: 'UCF Stadium' },
-    { name: 'UCF Baseball', date: '2023-05-15', image: '/images/events-images/ucfsports-image.jpg', description: 'Come watch the baseball team in action!', location: 'UCF Baseball Field' },
-    { name: 'UCF Basketball', date: '2023-05-30', image: '/images/events-images/ucfsports-image.jpg', description: 'Cheer on the basketball team!', location: 'UCF Arena' },
-  ];
-
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [clubs, setClubs] = useState([]);
+  const [events, setEvents] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    // Fetch clubs from the backend API
+    const fetchClubs = async () => {
+      try {
+        const response = await fetch('/api/v1/clubs/viewAllClubs'); // Adjust the URL to your API endpoint
+        const data = await response.json();
+        setClubs(data);
+      } catch (error) {
+        console.error('Error fetching clubs:', error);
+      }
+    };
+
+    // Fetch events from the backend API
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/v1/events/viewAllEvents'); // Adjust the URL to your API endpoint
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchClubs();
+    fetchEvents();
+  }, []);
 
   const handleJoinClub = (club) => {
-    // Logic to join the club
     console.log(`Joining club: ${club.name}`);
   };
 
   const handleRSVPEvent = (event) => {
-    // Logic to RSVP for the event
-    console.log(`RSVPing for event: ${event.name}`);
+    console.log(`RSVPing for event: ${event.Ename}`);
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (event.target.closest('.dropdown') === null) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   const filteredClubs = clubs.filter(club =>
     club.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -41,16 +80,28 @@ const LoggedInLandingPage = () => {
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
-          <nav>
+          <nav className="flex items-center relative">
             <Link to="/calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <Link to="/clubs" className="mx-2 hover:text-gray-300">Clubs</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
+            <div className="dropdown relative mx-2">
+              <span onClick={toggleDropdown} className="cursor-pointer">Hey, {user ? user.name : 'Guest'}</span>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                  <button
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white w-full text-left"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
         </div>
       </header>
       <main>
-        <section 
+        <section
           className="bg-cover bg-center h-96 flex items-center justify-center text-white relative"
           style={{ backgroundImage: "url('/images/LPBackground.png')" }}
         >
@@ -67,7 +118,7 @@ const LoggedInLandingPage = () => {
                 type="text"
                 placeholder="Enter Your Search Here"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                style={{ color: 'black', backgroundColor: 'white' }} // css for text search input
+                style={{ color: 'black', backgroundColor: 'white' }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -82,8 +133,8 @@ const LoggedInLandingPage = () => {
                 <ClubCard
                   key={index}
                   name={club.name}
-                  logo={club.logo}
-                  description={club.description}
+                  logo={club.clubInfo.logo} // Adjust based on your data structure
+                  description={club.clubInfo.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                 />
@@ -98,11 +149,11 @@ const LoggedInLandingPage = () => {
               {events.map((event, index) => (
                 <EventCard
                   key={index}
-                  name={event.name}
+                  name={event.Ename}
                   date={event.date}
-                  image={event.image}
-                  description={event.description}
-                  location={event.location}
+                  image={event.image} // Adjust based on your data structure
+                  description={event.eventDetail.map(detail => detail.describe).join(', ')} // Adjust based on your data structure
+                  location={`${event.location.address}, ${event.location.city}, ${event.location.state}`} // Adjust based on your data structure
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onRSVP={() => handleRSVPEvent(event)}
                 />
