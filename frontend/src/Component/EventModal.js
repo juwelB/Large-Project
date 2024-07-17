@@ -91,5 +91,5 @@ const EventModal = ({ clubs, selectedDate, onClose, onSubmit }) => {
     </div>
   );
 };
-
+// TESTING
 export default EventModal;
