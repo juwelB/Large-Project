@@ -16,7 +16,7 @@ const LoggedInLandingPage = () => {
     // Fetch clubs from the backend API
     const fetchClubs = async () => {
       try {
-        const response = await fetch('/api/clubs'); // Adjust the URL to your API endpoint
+        const response = await fetch(`/api/v1/clubs/user/${user?.id}`); // Adjust the URL to your API endpoint
         const data = await response.json();
         setClubs(data);
       } catch (error) {
@@ -35,9 +35,11 @@ const LoggedInLandingPage = () => {
       }
     };
 
-    fetchClubs();
-    fetchEvents();
-  }, []);
+    if (user) {
+      fetchClubs();
+      fetchEvents();
+    }
+  }, [user]);
 
   const handleJoinClub = (club) => {
     // Logic to join the club

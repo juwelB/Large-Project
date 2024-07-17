@@ -28,11 +28,6 @@ const CalendarPage = () => {
     setSelectedEvent(event);
   };
 
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
-    setSelectedEvent(null); // Clear selected event if needed
-  };
-
   const renderHeader = () => {
     const dateFormat = 'MMMM yyyy';
 
