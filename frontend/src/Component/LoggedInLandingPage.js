@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClubCard from './ClubCard';
 import EventCard from './EventCard';
@@ -7,20 +7,37 @@ import { AuthContext } from '../context/AuthContext';
 
 const LoggedInLandingPage = () => {
   const { user } = useContext(AuthContext);
-  const clubs = [
-    { name: 'Knights Experimental Rocketry', logo: '/images/club-logos/kxr-logo.png', description: 'A club for experimental rocketry enthusiasts.' },
-    { name: 'Knight Hacks', logo: '/images/club-logos/knightHacks-logo.png', description: 'A club for hackathon enthusiasts.' },
-    { name: 'AI@UCF', logo: '/images/club-logos/aiUCF-logo.png', description: 'A club for AI enthusiasts.' },
-  ];
-
-  const events = [
-    { name: 'UCF Football', date: '2023-05-01', image: '/images/events-images/ucfsports-image.jpg', description: 'Join us for a thrilling football game!', location: 'UCF Stadium' },
-    { name: 'UCF Baseball', date: '2023-05-15', image: '/images/events-images/ucfsports-image.jpg', description: 'Come watch the baseball team in action!', location: 'UCF Baseball Field' },
-    { name: 'UCF Basketball', date: '2023-05-30', image: '/images/events-images/ucfsports-image.jpg', description: 'Cheer on the basketball team!', location: 'UCF Arena' },
-  ];
-
+  const [clubs, setClubs] = useState([]);
+  const [events, setEvents] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    // Fetch clubs from the backend API
+    const fetchClubs = async () => {
+      try {
+        const response = await fetch('/api/clubs'); // Adjust the URL to your API endpoint
+        const data = await response.json();
+        setClubs(data);
+      } catch (error) {
+        console.error('Error fetching clubs:', error);
+      }
+    };
+
+    // Fetch events from the backend API
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/events'); // Adjust the URL to your API endpoint
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchClubs();
+    fetchEvents();
+  }, []);
 
   const handleJoinClub = (club) => {
     // Logic to join the club
