@@ -16,7 +16,7 @@ const LoggedInLandingPage = () => {
     // Fetch clubs from the backend API
     const fetchClubs = async () => {
       try {
-        const response = await fetch(`/api/v1/clubs/user/${user?.id}`); // Adjust the URL to your API endpoint
+        const response = await fetch('/api/v1/clubs/viewAllClubs'); // Adjust the URL to your API endpoint
         const data = await response.json();
         setClubs(data);
       } catch (error) {
@@ -27,7 +27,7 @@ const LoggedInLandingPage = () => {
     // Fetch events from the backend API
     const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/v1/events'); // Adjust the URL to your API endpoint
+        const response = await fetch('/api/v1/events/viewAllEvents'); // Adjust the URL to your API endpoint
         const data = await response.json();
         setEvents(data);
       } catch (error) {
@@ -35,11 +35,9 @@ const LoggedInLandingPage = () => {
       }
     };
 
-    if (user) {
-      fetchClubs();
-      fetchEvents();
-    }
-  }, [user]);
+    fetchClubs();
+    fetchEvents();
+  }, []);
 
   const handleJoinClub = (club) => {
     // Logic to join the club
@@ -101,7 +99,7 @@ const LoggedInLandingPage = () => {
                 <ClubCard
                   key={index}
                   name={club.name}
-                  logo={club.clubInfo.logo}
+                  logo={club.clubInfo.logo} // Adjust based on your data structure
                   description={club.clubInfo.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
@@ -119,9 +117,9 @@ const LoggedInLandingPage = () => {
                   key={index}
                   name={event.Ename}
                   date={event.date}
-                  image={event.image}
-                  description={event.eventDetail.join(', ')}
-                  location={`${event.location.address}, ${event.location.city}, ${event.location.state}`}
+                  image={event.image} // Adjust based on your data structure
+                  description={event.eventDetail.map(detail => detail.describe).join(', ')} // Adjust based on your data structure
+                  location={`${event.location.address}, ${event.location.city}, ${event.location.state}`} // Adjust based on your data structure
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onRSVP={() => handleRSVPEvent(event)}
                 />
