@@ -1,23 +1,20 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    // Fetch user data from API or local storage
-    const fetchUser = async () => {
-      // Example: Fetch user data from an API
-      const userData = await fetch('/api/user').then(res => res.json());
-      setUser(userData);
-    };
+  const login = (userData) => {
+    setUser(userData);
+  };
 
-    fetchUser();
-  }, []);
+  const logout = () => {
+    setUser(null);
+  };
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
