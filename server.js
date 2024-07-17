@@ -5,11 +5,13 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const multer = require('multer');
 
 // import the club, user and event routes
 const eventRoutes = require('./backend/routes/eventRoutes');
 const clubRoutes = require('./backend/routes/clubRoutes');
 const userRoutes = require('./backend/routes/userRoutes');
+const uploadRoutes = require('./backend/routes/upload');
 
 let PORT = process.env.PORT || 5050;
 
@@ -23,6 +25,7 @@ app.use(express.json());
 app.use('/api/v1/clubs', clubRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
+app.use('/api/v1/upload', uploadRoutes);
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'frontend/build')));

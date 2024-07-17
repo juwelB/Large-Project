@@ -27,7 +27,7 @@ const LoggedInLandingPage = () => {
     // Fetch events from the backend API
     const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/events'); // Adjust the URL to your API endpoint
+        const response = await fetch('/api/v1/events'); // Adjust the URL to your API endpoint
         const data = await response.json();
         setEvents(data);
       } catch (error) {
@@ -48,7 +48,7 @@ const LoggedInLandingPage = () => {
 
   const handleRSVPEvent = (event) => {
     // Logic to RSVP for the event
-    console.log(`RSVPing for event: ${event.name}`);
+    console.log(`RSVPing for event: ${event.Ename}`);
   };
 
   const filteredClubs = clubs.filter(club =>
@@ -101,8 +101,8 @@ const LoggedInLandingPage = () => {
                 <ClubCard
                   key={index}
                   name={club.name}
-                  logo={club.logo}
-                  description={club.description}
+                  logo={club.clubInfo.logo}
+                  description={club.clubInfo.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                 />
@@ -117,11 +117,11 @@ const LoggedInLandingPage = () => {
               {events.map((event, index) => (
                 <EventCard
                   key={index}
-                  name={event.name}
+                  name={event.Ename}
                   date={event.date}
                   image={event.image}
-                  description={event.description}
-                  location={event.location}
+                  description={event.eventDetail.join(', ')}
+                  location={`${event.location.address}, ${event.location.city}, ${event.location.state}`}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onRSVP={() => handleRSVPEvent(event)}
                 />
