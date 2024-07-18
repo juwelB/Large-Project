@@ -12,13 +12,16 @@ const createEvent = async (req, res) => {
             eventDetail,
             clubId
         });
+        console.log("HERE");
         console.log(newEvent);
         const savedEvent = await newEvent.save();
 
         // Add the event to the club's event list
         const club = await Club.findById(clubId);
+        console.log("CLUB");
         console.log(club);
         if (club) {
+            console.log("INSIDE");
             console.log(savedEvent);
             club.eventList.push(savedEvent);
             await club.save();
