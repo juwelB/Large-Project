@@ -44,14 +44,14 @@ const ClubListPage = () => {
 
   const handleJoinClub = async (club) => {
     try {
-      await axios.post('https://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/clubs/joinClub', {
+      await axios.post('/api/v1/clubs/joinClub', {
         userId: user._id,
         clubId: club._id
       });
       console.log(`Joined club: ${club.name}`);
       // Optionally, update the state to reflect the changes
     } catch (error) {
-      console.error('Error joining club:', error);
+      console.error('Error joining club:', error.response ? error.response.data : error.message);
     }
   };
 
