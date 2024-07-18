@@ -9,6 +9,7 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,8 +72,9 @@ const Login = () => {
             type="submit"
             className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
             style={{ backgroundColor: '#FFD700' }}
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? 'Signing in...' : 'Login'}
           </button>
         </form>
         <div className="mt-4 text-center">
