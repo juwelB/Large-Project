@@ -44,6 +44,8 @@ const ClubForm = ({ isOpen, onClose }) => {
       const response = await axios.post('/api/v1/clubs/createclub', clubData);
       const createdClub = response.data;
 
+      console.log('Created club:', createdClub); // Add this line for debugging
+
       // Update user role and adminOf field
       await axios.put(`/api/v1/users/${user._id}/makeAdmin`, { clubId: createdClub._id });
 

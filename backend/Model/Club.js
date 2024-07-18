@@ -9,18 +9,19 @@ const clubSchema = new Schema({
     clubInfo: {
         industry: String,
         description: String,
-        logo: String // Added logo field
+        logo: String
     },
     eventList: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
     }],
     memberList: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
     adminId: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     }
 });
