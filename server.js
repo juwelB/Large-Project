@@ -1,3 +1,6 @@
+console.log('Server starting...');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
 require('dotenv').config(); // Ensure this is at the very top
 
 const connectDB = require('./backend/dbConnect');
