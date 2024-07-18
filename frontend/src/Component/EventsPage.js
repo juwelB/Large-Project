@@ -1,18 +1,38 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
 
 const EventList = () => {
   const { user } = useContext(AuthContext);
-  const [events, setEvents] = useState([
-    { name: 'Knight Hacks GBM', logo: '/images/club-logos/knightHacks-logo.png', description: 'General Body Meeting for Knight Hacks', date: '2023-05-01', location: 'Room 101' },
-  ]);
+  const [rsvpedEvents, setRsvpedEvents] = useState([]);
+  const [clubEvents, setClubEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const handleUnRSVP = (eventName) => {
-    // Logic to unRSVP from the event
-    console.log(`UnRSVPing from event: ${eventName}`);
-    setEvents(events.filter(event => event.name !== eventName));
+  useEffect(() => {
+    if (user) {
+      fetchEvents();
+    }
+  }, [user]);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.post('/api/v1/events/userEvents', { userId: user._id });
+      const { rsvpedEvents, clubEvents } = response.data;
+      setRsvpedEvents(rsvpedEvents);
+      setClubEvents(clubEvents);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  const handleUnRSVP = async (eventId) => {
+    try {
+      await axios.post(`/api/v1/events/unjoinEvent/${eventId}`, { userId: user._id });
+      setRsvpedEvents(rsvpedEvents.filter(event => event._id !== eventId));
+    } catch (error) {
+      console.error('Error unRSVPing from event:', error);
+    }
   };
 
   return (
@@ -31,28 +51,32 @@ const EventList = () => {
       <main className="container mx-auto py-12 px-4">
         <h2 className="text-3xl font-bold mb-6">Your RSVP'ed Events</h2>
         <div className="max-w-4xl mx-auto">
-          {events.map((event, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
-              <div className="flex items-center">
-                <img src={event.logo} alt={`${event.name} logo`} className="w-12 h-12 mr-4" />
-                <div>
-                  <h3 className="text-xl font-semibold">{event.name}</h3>
-                  <button
-                    onClick={() => setSelectedEvent(event)}
-                    className="text-gray-600 hover:text-gray-800"
-                  >
-                    ...
-                  </button>
+          {rsvpedEvents.length > 0 ? (
+            rsvpedEvents.map((event, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
+                <div className="flex items-center">
+                  <img src={event.logo} alt={`${event.name} logo`} className="w-12 h-12 mr-4" />
+                  <div>
+                    <h3 className="text-xl font-semibold">{event.name}</h3>
+                    <button
+                      onClick={() => setSelectedEvent(event)}
+                      className="text-gray-600 hover:text-gray-800"
+                    >
+                      ...
+                    </button>
+                  </div>
                 </div>
+                <button
+                  onClick={() => handleUnRSVP(event._id)}
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  UnRSVP
+                </button>
               </div>
-              <button
-                onClick={() => handleUnRSVP(event.name)}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              >
-                UnRSVP
-              </button>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No RSVP'ed events found.</p>
+          )}
         </div>
         {selectedEvent && (
           <div className="bg-white rounded-lg shadow-md p-6 mt-6">
@@ -68,6 +92,29 @@ const EventList = () => {
             </button>
           </div>
         )}
+        <h2 className="text-3xl font-bold mb-6 mt-12">Discover Your Club Events</h2>
+        <div className="max-w-4xl mx-auto">
+          {clubEvents.length > 0 ? (
+            clubEvents.map((event, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
+                <div className="flex items-center">
+                  <img src={event.logo} alt={`${event.name} logo`} className="w-12 h-12 mr-4" />
+                  <div>
+                    <h3 className="text-xl font-semibold">{event.name}</h3>
+                    <button
+                      onClick={() => setSelectedEvent(event)}
+                      className="text-gray-600 hover:text-gray-800"
+                    >
+                      ...
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No events found for your clubs.</p>
+          )}
+        </div>
       </main>
     </div>
   );

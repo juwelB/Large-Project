@@ -75,10 +75,12 @@ const ClubListPage = () => {
       // Refetch user clubs and discover clubs to update the UI
       fetchUserClubs();
       fetchDiscoverClubs();
+      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Left Club');
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
       setError('Error leaving club: ' + (error.response ? error.response.data : error.message));
+      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message));
     }
   };
@@ -90,10 +92,12 @@ const ClubListPage = () => {
       // Refetch user clubs and discover clubs to update the UI
       fetchUserClubs();
       fetchDiscoverClubs();
+      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Deleted Club');
     } catch (error) {
       console.error('Error deleting club:', error.response ? error.response.data : error.message);
       setError('Error deleting club: ' + (error.response ? error.response.data : error.message));
+      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message));
     }
   };
@@ -148,6 +152,7 @@ const ClubListPage = () => {
                     className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
                     onClick={() => setSelectedClub(club)}
                     onCreateEvent={() => handleCreateEvent(club._id)}
+                    adminId={club.adminId}
                   />
                 ))
               ) : (
@@ -165,6 +170,7 @@ const ClubListPage = () => {
                     description={club.clubInfo.description}
                     className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
                     onClick={() => setSelectedClub(club)}
+                    adminId={club.adminId}
                   />
                 ))
               ) : (
@@ -195,6 +201,7 @@ const ClubListPage = () => {
                   description={club.clubInfo.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
+                  adminId={club.adminId}
                 />
               ))}
             </div>

@@ -56,9 +56,11 @@ const LoggedInLandingPage = () => {
       console.log(`Joined club: ${clubId}`);
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
+      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Joined Club');
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
+      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error joining club: ' + (error.response ? error.response.data : error.message));
     }
   };
@@ -72,12 +74,14 @@ const LoggedInLandingPage = () => {
       console.log(`Left club: ${clubId}`);
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
+      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Left Club');
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
+      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message));
     }
-  };
+  };;
 
   const handleDeleteClub = async (clubId) => {
     try {
@@ -85,9 +89,11 @@ const LoggedInLandingPage = () => {
       console.log(`Deleted club: ${clubId}`);
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
+      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Deleted Club');
     } catch (error) {
       console.error('Error deleting club:', error.response ? error.response.data : error.message);
+      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message));
     }
   };

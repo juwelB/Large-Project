@@ -1,7 +1,7 @@
 // holy fuck
 import React from 'react';
 
-const ClubCard = ({ name, logo, description, className, onClick, onJoin, onCreateEvent }) => {
+const ClubCard = ({ name, logo, description, className, onClick, onJoin, onCreateEvent, adminId, user }) => {
   return (
     <div onClick={onClick} className={`bg-white rounded-lg shadow-md p-6 text-center border border-transparent transition-all duration-300 ${className}`}>
       {console.log(logo)}
@@ -20,7 +20,7 @@ const ClubCard = ({ name, logo, description, className, onClick, onJoin, onCreat
           Join Club
         </button>
       )}
-      {onCreateEvent && (
+      {user && user._id === adminId && onCreateEvent && (
         <button
           onClick={onCreateEvent}
           className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
