@@ -9,25 +9,36 @@ const User = require('../Model/User');
 // create a new club
 const createClub = async (req, res) => {
     try {
-        // create a new club
+        const { name, clubInfo, adminId } = req.body;
+
+        if (!adminId) {
+            return res.status(400).json({ message: 'Admin ID is required' });
+        }
+
         const club = new Club({
-            name: req.body.name,
+            name,
             clubInfo: {
-                industry: req.body.industry,
-                description: req.body.description
+                industry: clubInfo.industry,
+                description: clubInfo.description,
+                logo: clubInfo.logo
             },
-            adminId: req.body.adminId
+            adminId,
+            eventList: [],
+            memberList: [adminId] // Add the admin as the first member
         });
 
-        // save the club
         const savedClub = await club.save();
 
-        // return the saved club
-        res.json(savedClub);
+        // Update the user to be an admin of this club
+        await User.findByIdAndUpdate(adminId, {
+            $push: { adminOf: savedClub._id }
+        });
+
+        res.status(201).json(savedClub);
     }
     catch (err) {
-        // return an error if there is one
-        res.json({ message: err });
+        console.error('Error creating club:', err);
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -161,12 +172,12 @@ const joinClub = async (req, res) => {
             return res.status(404).json({ message: 'User or Club not found' });
         }
 
-        // Add the club to the user's clubList
+        // Add the club to the user's clubList if not already there
         if (!user.clubList.includes(clubId)) {
             user.clubList.push(clubId);
         }
 
-        // Add the user to the club's memberList
+        // Add the user to the club's memberList if not already there
         if (!club.memberList.includes(userId)) {
             club.memberList.push(userId);
         }
@@ -177,6 +188,7 @@ const joinClub = async (req, res) => {
 
         res.status(200).json({ message: 'Successfully joined the club' });
     } catch (err) {
+        console.error('Error joining club:', err);
         res.status(500).json({ message: err.message });
     }
 };

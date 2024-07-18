@@ -28,6 +28,7 @@ const ClubForm = ({ isOpen, onClose }) => {
           }
         });
         logoPath = uploadResponse.data.filePath; // This should now be the correct path
+        console.log('Logo path:', logoPath); // Add this line
       }
 
       // Save club data

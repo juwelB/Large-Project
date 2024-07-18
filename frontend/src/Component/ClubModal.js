@@ -7,12 +7,12 @@ const ClubModal = ({ club, onClose, onJoin }) => {
 
   const handleJoinClick = () => {
     if (user && user.id) {
-      console.log('User ID:', user.id); // Debugging
-      onJoin(club._id, user.id);
-      onClose();
+        console.log('User ID:', user.id); // Debugging
+        onJoin(club._id.toString(), user.id.toString());
+        onClose();
     } else {
-      console.error('User ID not available');
-      // Optionally, show an error message to the user
+        console.error('User ID not available');
+        // Optionally, show an error message to the user
     }
   };
 

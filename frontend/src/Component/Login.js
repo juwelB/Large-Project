@@ -21,7 +21,8 @@ const Login = () => {
         password
       });
       if (response.data.user) {
-        login(response.data.user); // This should now include the user's ID
+        console.log('User data received:', response.data.user); // Debugging
+        login(response.data.user);
         navigate('/dashboard');
       } else {
         toast.error(response.data.message || 'Login failed');
