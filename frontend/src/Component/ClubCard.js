@@ -1,3 +1,4 @@
+// holy fuck
 import React from 'react';
 
 const ClubCard = ({ name, logo, description, className, onClick, onJoin }) => {
