@@ -42,7 +42,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
     }
   };
 
-  const isMember = user && club.memberList.includes(user.id);
+  const isMember = user && Array.isArray(club.memberList) && club.memberList.includes(user.id);
   const isAdmin = user && club.adminId === user.id;
 
   return (
