@@ -24,11 +24,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the uploads directory
+// Use __dirname to get the current directory
 const uploadsPath = path.join(__dirname, 'uploads');
-console.log('Uploads directory path:', uploadsPath); // Debug log
+console.log('Uploads directory path:', uploadsPath);
+
+// Ensure the uploads directory exists
+const fs = require('fs');
+if (!fs.existsSync(uploadsPath)) {
+  console.log('Creating upload directory');
+  fs.mkdirSync(uploadsPath, { recursive: true });
+}
+
+// Serve static files from the uploads directory
 app.use('/uploads', express.static(uploadsPath));
-console.log('Serving static files from:', uploadsPath); // Debug log
+console.log('Serving static files from:', uploadsPath);
 
 // using the routes
 app.use('/api/v1/clubs', clubRoutes);
