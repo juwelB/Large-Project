@@ -49,7 +49,9 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-bold mb-4">{club.name}</h2>
-        <img src={`../../..${club.clubInfo.logo}`} alt={`${club.name} logo`} className="w-24 h-24 mx-auto mb-4" />
+        {club.clubInfo && (
+          <img src={`../../..${club.clubInfo.logo}`} alt={`${club.name} logo`} className="w-24 h-24 mx-auto mb-4" />
+        )}
         <p className="text-gray-600 mb-4">{club.description}</p>
         {showSignUp ? (
           <>
