@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -13,6 +14,36 @@ const SignUp = () => {
   const [userName, setUserName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  // requirements fields
+  const [passwordRequirements, setPasswordRequirements] = useState({
+    hasLowercase: false,
+    hasUppercase: false,
+    hasNumber: false,
+    hasSpecialChar: false,
+    minLength: false,
+  });
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false); // ui focus of passowrd
+
+
+  // regex for password
+  const passwordRegex = {
+    hasLowercase: /[a-z]/,
+    hasUppercase: /[A-Z]/,
+    hasNumber: /\d/,
+    hasSpecialChar: /[@$!%*?&]/,
+    minLength: /.{8,}/,
+  };
+
+  const checkPasswordRequirements = (password) => {
+    setPasswordRequirements({
+      hasLowercase: passwordRegex.hasLowercase.test(password),
+      hasUppercase: passwordRegex.hasUppercase.test(password),
+      hasNumber: passwordRegex.hasNumber.test(password),
+      hasSpecialChar: passwordRegex.hasSpecialChar.test(password),
+      minLength: passwordRegex.minLength.test(password),
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +51,19 @@ const SignUp = () => {
       toast.error("Passwords do not match");
       return;
     }
+
+    if (
+      !passwordRequirements.hasLowercase ||
+      !passwordRequirements.hasUppercase ||
+      !passwordRequirements.hasNumber ||
+      !passwordRequirements.hasSpecialChar ||
+      !passwordRequirements.minLength
+    ) {
+      toast.error("Password must contain at least 1 lowercase, 1 uppercase, 1 number, 1 special character, and be at least 8 characters long");
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const response = await axios.post('https://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/users/register', {
@@ -31,7 +75,7 @@ const SignUp = () => {
       });
       if (response.status === 201) {
         login(response.data);
-        navigate('/verify-email', { state: { email: email } }); // Navigate to EmailVerification with email
+        navigate('/verify-email', { state: { email: email } });
       }
     } catch (error) {
       console.error('Error during registration:', error);
@@ -46,6 +90,8 @@ const SignUp = () => {
       } else {
         toast.error('Registration failed');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +114,7 @@ const SignUp = () => {
               placeholder="Enter Email Here"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setIsPasswordFocused(false)}
               required
             />
           </div>
@@ -79,9 +126,25 @@ const SignUp = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
               placeholder="Enter Password Here"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                checkPasswordRequirements(e.target.value);
+              }}
+              onFocus={() => setIsPasswordFocused(true)}
               required
             />
+            {isPasswordFocused && (
+              <div className="text-sm mt-1 text-gray-700">
+                <p>Password must contain:</p>
+                <ul>
+                  <li className={passwordRequirements.hasLowercase ? 'text-green-600' : 'text-red-600'}>At least 1 lowercase letter</li>
+                  <li className={passwordRequirements.hasUppercase ? 'text-green-600' : 'text-red-600'}>At least 1 uppercase letter</li>
+                  <li className={passwordRequirements.hasNumber ? 'text-green-600' : 'text-red-600'}>At least 1 number</li>
+                  <li className={passwordRequirements.hasSpecialChar ? 'text-green-600' : 'text-red-600'}>At least 1 special character (@$!%*?&)</li>
+                  <li className={passwordRequirements.minLength ? 'text-green-600' : 'text-red-600'}>At least 8 characters long</li>
+                </ul>
+              </div>
+            )}
           </div>
           <div className="mb-4">
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
@@ -92,6 +155,7 @@ const SignUp = () => {
               placeholder="Confirm Password Here"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              onFocus={() => setIsPasswordFocused(false)}
               required
             />
           </div>
@@ -104,6 +168,7 @@ const SignUp = () => {
               placeholder="Enter Username Here"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
+              onFocus={() => setIsPasswordFocused(false)}
               required
             />
           </div>
@@ -116,6 +181,7 @@ const SignUp = () => {
               placeholder="Enter First Name Here"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
+              onFocus={() => setIsPasswordFocused(false)}
               required
             />
           </div>
@@ -128,6 +194,7 @@ const SignUp = () => {
               placeholder="Enter Last Name Here"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
+              onFocus={() => setIsPasswordFocused(false)}
               required
             />
           </div>
@@ -135,8 +202,9 @@ const SignUp = () => {
             type="submit"
             className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
             style={{ backgroundColor: '#FFD700' }}
+            disabled={isLoading}
           >
-            Sign Up
+            {isLoading ? 'Signing Up...' : 'Sign Up'}
           </button>
         </form>
         <div className="mt-4 text-center">

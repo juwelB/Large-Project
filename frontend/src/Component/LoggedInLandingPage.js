@@ -1,16 +1,18 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ClubCard from './ClubCard';
 import EventCard from './EventCard';
 import ClubModal from './ClubModal';
 import { AuthContext } from '../context/AuthContext';
 
 const LoggedInLandingPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [clubs, setClubs] = useState([]);
   const [events, setEvents] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     // Fetch clubs from the backend API
@@ -40,14 +42,34 @@ const LoggedInLandingPage = () => {
   }, []);
 
   const handleJoinClub = (club) => {
-    // Logic to join the club
     console.log(`Joining club: ${club.name}`);
   };
 
   const handleRSVPEvent = (event) => {
-    // Logic to RSVP for the event
     console.log(`RSVPing for event: ${event.Ename}`);
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (event.target.closest('.dropdown') === null) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   const filteredClubs = clubs.filter(club =>
     club.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -58,16 +80,28 @@ const LoggedInLandingPage = () => {
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
-          <nav>
+          <nav className="flex items-center relative">
             <Link to="/calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <Link to="/clubs" className="mx-2 hover:text-gray-300">Clubs</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
+            <div className="dropdown relative mx-2">
+              <span onClick={toggleDropdown} className="cursor-pointer">Hey, {user ? user.name : 'Guest'}</span>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                  <button
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white w-full text-left"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
         </div>
       </header>
       <main>
-        <section 
+        <section
           className="bg-cover bg-center h-96 flex items-center justify-center text-white relative"
           style={{ backgroundImage: "url('/images/LPBackground.png')" }}
         >
@@ -84,7 +118,7 @@ const LoggedInLandingPage = () => {
                 type="text"
                 placeholder="Enter Your Search Here"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                style={{ color: 'black', backgroundColor: 'white' }} // css for text search input
+                style={{ color: 'black', backgroundColor: 'white' }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
