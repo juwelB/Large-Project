@@ -55,6 +55,10 @@ mongoose.connection.once('open', () => {
   console.log('MongoDB connected...');
 });
 
+// Add the upload route
+const { uploadFile } = require('./backend/controllers/uploadController');
+app.post('/api/v1/clubs/upload', uploadFile);
+
 app.listen(PORT, () => {
   console.log(`The Server is running on PORT: ${PORT}`);
 });
