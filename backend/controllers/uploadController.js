@@ -27,9 +27,11 @@ const uploadFile = (req, res) => {
     } else if (err) {
       return res.status(500).json(err)
     }
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
     // Return the file path relative to the uploads directory
-    const filePath = req.file.path.replace(uploadDir, '').replace(/\\/g, '/');
-    return res.status(200).json({ filePath: '/uploads' + filePath });
+    return res.status(200).json({ filePath: `/uploads/${req.file.filename}` });
   })
 };
 
