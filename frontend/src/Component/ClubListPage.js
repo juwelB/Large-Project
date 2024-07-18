@@ -46,7 +46,7 @@ const ClubListPage = () => {
 
   const handleJoinClub = async (club) => {
     try {
-      await axios.post('/api/v1/clubs/joinClub', {
+      await axios.post('https://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/clubs/joinClub', {
         userId: user._id,
         clubId: club._id
       });
