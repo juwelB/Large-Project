@@ -81,8 +81,8 @@ const ClubListPage = () => {
                 <ClubCard
                   key={index}
                   name={club.name}
-                  logo={club.logo}
-                  description={club.description}
+                  logo={club.clubInfo.logo} // Accessing logo from clubInfo
+                  description={club.clubInfo.description} // Accessing description from clubInfo
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                 />
@@ -94,8 +94,8 @@ const ClubListPage = () => {
                 <ClubCard
                   key={index}
                   name={club.name}
-                  logo={club.logo}
-                  description={club.description}
+                  logo={club.clubInfo.logo} // Accessing logo from clubInfo
+                  description={club.clubInfo.description} // Accessing description from clubInfo
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                 />
@@ -121,8 +121,8 @@ const ClubListPage = () => {
                 <ClubCard
                   key={index}
                   name={club.name}
-                  logo={club.logo}
-                  description={club.description}
+                  logo={club.clubInfo.logo} // Accessing logo from clubInfo
+                  description={club.clubInfo.description} // Accessing description from clubInfo
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                 />
