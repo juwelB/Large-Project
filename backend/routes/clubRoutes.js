@@ -6,6 +6,8 @@ const express = require('express');
 // import the club controllers
 const clubController = require('../controllers/clubController');
 
+const Club = require('../models/Club'); // Import the Club model
+
 // create a new express router
 const {
     createClub,
