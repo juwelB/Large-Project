@@ -33,7 +33,7 @@ router.put('/updateclub', updateClub);
 //Get request to view club members
 router.get('/viewClubMembers', viewClubMembers);
 router.get('/viewAllClubs', viewAllClubs);
-router.get('/viewMyClubs', viewMyClubs);
+router.post('/viewMyClubs', viewMyClubs);
 router.get('/viewClubEvents', viewClubEvents);
 router.post('/joinClub', joinClub);
 router.post('/leaveClub', leaveClub);

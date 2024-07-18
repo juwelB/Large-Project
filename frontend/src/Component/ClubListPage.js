@@ -25,7 +25,7 @@ const ClubListPage = () => {
 
   const fetchUserClubs = async () => {
     try {
-      const response = await axios.get('/api/v1/clubs/viewMyClubs');
+      const response = await axios.post('/api/v1/clubs/viewMyClubs', { userId: user._id });
       const data = response.data;
       setUserClubs(data.filter(club => !user.adminOf.includes(club._id)));
       setAdminClubs(data.filter(club => user.adminOf.includes(club._id)));
@@ -58,6 +58,21 @@ const ClubListPage = () => {
     }
   };
 
+  const handleLeaveClub = async (clubId, userId) => {
+    try {
+      await axios.post('/api/v1/clubs/leaveClub', {
+        userObjId: userId,
+        clubObjId: clubId
+      });
+      console.log(`Left club: ${clubId}`);
+      // Refetch user clubs to update the UI
+      fetchUserClubs();
+    } catch (error) {
+      console.error('Error leaving club:', error.response ? error.response.data : error.message);
+      setError('Error leaving club: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-black text-white p-4">
@@ -74,9 +89,9 @@ const ClubListPage = () => {
       <main>
         <section className="container mx-auto py-12 px-4">
           <h2 className="text-3xl font-bold mb-6 text-center">Your Clubs</h2>
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <h3 className="text-2xl font-bold mb-4">Admin Clubs</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {adminClubs.map((club, index) => (
                 <ClubCard
                   key={index}
@@ -89,7 +104,7 @@ const ClubListPage = () => {
               ))}
             </div>
             <h3 className="text-2xl font-bold mb-4 mt-8">Member Clubs</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {userClubs.map((club, index) => (
                 <ClubCard
                   key={index}
@@ -106,7 +121,7 @@ const ClubListPage = () => {
         <hr className="my-8" />
         <section className="container mx-auto py-12 px-4 text-center">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
             onClick={() => setIsModalOpen(true)}
           >
             Create Your Own Club
@@ -115,8 +130,8 @@ const ClubListPage = () => {
         <hr className="my-8" />
         <section className="container mx-auto py-12 px-4">
           <h2 className="text-3xl font-bold mb-6 text-center">Discover Clubs</h2>
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {discoverClubs.map((club, index) => (
                 <ClubCard
                   key={index}
@@ -136,6 +151,7 @@ const ClubListPage = () => {
           club={selectedClub}
           onClose={() => setSelectedClub(null)}
           onJoin={handleJoinClub}
+          onLeave={handleLeaveClub}
         />
       )}
       <ClubForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
