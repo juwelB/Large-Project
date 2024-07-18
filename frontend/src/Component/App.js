@@ -15,7 +15,7 @@ import EventsPage from './EventsPage';
 import ResetPassword from './ResetPassword';
 import EmailVerified from './EmailVerified';
 import { AuthProvider } from '../context/AuthContext';
-import ClubForm from './Component/ClubForm'
+import ClubForm from './ClubForm'
 
 const App = () => {
   return (
