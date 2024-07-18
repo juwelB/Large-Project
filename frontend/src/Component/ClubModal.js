@@ -5,6 +5,16 @@ import { AuthContext } from '../context/AuthContext';
 const ClubModal = ({ club, onClose, onJoin }) => {
   const { user } = useContext(AuthContext);
 
+  const handleJoinClick = () => {
+    if (user && user._id) {
+      onJoin(club._id, user._id);
+      onClose();
+    } else {
+      console.error('User ID not available');
+      // Optionally, show an error message to the user
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
@@ -13,10 +23,7 @@ const ClubModal = ({ club, onClose, onJoin }) => {
         <p className="text-gray-600 mb-4">{club.description}</p>
         {user ? (
           <button
-            onClick={() => {
-              onJoin(club);
-              onClose();
-            }}
+            onClick={handleJoinClick}
             className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
             style={{ backgroundColor: '#FFD700' }}
           >

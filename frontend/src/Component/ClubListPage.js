@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import ClubCard from './ClubCard';
 import ClubModal from './ClubModal';
-import Modal from './Modal';
 import ClubForm from './ClubForm';
 import axios from 'axios';
 
@@ -42,14 +41,15 @@ const ClubListPage = () => {
     fetchDiscoverClubs();
   }, [user]);
 
-  const handleJoinClub = async (club) => {
+  const handleJoinClub = async (clubId, userId) => {
     try {
       await axios.post('/api/v1/clubs/joinClub', {
-        userId: user._id,
-        clubId: club._id
+        userId: userId,
+        clubId: clubId
       });
-      console.log(`Joined club: ${club.name}`);
+      console.log(`Joined club: ${clubId}`);
       // Optionally, update the state to reflect the changes
+      // You might want to refetch the user's clubs here
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
     }
@@ -63,7 +63,7 @@ const ClubListPage = () => {
           <nav>
             <Link to="/dashboard" className="mx-2 hover:text-gray-300">Home</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <Link to="calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
+            <Link to="/calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
           </nav>
         </div>
@@ -135,9 +135,7 @@ const ClubListPage = () => {
           onJoin={handleJoinClub}
         />
       )}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ClubForm onClose={() => setIsModalOpen(false)} />
-      </Modal>
+      <ClubForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

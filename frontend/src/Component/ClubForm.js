@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import Modal from './Modal';
 
 const ClubForm = ({ isOpen, onClose }) => {
   const { user } = useContext(AuthContext);
@@ -11,50 +10,58 @@ const ClubForm = ({ isOpen, onClose }) => {
   const [logo, setLogo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  if (!isOpen) return null;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Upload logo
-    let logoPath = '';
-    if (logo) {
-      const formData = new FormData();
-      formData.append('logo', logo);
-      const uploadResponse = await axios.post('/api/v1/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      logoPath = uploadResponse.data.filePath;
+    try {
+      // Upload logo
+      let logoPath = '';
+      if (logo) {
+        const formData = new FormData();
+        formData.append('logo', logo);
+        const uploadResponse = await axios.post('/api/v1/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        logoPath = uploadResponse.data.filePath;
+      }
+
+      // Save club data
+      const clubData = {
+        name,
+        clubInfo: {
+          industry,
+          description,
+          logo: logoPath
+        },
+        adminId: user._id
+      };
+      const response = await axios.post('/api/v1/clubs/createclub', clubData);
+      const createdClub = response.data;
+
+      // Update user role and adminOf field
+      await axios.put(`/api/v1/users/${user._id}/makeAdmin`, { clubId: createdClub._id });
+
+      onClose();
+    } catch (error) {
+      console.error('Error creating club:', error);
+      // Handle error (e.g., show error message to user)
+    } finally {
+      setIsLoading(false);
     }
-
-    // Save club data
-    const clubData = {
-      name,
-      clubInfo: {
-        industry,
-        description,
-        logo: logoPath
-      },
-      adminId: user._id
-    };
-    const response = await axios.post('/api/v1/clubs/createclub', clubData);
-    const createdClub = response.data;
-
-    // Update user role and adminOf field
-    await axios.put(`/api/v1/users/${user._id}/makeAdmin`, { clubId: createdClub._id });
-
-    setIsLoading(false);
-    onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="p-8">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-96 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Create Club</h2>
-          <button onClick={onClose} className="text-gray-600 hover:underline">
-            Close
+          <button onClick={onClose} className="text-gray-600 hover:text-gray-800">
+            &times;
           </button>
         </div>
         <form onSubmit={handleSubmit}>
@@ -112,7 +119,7 @@ const ClubForm = ({ isOpen, onClose }) => {
           </button>
         </form>
       </div>
-    </Modal>
+    </div>
   );
 };
 
