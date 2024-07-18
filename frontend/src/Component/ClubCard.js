@@ -1,27 +1,21 @@
 // holy fuck
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
-const ClubCard = ({ name, logo, description, className, onClick, onJoin, onCreateEvent, adminId, user }) => {
+const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId }) => {
+  const { user } = useContext(AuthContext);
+
   return (
-    <div onClick={onClick} className={`bg-white rounded-lg shadow-md p-6 text-center border border-transparent transition-all duration-300 ${className}`}>
-      {console.log(logo)}
-      <img src={`../../..${logo}`} alt={`${name} logo`} className="w-24 h-24 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold">{name}</h3>
-      {description && <p className="text-gray-600 mt-2">{description}</p>}
-      {onJoin && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onJoin();
-          }}
-          className="mt-4 bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
-          style={{ backgroundColor: '#FFD700' }}
-        >
-          Join Club
-        </button>
-      )}
-      {console.log(user._id)}
-      {console.log(adminId)}
+    <div className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+      <img src={logo} alt={`${name} logo`} className="w-24 h-24 mx-auto mb-4" />
+      <h3 className="text-xl font-bold mb-2">{name}</h3>
+      <p className="text-gray-600 mb-4">{description}</p>
+      <button
+        onClick={onClick}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-2"
+      >
+        View Club
+      </button>
       {user && user._id === adminId && (
         <button
           onClick={onCreateEvent}
