@@ -17,29 +17,31 @@ const ClubListPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserClubs = async () => {
-      try {
-        const response = await axios.get('/api/v1/clubs/viewMyClubs');
-        const data = response.data;
-        setUserClubs(data.filter(club => !user.adminOf.includes(club._id)));
-        setAdminClubs(data.filter(club => user.adminOf.includes(club._id)));
-      } catch (err) {
-        setError('Error fetching user clubs: ' + err.message);
-      }
-    };
-
-    const fetchDiscoverClubs = async () => {
-      try {
-        const response = await axios.get('/api/v1/clubs/viewAllClubs');
-        setDiscoverClubs(response.data);
-      } catch (err) {
-        setError('Error fetching discover clubs: ' + err.message);
-      }
-    };
-
-    fetchUserClubs();
-    fetchDiscoverClubs();
+    if (user) {
+      fetchUserClubs();
+      fetchDiscoverClubs();
+    }
   }, [user]);
+
+  const fetchUserClubs = async () => {
+    try {
+      const response = await axios.get('/api/v1/clubs/viewMyClubs');
+      const data = response.data;
+      setUserClubs(data.filter(club => !user.adminOf.includes(club._id)));
+      setAdminClubs(data.filter(club => user.adminOf.includes(club._id)));
+    } catch (err) {
+      setError('Error fetching user clubs: ' + err.message);
+    }
+  };
+
+  const fetchDiscoverClubs = async () => {
+    try {
+      const response = await axios.get('/api/v1/clubs/viewAllClubs');
+      setDiscoverClubs(response.data);
+    } catch (err) {
+      setError('Error fetching discover clubs: ' + err.message);
+    }
+  };
 
   const handleJoinClub = async (clubId, userId) => {
     try {
@@ -48,10 +50,11 @@ const ClubListPage = () => {
         clubId: clubId
       });
       console.log(`Joined club: ${clubId}`);
-      // Optionally, update the state to reflect the changes
-      // You might want to refetch the user's clubs here
+      // Refetch user clubs to update the UI
+      fetchUserClubs();
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
+      setError('Error joining club: ' + (error.response ? error.response.data : error.message));
     }
   };
 
