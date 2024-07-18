@@ -50,8 +50,3 @@ router.get('/viewPublicClubEvents', async (req, res) => {
 
 // export the router
 module.exports = router;
-
-// Register the club routes
-const app = express();
-app.use('/api/v1/clubs', router);
-module.exports = app;

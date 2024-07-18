@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import Modal from './Modal';
 
-const ClubForm = ({ onClose }) => {
+const ClubForm = ({ isOpen, onClose }) => {
   const { user } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [industry, setIndustry] = useState('');
@@ -48,8 +49,8 @@ const ClubForm = ({ onClose }) => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="p-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Create Club</h2>
           <button onClick={onClose} className="text-gray-600 hover:underline">
@@ -111,7 +112,7 @@ const ClubForm = ({ onClose }) => {
           </button>
         </form>
       </div>
-    </div>
+    </Modal>
   );
 };
 

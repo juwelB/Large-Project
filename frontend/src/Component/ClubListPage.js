@@ -17,26 +17,23 @@ const ClubListPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch user's clubs from the backend API
     const fetchUserClubs = async () => {
       try {
-        const response = await fetch('/api/v1/clubs/viewMyClubs'); // Adjust the URL to your API endpoint
-        const data = await response.json();
+        const response = await axios.get('/api/v1/clubs/viewMyClubs');
+        const data = response.data;
         setUserClubs(data.filter(club => !user.adminOf.includes(club._id)));
         setAdminClubs(data.filter(club => user.adminOf.includes(club._id)));
-      } catch (error) {
-        console.error('Error fetching user clubs:', error);
+      } catch (err) {
+        setError('Error fetching user clubs: ' + err.message);
       }
     };
 
-    // Fetch discover clubs from the backend API
     const fetchDiscoverClubs = async () => {
       try {
-        const response = await fetch('/api/v1/clubs/viewAllClubs?limit=6'); // Adjust the URL to your API endpoint
-        const data = await response.json();
-        setDiscoverClubs(data);
-      } catch (error) {
-        console.error('Error fetching discover clubs:', error);
+        const response = await axios.get('/api/v1/clubs/viewAllClubs');
+        setDiscoverClubs(response.data);
+      } catch (err) {
+        setError('Error fetching discover clubs: ' + err.message);
       }
     };
 
@@ -63,6 +60,9 @@ const ClubListPage = () => {
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
           <nav>
+            <Link to="/dashboard" className="mx-2 hover:text-gray-300">Home</Link>
+            <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
+            <Link to="calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
           </nav>
         </div>
