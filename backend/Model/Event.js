@@ -31,6 +31,13 @@ const eventSchema = new Schema(
             }
         ],
 
+        participants: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        ],
+
         timeCreated: {
             type: Date,
             default: Date.now

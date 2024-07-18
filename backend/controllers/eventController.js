@@ -54,30 +54,36 @@ const viewEvent = async (req, res) => {
     }
 };
 
-// Join event
+// Join event (RSVP)
 const joinEvent = async (req, res) => {
     try {
         const { id } = req.params;
+        const { userId } = req.body;
         const event = await Event.findById(id);
         if (!event) {
             return res.status(404).json({ message: 'Event not found' });
         }
-        // Add logic to add user to event's participant list
+        if (!event.participants.includes(userId)) {
+            event.participants.push(userId);
+            await event.save();
+        }
         res.status(200).json({ message: 'Joined event successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error joining event', error });
     }
 };
 
-// Un-join event
+// Un-join event (Cancel RSVP)
 const unjoinEvent = async (req, res) => {
     try {
         const { id } = req.params;
+        const { userId } = req.body;
         const event = await Event.findById(id);
         if (!event) {
             return res.status(404).json({ message: 'Event not found' });
         }
-        // Add logic to remove user from event's participant list
+        event.participants = event.participants.filter(participant => participant.toString() !== userId);
+        await event.save();
         res.status(200).json({ message: 'Unjoined event successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error unjoining event', error });

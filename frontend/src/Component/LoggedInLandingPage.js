@@ -97,6 +97,19 @@ const LoggedInLandingPage = () => {
     setIsEventModalOpen(true);
   };
 
+  const handleRSVPEvent = async (eventId) => {
+    try {
+      await axios.post(`/api/v1/events/joinEvent/${eventId}`, { userId: user._id });
+      console.log(`RSVP'd to event: ${eventId}`);
+      // Refetch events to update the UI
+      fetchClubsAndEvents();
+      toast.success('Successfully RSVP\'d to Event');
+    } catch (error) {
+      console.error('Error RSVPing to event:', error.response ? error.response.data : error.message);
+      toast.error('Error RSVPing to event: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -206,7 +219,7 @@ const LoggedInLandingPage = () => {
                   description={event.eventDetail.map(detail => detail.describe).join(', ')}
                   location={`${event.location.address}, ${event.location.city}, ${event.location.state}`}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
-                  onRSVP={() => handleRSVPEvent(event)}
+                  onRSVP={() => handleRSVPEvent(event._id)}
                 />
               ))}
             </div>
