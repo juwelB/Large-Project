@@ -33,8 +33,6 @@ const userSchema = new Schema(
         {
             type: Number,
             default: 0
-
-
         }
         ,
         clubList: [
@@ -42,10 +40,13 @@ const userSchema = new Schema(
                 type: mongoose.Types.ObjectId
             }
         ],
-        adminOf: {
-            type: mongoose.Types.ObjectId
-        }
-        , isVerified: {
+        adminOf: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Club'
+            }
+        ],
+        isVerified: {
             type: Boolean,
             default: false
         }
@@ -56,7 +57,7 @@ const userSchema = new Schema(
 userSchema.methods.setClubsAdmin = function (clubId) {
     if (this.role != 1)
         throw new Error('Only admins can have adminOf attribute.');
-    this.adminOf = clubId;
+    this.adminOf.push(clubId);
     return true;
 
 }

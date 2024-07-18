@@ -218,6 +218,23 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const makeAdmin = async (req, res) => {
+    try {
+        const { clubId } = req.body;
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.role = 1;
+        user.adminOf.push(clubId);
+        await user.save();
+
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
 // for logged in users, get the favorite
 // add code
@@ -226,5 +243,6 @@ module.exports = {
     loginUser,
     verifyUser,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    makeAdmin
 };

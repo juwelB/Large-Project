@@ -18,12 +18,22 @@ const LoggedInLandingPage = () => {
     const fetchClubsAndEvents = async () => {
       try {
         const clubsResponse = await fetch('/api/v1/clubs/viewAllClubs');
+        if (!clubsResponse.ok) {
+          throw new Error('Failed to fetch clubs');
+        }
         const clubsData = await clubsResponse.json();
         setClubs(clubsData);
 
         const publicClubResponse = await fetch('/api/v1/clubs/viewPublicClubEvents');
+        if (!publicClubResponse.ok) {
+          throw new Error('Failed to fetch public club events');
+        }
         const publicClubEvents = await publicClubResponse.json();
-        setEvents(publicClubEvents);
+        if (Array.isArray(publicClubEvents)) {
+          setEvents(publicClubEvents);
+        } else {
+          console.error('Expected an array of events');
+        }
       } catch (error) {
         console.error('Error fetching clubs and events:', error);
       }
@@ -124,7 +134,7 @@ const LoggedInLandingPage = () => {
                 <ClubCard
                   key={index}
                   name={club.name}
-                  logo={club.clubInfo.logo} // Adjust based on your data structure
+                  logo={club.clubInfo.logo}
                   description={club.clubInfo.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
@@ -142,9 +152,9 @@ const LoggedInLandingPage = () => {
                   key={index}
                   name={event.Ename}
                   date={event.date}
-                  image={event.image} // Adjust based on your data structure
-                  description={event.eventDetail.map(detail => detail.describe).join(', ')} // Adjust based on your data structure
-                  location={`${event.location.address}, ${event.location.city}, ${event.location.state}`} // Adjust based on your data structure
+                  image={event.image}
+                  description={event.eventDetail.map(detail => detail.describe).join(', ')}
+                  location={`${event.location.address}, ${event.location.city}, ${event.location.state}`}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onRSVP={() => handleRSVPEvent(event)}
                 />
