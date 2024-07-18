@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import ClubCard from './ClubCard';
 import ClubModal from './ClubModal';
@@ -7,6 +8,7 @@ const ClubListPage = () => {
   const { user } = useContext(AuthContext);
   const [clubs, setClubs] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
     // Fetch clubs from the backend API
@@ -55,6 +57,14 @@ const ClubListPage = () => {
                 />
               ))}
             </div>
+          </div>
+          <div className="text-center mt-8">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={() => history.push('/create-club')}
+            >
+              Create Your Own Club
+            </button>
           </div>
         </section>
       </main>

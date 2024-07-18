@@ -15,30 +15,21 @@ const LoggedInLandingPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
-    // Fetch clubs from the backend API
-    const fetchClubs = async () => {
+    const fetchClubsAndEvents = async () => {
       try {
-        const response = await fetch('/api/v1/clubs/viewAllClubs'); // Adjust the URL to your API endpoint
-        const data = await response.json();
-        setClubs(data);
+        const clubsResponse = await fetch('/api/v1/clubs/viewAllClubs');
+        const clubsData = await clubsResponse.json();
+        setClubs(clubsData);
+
+        const publicClubResponse = await fetch('/api/v1/clubs/viewPublicClubEvents');
+        const publicClubEvents = await publicClubResponse.json();
+        setEvents(publicClubEvents);
       } catch (error) {
-        console.error('Error fetching clubs:', error);
+        console.error('Error fetching clubs and events:', error);
       }
     };
 
-    // Fetch events from the backend API
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('/api/v1/events/viewAllEvents'); // Adjust the URL to your API endpoint
-        const data = await response.json();
-        setEvents(data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-
-    fetchClubs();
-    fetchEvents();
+    fetchClubsAndEvents();
   }, []);
 
   const handleJoinClub = (club) => {

@@ -34,6 +34,17 @@ router.get('/viewMyClubs', viewMyClubs);
 router.get('/viewClubEvents', viewClubEvents);
 router.post('/joinClub', joinClub);
 router.post('/leaveClub', leaveClub);
+router.get('/viewPublicClubEvents', async (req, res) => {
+  try {
+    const publicClub = await Club.findOne({ name: 'Public Club' }).populate('eventList');
+    if (!publicClub) {
+      return res.status(404).json({ message: 'Public Club not found' });
+    }
+    res.json(publicClub.eventList);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // export the router
 module.exports = router;

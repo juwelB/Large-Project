@@ -39,6 +39,13 @@ const registerUser = async (req, res) => {
         const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${userToken.token}`;
         await sendEmail(newUser.email, "Verify Email", url);
 
+        // Automatically add new user to the "Public Club"
+        const publicClub = await Club.findOne({ name: 'Public Club' });
+        if (publicClub) {
+            newUser.clubList.push(publicClub._id);
+            await newUser.save();
+        }
+
         res.status(201).json({ message: "An email was sent to your account please verify" });
     } catch (err) {
         res.status(400).json({

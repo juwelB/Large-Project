@@ -15,6 +15,7 @@ import EventsPage from './EventsPage';
 import ResetPassword from './ResetPassword';
 import EmailVerified from './EmailVerified';
 import { AuthProvider } from '../context/AuthContext';
+import ClubForm from './Componenet/ClubForm'
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/reset-password/:userId/:token" element={<ResetPassword />} />
           <Route path="/email-verified" element={<EmailVerified />} />
+          <Route path="/create-club" element={<ClubForm />} />
           {/* Other routes */}
         </Routes>
         <ToastContainer />
