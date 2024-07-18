@@ -12,10 +12,17 @@ const createEvent = async (req, res) => {
             eventDetail,
             clubId
         });
+        console.log(newEvent);
         const savedEvent = await newEvent.save();
 
         // Add the event to the club's event list
-        await Club.findByIdAndUpdate(clubId, { $push: { events: savedEvent._id } });
+        const club = await Club.findById(clubId);
+        console.log(club);
+        if (club) {
+            console.log(savedEvent);
+            club.eventList.push(savedEvent);
+            await club.save();
+        }
 
         res.status(201).json(savedEvent);
     } catch (error) {
