@@ -22,7 +22,7 @@ const ClubForm = ({ isOpen, onClose }) => {
       if (logo) {
         const formData = new FormData();
         formData.append('logo', logo);
-        const uploadResponse = await axios.post('/api/v1/upload', formData, {
+        const uploadResponse = await axios.post('/api/v1/clubs/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

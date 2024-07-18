@@ -5,6 +5,7 @@ const express = require('express');
 
 // import the club controllers
 const clubController = require('../controllers/clubController');
+const { uploadFile } = require('../controllers/uploadController');
 
 const Club = require('../Model/Club'); // Import the Club model
 
@@ -47,6 +48,7 @@ router.get('/viewPublicClubEvents', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.post('/upload', uploadFile);
 
 // export the router
 module.exports = router;

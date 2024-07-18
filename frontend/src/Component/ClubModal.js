@@ -6,6 +6,8 @@ const ClubModal = ({ club, onClose, onJoin }) => {
   const { user } = useContext(AuthContext);
 
   const handleJoinClick = () => {
+    console.log(user);
+    console.log(user._id);
     if (user && user._id) {
       onJoin(club._id, user._id);
       onClose();
