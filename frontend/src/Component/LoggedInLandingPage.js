@@ -3,7 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import ClubCard from './ClubCard';
 import EventCard from './EventCard';
 import ClubModal from './ClubModal';
+import EventForm from './EventForm';
 import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoggedInLandingPage = () => {
   const { user, logout } = useContext(AuthContext);
@@ -11,43 +15,86 @@ const LoggedInLandingPage = () => {
   const [clubs, setClubs] = useState([]);
   const [events, setEvents] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchClubsAndEvents = async () => {
-      try {
-        const clubsResponse = await fetch('/api/v1/clubs/viewAllClubs');
-        if (!clubsResponse.ok) {
-          throw new Error('Failed to fetch clubs');
-        }
-        const clubsData = await clubsResponse.json();
-        setClubs(clubsData);
-
-        const publicClubResponse = await fetch('/api/v1/clubs/viewPublicClubEvents');
-        if (!publicClubResponse.ok) {
-          throw new Error('Failed to fetch public club events');
-        }
-        const publicClubEvents = await publicClubResponse.json();
-        if (Array.isArray(publicClubEvents)) {
-          setEvents(publicClubEvents);
-        } else {
-          console.error('Expected an array of events');
-        }
-      } catch (error) {
-        console.error('Error fetching clubs and events:', error);
+  const fetchClubsAndEvents = async () => {
+    try {
+      const clubsResponse = await fetch('/api/v1/clubs/viewAllClubs');
+      if (!clubsResponse.ok) {
+        throw new Error('Failed to fetch clubs');
       }
-    };
+      const clubsData = await clubsResponse.json();
+      setClubs(clubsData);
 
+      const publicClubResponse = await fetch('/api/v1/clubs/viewPublicClubEvents');
+      if (!publicClubResponse.ok) {
+        throw new Error('Failed to fetch public club events');
+      }
+      const publicClubEvents = await publicClubResponse.json();
+      if (Array.isArray(publicClubEvents)) {
+        setEvents(publicClubEvents);
+      } else {
+        console.error('Expected an array of events');
+      }
+    } catch (error) {
+      console.error('Error fetching clubs and events:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchClubsAndEvents();
   }, []);
 
-  const handleJoinClub = (club) => {
-    console.log(`Joining club: ${club.name}`);
+  const handleJoinClub = async (clubId, userId) => {
+    try {
+      await axios.post('/api/v1/clubs/joinClub', {
+        userId: userId,
+        clubId: clubId
+      });
+      console.log(`Joined club: ${clubId}`);
+      // Refetch clubs and events to update the UI
+      fetchClubsAndEvents();
+      toast.success('Successfully Joined Club');
+    } catch (error) {
+      console.error('Error joining club:', error.response ? error.response.data : error.message);
+      toast.error('Error joining club: ' + (error.response ? error.response.data : error.message));
+    }
   };
 
-  const handleRSVPEvent = (event) => {
-    console.log(`RSVPing for event: ${event.Ename}`);
+  const handleLeaveClub = async (clubId, userId) => {
+    try {
+      await axios.post('/api/v1/clubs/leaveClub', {
+        userObjId: userId,
+        clubObjId: clubId
+      });
+      console.log(`Left club: ${clubId}`);
+      // Refetch clubs and events to update the UI
+      fetchClubsAndEvents();
+      toast.success('Successfully Left Club');
+    } catch (error) {
+      console.error('Error leaving club:', error.response ? error.response.data : error.message);
+      toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
+  const handleDeleteClub = async (clubId) => {
+    try {
+      await axios.delete('/api/v1/clubs/deleteclub', { data: { clubId } });
+      console.log(`Deleted club: ${clubId}`);
+      // Refetch clubs and events to update the UI
+      fetchClubsAndEvents();
+      toast.success('Successfully Deleted Club');
+    } catch (error) {
+      console.error('Error deleting club:', error.response ? error.response.data : error.message);
+      toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
+  const handleCreateEvent = (clubId) => {
+    setSelectedClub(clubId);
+    setIsEventModalOpen(true);
   };
 
   const handleLogout = () => {
@@ -78,6 +125,7 @@ const LoggedInLandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <ToastContainer />
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
@@ -138,6 +186,8 @@ const LoggedInLandingPage = () => {
                   description={club.clubInfo.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
+                  onCreateEvent={() => handleCreateEvent(club._id)}
+                  adminId={club.adminId}
                 />
               ))}
             </div>
@@ -168,8 +218,15 @@ const LoggedInLandingPage = () => {
           club={selectedClub}
           onClose={() => setSelectedClub(null)}
           onJoin={handleJoinClub}
+          onLeave={handleLeaveClub}
+          onDelete={handleDeleteClub}
         />
       )}
+      <EventForm
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        clubId={selectedClub}
+      />
     </div>
   );
 };

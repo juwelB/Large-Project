@@ -39,9 +39,9 @@ router.post('/joinClub', joinClub);
 router.post('/leaveClub', leaveClub);
 router.get('/viewPublicClubEvents', async (req, res) => {
   try {
-    const publicClub = await Club.findOne({ name: 'Public Club' }).populate('eventList');
+    const publicClub = await Club.findOne({ name: 'UCF' }).populate('eventList');
     if (!publicClub) {
-      return res.status(404).json({ message: 'Public Club not found' });
+      return res.status(404).json({ message: 'UCF not found' });
     }
     res.json(publicClub.eventList);
   } catch (err) {

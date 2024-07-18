@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
-const ClubForm = ({ isOpen, onClose }) => {
+const ClubForm = ({ isOpen, onClose, onCreate }) => {
   const { user } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [industry, setIndustry] = useState('');
@@ -51,6 +51,13 @@ const ClubForm = ({ isOpen, onClose }) => {
       // Update user role and adminOf field
       await axios.put(`/api/v1/users/${user._id}/makeAdmin`, { clubId: createdClub._id });
 
+      // Clear form fields
+      setName('');
+      setIndustry('');
+      setDescription('');
+      setLogo(null);
+
+      onCreate(clubData); // Call the onCreate callback to refetch clubs
       onClose();
     } catch (error) {
       console.error('Error creating club:', error.response ? error.response.data : error);

@@ -40,8 +40,8 @@ const registerUser = async (req, res) => {
         const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${userToken.token}`;
         await sendEmail(newUser.email, "Verify Email", url);
 
-        // Automatically add new user to the "Public Club"
-        const publicClub = await Club.findOne({ name: 'Public Club' });
+        // Automatically add new user to the "UCF"
+        const publicClub = await Club.findOne({ name: 'UCF' });
         if (publicClub) {
             newUser.clubList.push(publicClub._id);
             await newUser.save();

@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
-const ClubModal = ({ club, onClose, onJoin, onLeave }) => {
+const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete }) => {
   const { user } = useContext(AuthContext);
 
   const handleJoinClick = () => {
@@ -10,6 +11,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave }) => {
         console.log('User ID:', user.id); // Debugging
         onJoin(club._id.toString(), user.id.toString());
         onClose();
+        toast.success('Successfully Joined Club');
     } else {
         console.error('User ID not available');
         // Optionally, show an error message to the user
@@ -21,6 +23,19 @@ const ClubModal = ({ club, onClose, onJoin, onLeave }) => {
         console.log('User ID:', user.id); // Debugging
         onLeave(club._id.toString(), user.id.toString());
         onClose();
+        toast.success('Successfully Left Club');
+    } else {
+        console.error('User ID not available');
+        // Optionally, show an error message to the user
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (user && user.id) {
+        console.log('User ID:', user.id); // Debugging
+        onDelete(club._id.toString());
+        onClose();
+        toast.success('Successfully Deleted Club');
     } else {
         console.error('User ID not available');
         // Optionally, show an error message to the user
@@ -28,6 +43,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave }) => {
   };
 
   const isMember = user && club.memberList.includes(user.id);
+  const isAdmin = user && club.adminId === user.id;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -36,7 +52,14 @@ const ClubModal = ({ club, onClose, onJoin, onLeave }) => {
         <img src={`../../..${club.clubInfo.logo}`} alt={`${club.name} logo`} className="w-24 h-24 mx-auto mb-4" />
         <p className="text-gray-600 mb-4">{club.description}</p>
         {user ? (
-          isMember ? (
+          isAdmin ? (
+            <button
+              onClick={handleDeleteClick}
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+            >
+              Delete Club
+            </button>
+          ) : isMember ? (
             <button
               onClick={handleLeaveClick}
               className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"

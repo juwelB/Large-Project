@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import ClubCard from './ClubCard';
 import ClubModal from './ClubModal';
 import ClubForm from './ClubForm';
+import EventForm from './EventForm';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +16,7 @@ const ClubListPage = () => {
   const [discoverClubs, setDiscoverClubs] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -81,6 +83,41 @@ const ClubListPage = () => {
     }
   };
 
+  const handleDeleteClub = async (clubId) => {
+    try {
+      await axios.delete('/api/v1/clubs/deleteclub', { data: { clubId } });
+      console.log(`Deleted club: ${clubId}`);
+      // Refetch user clubs and discover clubs to update the UI
+      fetchUserClubs();
+      fetchDiscoverClubs();
+      toast.success('Successfully Deleted Club');
+    } catch (error) {
+      console.error('Error deleting club:', error.response ? error.response.data : error.message);
+      setError('Error deleting club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
+  const handleCreateClub = async (clubData) => {
+    try {
+      await axios.post('/api/v1/clubs/createclub', clubData);
+      console.log('Created club:', clubData);
+      // Refetch user clubs and discover clubs to update the UI
+      fetchUserClubs();
+      fetchDiscoverClubs();
+      toast.success('Successfully Created Club');
+    } catch (error) {
+      console.error('Error creating club:', error.response ? error.response.data : error.message);
+      setError('Error creating club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error creating club: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
+  const handleCreateEvent = (clubId) => {
+    setSelectedClub(clubId);
+    setIsEventModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-lightGray">
       <ToastContainer />
@@ -101,29 +138,38 @@ const ClubListPage = () => {
           <div className="max-w-6xl mx-auto">
             <h3 className="text-2xl font-bold mb-4 text-black">Admin Clubs</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {adminClubs.map((club, index) => (
-                <ClubCard
-                  key={index}
-                  name={club.name}
-                  logo={club.clubInfo.logo}
-                  description={club.clubInfo.description}
-                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
-                  onClick={() => setSelectedClub(club)}
-                />
-              ))}
+              {adminClubs.length > 0 ? (
+                adminClubs.map((club, index) => (
+                  <ClubCard
+                    key={index}
+                    name={club.name}
+                    logo={club.clubInfo.logo}
+                    description={club.clubInfo.description}
+                    className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
+                    onClick={() => setSelectedClub(club)}
+                    onCreateEvent={() => handleCreateEvent(club._id)}
+                  />
+                ))
+              ) : (
+                <p className="text-center text-gray-600 col-span-full">Not an Admin in Any Clubs.</p>
+              )}
             </div>
             <h3 className="text-2xl font-bold mb-4 mt-8 text-black">Member Clubs</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {userClubs.map((club, index) => (
-                <ClubCard
-                  key={index}
-                  name={club.name}
-                  logo={club.clubInfo.logo}
-                  description={club.clubInfo.description}
-                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
-                  onClick={() => setSelectedClub(club)}
-                />
-              ))}
+              {userClubs.length > 0 ? (
+                userClubs.map((club, index) => (
+                  <ClubCard
+                    key={index}
+                    name={club.name}
+                    logo={club.clubInfo.logo}
+                    description={club.clubInfo.description}
+                    className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
+                    onClick={() => setSelectedClub(club)}
+                  />
+                ))
+              ) : (
+                <p className="text-center text-gray-600 col-span-full">Not a Member in Any Clubs.</p>
+              )}
             </div>
           </div>
         </section>
@@ -161,9 +207,19 @@ const ClubListPage = () => {
           onClose={() => setSelectedClub(null)}
           onJoin={handleJoinClub}
           onLeave={handleLeaveClub}
+          onDelete={handleDeleteClub}
         />
       )}
-      <ClubForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ClubForm
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreate={handleCreateClub}
+      />
+      <EventForm
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        clubId={selectedClub}
+      />
     </div>
   );
 };

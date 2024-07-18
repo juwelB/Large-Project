@@ -29,7 +29,12 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error(error.response?.data?.message || 'Login failed');
+      const errorMessage = error.response?.data?.message || 'Login failed';
+      if (errorMessage.toLowerCase().includes('invalid credentials')) {
+        toast.error('Invalid Credentials');
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
