@@ -107,12 +107,14 @@ const ClubListPage = () => {
       await axios.post('/api/v1/clubs/createclub', clubData);
       console.log('Created club:', clubData);
       // Refetch user clubs and discover clubs to update the UI
-      fetchUserClubs();
-      fetchDiscoverClubs();
+      await fetchUserClubs();
+      await fetchDiscoverClubs();
+      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Created Club');
     } catch (error) {
       console.error('Error creating club:', error.response ? error.response.data : error.message);
       setError('Error creating club: ' + (error.response ? error.response.data : error.message));
+      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error creating club: ' + (error.response ? error.response.data : error.message));
     }
   };

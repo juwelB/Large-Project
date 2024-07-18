@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
-const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete }) => {
+const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => {
   const { user } = useContext(AuthContext);
 
   const handleJoinClick = () => {
@@ -51,31 +51,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete }) => {
         <h2 className="text-2xl font-bold mb-4">{club.name}</h2>
         <img src={`../../..${club.clubInfo.logo}`} alt={`${club.name} logo`} className="w-24 h-24 mx-auto mb-4" />
         <p className="text-gray-600 mb-4">{club.description}</p>
-        {user ? (
-          isAdmin ? (
-            <button
-              onClick={handleDeleteClick}
-              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-            >
-              Delete Club
-            </button>
-          ) : isMember ? (
-            <button
-              onClick={handleLeaveClick}
-              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-            >
-              Leave Club
-            </button>
-          ) : (
-            <button
-              onClick={handleJoinClick}
-              className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
-              style={{ backgroundColor: '#FFD700' }}
-            >
-              Join Club
-            </button>
-          )
-        ) : (
+        {showSignUp ? (
           <>
             <p className="text-gray-600 mb-4">Sign up to join this club and participate in its activities.</p>
             <Link
@@ -85,13 +61,56 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete }) => {
             >
               Sign Up to Join
             </Link>
-            <Link
-              to="/"
-              className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded block text-center"
+            <button
+              onClick={onClose}
+              className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
             >
-              Back to Home
-            </Link>
+              Close
+            </button>
           </>
+        ) : (
+          user ? (
+            isAdmin ? (
+              <button
+                onClick={handleDeleteClick}
+                className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Delete Club
+              </button>
+            ) : isMember ? (
+              <button
+                onClick={handleLeaveClick}
+                className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Leave Club
+              </button>
+            ) : (
+              <button
+                onClick={handleJoinClick}
+                className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+                style={{ backgroundColor: '#FFD700' }}
+              >
+                Join Club
+              </button>
+            )
+          ) : (
+            <>
+              <p className="text-gray-600 mb-4">Sign up to join this club and participate in its activities.</p>
+              <Link
+                to="/signup"
+                className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded block text-center"
+                style={{ backgroundColor: '#FFD700' }}
+              >
+                Sign Up to Join
+              </Link>
+              <Link
+                to="/"
+                className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded block text-center"
+              >
+                Back to Home
+              </Link>
+            </>
+          )
         )}
         <button
           onClick={onClose}

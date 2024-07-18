@@ -84,6 +84,7 @@ const LandingPage = () => {
         <ClubModal
           club={selectedClub}
           onClose={() => setSelectedClub(null)}
+          showSignUp={true}  // Pass showSignUp prop
         />
       )}
     </div>
