@@ -1,16 +1,22 @@
 const Event = require('../Model/Event');
+const Club = require('../Model/Club'); // Assuming you have a Club model
 
 // Create new event
 const createEvent = async (req, res) => {
     try {
-        const { Ename, date, location, eventDetail } = req.body;
+        const { Ename, date, location, eventDetail, clubId } = req.body;
         const newEvent = new Event({
             Ename,
             date,
             location,
-            eventDetail
+            eventDetail,
+            clubId
         });
         const savedEvent = await newEvent.save();
+
+        // Add the event to the club's event list
+        await Club.findByIdAndUpdate(clubId, { $push: { events: savedEvent._id } });
+
         res.status(201).json(savedEvent);
     } catch (error) {
         res.status(500).json({ message: 'Error creating event', error });
