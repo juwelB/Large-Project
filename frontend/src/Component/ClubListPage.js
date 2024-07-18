@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import ClubCard from './ClubCard';
 import ClubModal from './ClubModal';
@@ -14,6 +14,7 @@ const ClubListPage = () => {
   const [discoverClubs, setDiscoverClubs] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
