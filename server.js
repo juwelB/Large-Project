@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const multer = require('multer');
+const fileUpload = require('express-fileupload');
 
 // import the club, user and event routes
 const eventRoutes = require('./backend/routes/eventRoutes');
@@ -23,21 +23,22 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(fileUpload());
 
 // Use __dirname to get the current directory
-const uploadsPath = path.join(__dirname, 'uploads');
-console.log('Uploads directory path:', uploadsPath);
+const imagesPath = path.join(__dirname, 'images');
+console.log('Images directory path:', imagesPath);
 
-// Ensure the uploads directory exists
+// Ensure the images directory exists
 const fs = require('fs');
-if (!fs.existsSync(uploadsPath)) {
-  console.log('Creating upload directory');
-  fs.mkdirSync(uploadsPath, { recursive: true });
+if (!fs.existsSync(imagesPath)) {
+  console.log('Creating images directory');
+  fs.mkdirSync(imagesPath, { recursive: true });
 }
 
-// Serve static files from the uploads directory
-app.use('/uploads', express.static(uploadsPath));
-console.log('Serving static files from:', uploadsPath);
+// Serve static files from the images directory
+app.use('/images', express.static(imagesPath));
+console.log('Serving static files from:', imagesPath);
 
 // using the routes
 app.use('/api/v1/clubs', clubRoutes);

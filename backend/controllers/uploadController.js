@@ -1,8 +1,7 @@
-const multer = require('multer'); //.Het!
 const path = require('path');
 const fs = require('fs');
 
-const uploadDir = path.join(__dirname, '..', '..', 'uploads');
+const uploadDir = path.join(__dirname, '..', '..', 'images');
 console.log('Upload directory:', uploadDir); // Debug log
 
 // Ensure upload directory exists
@@ -11,40 +10,20 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    console.log('Multer destination:', uploadDir); // Debug log
-    cb(null, uploadDir)
-  },
-  filename: function (req, file, cb) {
-    const filename = Date.now() + path.extname(file.originalname);
-    console.log('Generated filename:', filename); // Debug log
-    cb(null, filename)
-  }
-});
-
-const upload = multer({ storage: storage }).single('logo');
-
 const uploadFile = (req, res) => {
   console.log('uploadFile function called');
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      console.error('Multer error:', err); // Debug log
-      return res.status(500).json(err)
-    } else if (err) {
-      console.error('Unknown error:', err); // Debug log
-      return res.status(500).json(err)
+  const file = req.files.logo;
+  const filename = Date.now() + path.extname(file.name);
+  const filePath = path.join(uploadDir, filename);
+
+  file.mv(filePath, (err) => {
+    if (err) {
+      console.error('Error saving file:', err); // Debug log
+      return res.status(500).json({ message: 'Error saving file' });
     }
-    if (!req.file) {
-      console.log('No file uploaded'); // Debug log
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-    console.log('File uploaded:', req.file); // Debug log
-    console.log('Full file path:', path.join(uploadDir, req.file.filename));
-    const filePath = `/uploads/${req.file.filename}`;
-    console.log('File path:', filePath); // Debug log
-    return res.status(200).json({ filePath: filePath });
-  })
+    console.log('File uploaded:', filePath); // Debug log
+    return res.status(200).json({ filePath: `/images/${filename}` });
+  });
 };
 
 module.exports = {
