@@ -26,6 +26,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single('logo');
 
 const uploadFile = (req, res) => {
+  console.log('uploadFile function called');
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.error('Multer error:', err); // Debug log
@@ -40,8 +41,8 @@ const uploadFile = (req, res) => {
     }
     console.log('File uploaded:', req.file); // Debug log
     const filePath = `/uploads/${req.file.filename}`;
-    // Return the file path relative to the uploads directory
-    return res.status(200).json({ filePath: `/uploads/${req.file.filename}` });
+    console.log('File path:', filePath); // Debug log
+    return res.status(200).json({ filePath: filePath });
   })
 };
 
