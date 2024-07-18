@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const Token = require("../Model/myToken"); // Updated the path to match the correct file name
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+const Club = require('../Model/Club'); // Import the Club model
 
 require('dotenv').config(); // Ensure this is at the very top
 
