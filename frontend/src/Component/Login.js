@@ -12,23 +12,24 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const response = await axios.post('https://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/users/login', {
+      const response = await axios.post('/api/v1/users/login', {
         email,
         password
       });
-      if (response.status === 201) {
-        login({ name: response.data.name }); // Pass the user data to the login function
-        navigate('/dashboard'); // Navigate to the logged-in landing page
+      if (response.data.user) {
+        login(response.data.user); // This should now include the user's ID
+        navigate('/dashboard');
+      } else {
+        toast.error(response.data.message || 'Login failed');
       }
     } catch (error) {
-      if (error.response && error.response.status === 400 && error.response.data.message === "An email was sent to your account please verify") {
-        toast.error(`Please Verify Your Account. An email has been sent to ${email}`);
-      } else {
-        console.error('Error during login:', error);
-        toast.error('Login failed');
-      }
+      console.error('Login error:', error);
+      toast.error(error.response?.data?.message || 'Login failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 

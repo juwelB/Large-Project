@@ -128,11 +128,16 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ message: "An email was sent to your account please verify" });
         }
 
-        // successfull resond msg
-        res.status(201).json({
-            name: user.firstName,
-            msg: "login succesfull"
-        })
+        // Send user data including ID
+        res.status(200).json({
+            user: {
+                _id: user._id,
+                name: user.firstName,
+                email: user.email,
+                // Include other necessary user data, but be careful not to send sensitive information
+            },
+            message: "Login successful"
+        });
     }
     catch (err) {
         console.error(err);

@@ -27,7 +27,7 @@ const ClubForm = ({ isOpen, onClose }) => {
             'Content-Type': 'multipart/form-data'
           }
         });
-        logoPath = uploadResponse.data.filePath;
+        logoPath = uploadResponse.data.filePath; // This should now be the correct path
       }
 
       // Save club data
