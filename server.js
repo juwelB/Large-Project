@@ -22,7 +22,10 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const uploadsPath = path.join(__dirname, 'uploads');
+console.log('Uploads directory path:', uploadsPath); // Debug log
+app.use('/uploads', express.static(uploadsPath));
+console.log('Serving static files from:', uploadsPath); // Debug log
 
 // using the routes
 app.use('/api/v1/clubs', clubRoutes);

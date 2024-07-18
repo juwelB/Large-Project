@@ -9,6 +9,7 @@ const User = require('../Model/User');
 // create a new club
 const createClub = async (req, res) => {
     try {
+        console.log('Received club data:', req.body); // Debug log
         const { name, clubInfo, adminId } = req.body;
 
         const club = new Club({

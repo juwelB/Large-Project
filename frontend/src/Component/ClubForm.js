@@ -22,13 +22,14 @@ const ClubForm = ({ isOpen, onClose }) => {
       if (logo) {
         const formData = new FormData();
         formData.append('logo', logo);
+        console.log('Uploading logo:', logo); // Debug log
         const uploadResponse = await axios.post('/api/v1/clubs/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        logoPath = uploadResponse.data.filePath; // This should now be the correct path
-        console.log('Logo path:', logoPath); // Add this line
+        logoPath = uploadResponse.data.filePath;
+        console.log('Received logo path:', logoPath); // Debug log
       }
 
       // Save club data
@@ -41,17 +42,18 @@ const ClubForm = ({ isOpen, onClose }) => {
         },
         adminId: user._id
       };
+      console.log('Sending club data:', clubData); // Debug log
       const response = await axios.post('/api/v1/clubs/createclub', clubData);
       const createdClub = response.data;
 
-      console.log('Created club:', createdClub); // Add this line for debugging
+      console.log('Created club:', createdClub); // Debug log
 
       // Update user role and adminOf field
       await axios.put(`/api/v1/users/${user._id}/makeAdmin`, { clubId: createdClub._id });
 
       onClose();
     } catch (error) {
-      console.error('Error creating club:', error);
+      console.error('Error creating club:', error.response ? error.response.data : error);
       // Handle error (e.g., show error message to user)
     } finally {
       setIsLoading(false);
