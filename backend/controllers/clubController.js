@@ -150,53 +150,34 @@ const viewClubEvents = async (req, res) => {
 };
 
 const joinClub = async (req, res) => {
-    const { userObjId, clubObjId } = req.body;
+    const { userId, clubId } = req.body;
 
     try {
-        //check if aready udpated
-        const club = await Club.findById(clubObjId);
-        const user = await User.findById(userObjId);
+        // Find the user and club
+        const user = await User.findById(userId);
+        const club = await Club.findById(clubId);
 
-        if (!user)
-            return res.status(404).json({ error: 'User not found' });
-        if (!club)
-            return res.status(404).json({ error: 'Club not found' });
+        if (!user || !club) {
+            return res.status(404).json({ message: 'User or Club not found' });
+        }
 
-        if (club.memberList.includes(userObjId))
-            return res.status(400).json({ error: 'User already in the club' });
+        // Add the club to the user's clubList
+        if (!user.clubList.includes(clubId)) {
+            user.clubList.push(clubId);
+        }
 
-        if (user.clubList.includes(clubObjId))
-            return res.status(400).json({ error: 'Club already in user\'s list' });
+        // Add the user to the club's memberList
+        if (!club.memberList.includes(userId)) {
+            club.memberList.push(userId);
+        }
 
+        // Save the updated user and club
+        await user.save();
+        await club.save();
 
-
-        // Update user's clubList
-        const updateUser = await User.findByIdAndUpdate(
-            userObjId,
-            { $push: { clubList: clubObjId } },
-            { new: true } // To return the updated document
-        );
-
-
-
-        // Update club's memberList
-        const updateClubMember = await Club.findByIdAndUpdate(
-            clubObjId,
-            { $push: { memberList: userObjId } },
-            { new: true } // To return the updated document
-        );
-
-
-
-        // Return successful response
-        return res.status(201).json({
-            user: updateUser,
-            club: updateClubMember
-        });
-
+        res.status(200).json({ message: 'Successfully joined the club' });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Server Error' });
+        res.status(500).json({ message: err.message });
     }
 };
 

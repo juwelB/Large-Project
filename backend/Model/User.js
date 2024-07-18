@@ -37,7 +37,8 @@ const userSchema = new Schema(
         ,
         clubList: [
             {
-                type: mongoose.Types.ObjectId
+                type: mongoose.Types.ObjectId,
+                ref: 'Club'
             }
         ],
         adminOf: [

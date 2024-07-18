@@ -5,6 +5,7 @@ import ClubCard from './ClubCard';
 import ClubModal from './ClubModal';
 import Modal from './Modal';
 import ClubForm from './ClubForm';
+import axios from 'axios';
 
 const ClubListPage = () => {
   const { user } = useContext(AuthContext);
@@ -43,8 +44,17 @@ const ClubListPage = () => {
     fetchDiscoverClubs();
   }, [user]);
 
-  const handleJoinClub = (club) => {
-    console.log(`Joining club: ${club.name}`);
+  const handleJoinClub = async (club) => {
+    try {
+      await axios.post('/api/v1/clubs/joinClub', {
+        userId: user._id,
+        clubId: club._id
+      });
+      console.log(`Joined club: ${club.name}`);
+      // Optionally, update the state to reflect the changes
+    } catch (error) {
+      console.error('Error joining club:', error);
+    }
   };
 
   return (
