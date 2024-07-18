@@ -124,6 +124,11 @@ const ClubListPage = () => {
     setIsEventModalOpen(true);
   };
 
+  const handleCloseEventForm = () => {
+    setIsEventModalOpen(false);
+    setSelectedClub(null);
+  };
+
   return (
     <div className="min-h-screen bg-lightGray">
       <ToastContainer />
@@ -224,11 +229,13 @@ const ClubListPage = () => {
         onClose={() => setIsModalOpen(false)}
         onCreate={handleCreateClub}
       />
-      <EventForm
-        isOpen={isEventModalOpen}
-        onClose={() => setIsEventModalOpen(false)}
-        clubId={selectedClub}
-      />
+      {isEventModalOpen && (
+        <EventForm
+          isOpen={isEventModalOpen}
+          onClose={handleCloseEventForm}
+          clubId={selectedClub}
+        />
+      )}
     </div>
   );
 };
