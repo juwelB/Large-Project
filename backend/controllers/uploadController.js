@@ -40,6 +40,7 @@ const uploadFile = (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
     console.log('File uploaded:', req.file); // Debug log
+    console.log('Full file path:', path.join(uploadDir, req.file.filename));
     const filePath = `/uploads/${req.file.filename}`;
     console.log('File path:', filePath); // Debug log
     return res.status(200).json({ filePath: filePath });
