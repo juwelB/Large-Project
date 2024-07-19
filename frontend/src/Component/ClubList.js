@@ -53,7 +53,7 @@ const ClubList = () => {
             <Link to="/calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <Link to="/dashboard" className="mx-2 hover:text-gray-300">Home</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <span className="mx-2">Hey, {user ? user.firstName : 'Guest'}</span>
+            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
           </nav>
         </div>
       </header>

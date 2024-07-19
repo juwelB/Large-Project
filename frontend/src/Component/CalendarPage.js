@@ -132,7 +132,7 @@ const CalendarPage = () => {
             <Link to="/dashboard" className="mx-2 hover:text-gray-300">Home</Link>
             <Link to="/clubs" className="mx-2 hover:text-gray-300">Clubs</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <span className="mx-2">Hey, {user ? user.firstName : 'Guest'}</span>
+            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
           </nav>
         </div>
       </header>

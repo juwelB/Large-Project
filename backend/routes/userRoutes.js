@@ -12,7 +12,8 @@ const {
     loginUser,
     verifyUser,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    userInfo
 } = controller;
 
 //Post to register/login new user
@@ -21,6 +22,6 @@ router.post('/register', registerUser);
 router.get('/:id/verify/:token', verifyUser);
 router.put('/forgotpassword', forgotPassword);
 router.post('/:userId/resetpassword/:token', resetPassword);
-
+router.get('/userInfo:userId', userInfo);
 
 module.exports = router;

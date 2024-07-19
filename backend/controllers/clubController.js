@@ -62,7 +62,8 @@ const updateClub = async (req, res) => {
         );
 
         // see if club was found
-        if (!updatedClub) {
+        if (!updatedClub) 
+        {
             return res.status(404).json({ message: "Club not found" });
         }
 
@@ -94,7 +95,8 @@ const viewAllClubs = async (req, res) => {
     const { search } = req.body;
     try {
         let query = {};
-        if (search) {
+        if (search) 
+        {
             query = { name: { $regex: search, $options: 'i' } };
         }
 
@@ -118,7 +120,8 @@ const viewMyClubs = async (req, res) => {
         };
 
         // If search parameter is provided, filter by club name
-        if (search) {
+        if (search) 
+        {
             query.name = { $regex: search, $options: 'i' }; // Case-insensitive search
         }
 
@@ -186,8 +189,6 @@ const joinClub = async (req, res) => {
             { new: true } // To return the updated document
         );
 
-
-
         // Return successful response
         return res.status(201).json({
             user: updateUser,
@@ -208,21 +209,25 @@ const leaveClub = async (req, res) => {
         const user = await User.findById(userObjId);
         const club = await Club.findById(clubObjId);
 
-        if (!user) {
+        if (!user) 
+        {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        if (!club) {
+        if (!club) 
+        {
             return res.status(404).json({ error: 'Club not found' });
         }
 
         // Check if user is in club's memberList
-        if (!club.memberList.includes(userObjId)) {
+        if (!club.memberList.includes(userObjId)) 
+        {
             return res.status(400).json({ error: 'User not in the club' });
         }
 
         // Check if club is in user's clubList
-        if (!user.clubList.includes(clubObjId)) {
+        if (!user.clubList.includes(clubObjId)) 
+        {
             return res.status(400).json({ error: 'Club not in user\'s list' });
         }
 

@@ -45,7 +45,8 @@ const viewEvent = async (req, res) => {
     try {
         const { id } = req.params;
         const event = await Event.findById(id);
-        if (!event) {
+        if (!event) 
+        {
             return res.status(404).json({ message: 'Event not found' });
         }
         res.status(200).json(event);
@@ -59,7 +60,8 @@ const joinEvent = async (req, res) => {
     try {
         const { id } = req.params;
         const event = await Event.findById(id);
-        if (!event) {
+        if (!event) 
+        {
             return res.status(404).json({ message: 'Event not found' });
         }
         // Add logic to add user to event's participant list
@@ -74,7 +76,8 @@ const unjoinEvent = async (req, res) => {
     try {
         const { id } = req.params;
         const event = await Event.findById(id);
-        if (!event) {
+        if (!event) 
+        {
             return res.status(404).json({ message: 'Event not found' });
         }
         // Add logic to remove user from event's participant list
