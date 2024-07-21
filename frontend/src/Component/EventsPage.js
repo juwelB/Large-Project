@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
+import EventCard from './EventCard';
+import { toast } from 'react-toastify';
 
 const EventList = () => {
   const { user } = useContext(AuthContext);
@@ -17,10 +19,21 @@ const EventList = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.post('/api/v1/events/userEvents', { userId: user._id });
-      const { rsvpedEvents, clubEvents } = response.data;
-      setRsvpedEvents(rsvpedEvents);
-      setClubEvents(clubEvents);
+      const userEventsResponse = await axios.get(`/api/v1/users/${user._id}/events`);
+      setRsvpedEvents(userEventsResponse.data);
+
+      const clubsResponse = await axios.get(`/api/v1/clubs/userClubs/${user._id}`);
+      const userClubs = clubsResponse.data;
+
+      let allClubEvents = [];
+      for (const club of userClubs) {
+        const clubEventsResponse = await axios.get(`/api/v1/clubs/${club._id}/events`);
+        const clubEvents = clubEventsResponse.data;
+        allClubEvents = allClubEvents.concat(clubEvents);
+      }
+
+      const nonRsvpedClubEvents = allClubEvents.filter(event => !userEventsResponse.data.some(rsvpEvent => rsvpEvent._id === event._id));
+      setClubEvents(nonRsvpedClubEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
     }
@@ -32,6 +45,26 @@ const EventList = () => {
       setRsvpedEvents(rsvpedEvents.filter(event => event._id !== eventId));
     } catch (error) {
       console.error('Error unRSVPing from event:', error);
+    }
+  };
+
+  const handleRSVP = async (eventId) => {
+    try {
+      await axios.post(`/api/v1/events/joinEvent/${eventId}`, { userId: user._id });
+      setRsvpedEvents([...rsvpedEvents, { _id: eventId }]);
+    } catch (error) {
+      console.error('Error RSVPing to event:', error);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await axios.delete(`/api/v1/events/deleteEvent/${eventId}`);
+      fetchEvents();
+      toast.success('Successfully Deleted Event');
+    } catch (error) {
+      console.error('Error deleting event:', error.response ? error.response.data : error.message);
+      toast.error('Error deleting event: ' + (error.response ? error.response.data : error.message));
     }
   };
 
@@ -53,26 +86,18 @@ const EventList = () => {
         <div className="max-w-4xl mx-auto">
           {rsvpedEvents.length > 0 ? (
             rsvpedEvents.map((event, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
-                <div className="flex items-center">
-                  <img src={event.logo} alt={`${event.name} logo`} className="w-12 h-12 mr-4" />
-                  <div>
-                    <h3 className="text-xl font-semibold">{event.name}</h3>
-                    <button
-                      onClick={() => setSelectedEvent(event)}
-                      className="text-gray-600 hover:text-gray-800"
-                    >
-                      ...
-                    </button>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleUnRSVP(event._id)}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  UnRSVP
-                </button>
-              </div>
+              <EventCard
+                key={index}
+                name={event.name}
+                date={event.date}
+                image={event.logo}
+                description={event.description}
+                location={event.location}
+                onRSVP={() => handleUnRSVP(event._id)}
+                rsvpStatus={true}
+                onDelete={() => handleDeleteEvent(event._id)}
+                isAdmin={user.adminOf.includes(event.clubId)}
+              />
             ))
           ) : (
             <p className="text-center text-gray-600">No RSVP'ed events found.</p>
@@ -96,20 +121,18 @@ const EventList = () => {
         <div className="max-w-4xl mx-auto">
           {clubEvents.length > 0 ? (
             clubEvents.map((event, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
-                <div className="flex items-center">
-                  <img src={event.logo} alt={`${event.name} logo`} className="w-12 h-12 mr-4" />
-                  <div>
-                    <h3 className="text-xl font-semibold">{event.name}</h3>
-                    <button
-                      onClick={() => setSelectedEvent(event)}
-                      className="text-gray-600 hover:text-gray-800"
-                    >
-                      ...
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <EventCard
+                key={index}
+                name={event.name}
+                date={event.date}
+                image={event.logo}
+                description={event.description}
+                location={event.location}
+                onRSVP={() => handleRSVP(event._id)}
+                rsvpStatus={false}
+                onDelete={() => handleDeleteEvent(event._id)}
+                isAdmin={user.adminOf.includes(event.clubId)}
+              />
             ))
           ) : (
             <p className="text-center text-gray-600">No events found for your clubs.</p>

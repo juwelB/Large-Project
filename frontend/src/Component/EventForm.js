@@ -6,7 +6,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
   const [Ename, setEname] = useState('');
   const [date, setDate] = useState('');
   const [location, setLocation] = useState('');
-  const [eventDetail, setEventDetail] = useState('');
+  const [eventDetail, setEventDetail] = useState([{ topic: '', describe: '' }]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,15 +14,15 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
       const response = await axios.post('/api/v1/events/createEvent', {
         Ename,
         date,
-        location: { address: location },
-        eventDetail: [{ describe: eventDetail }],
+        location,
+        eventDetail,
         clubId
       });
       toast.success('Event created successfully');
       onClose();
     } catch (error) {
-      toast.error('Error creating event');
       console.error('Error creating event:', error);
+      toast.error('Error creating event: ' + (error.response ? error.response.data.message : error.message));
     }
   };
 
@@ -30,7 +30,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-bold mb-4">Create Event</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -67,29 +67,53 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="eventDetail" className="block text-sm font-medium text-gray-700 mb-1">Event Detail</label>
-            <input
-              type="text"
-              id="eventDetail"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              value={eventDetail}
-              onChange={(e) => setEventDetail(e.target.value)}
-              required
-            />
+            <label htmlFor="eventDetail" className="block text-sm font-medium text-gray-700 mb-1">Event Details</label>
+            {eventDetail.map((detail, index) => (
+              <div key={index} className="mb-2">
+                <input
+                  type="text"
+                  placeholder="Topic"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md mb-1"
+                  value={detail.topic}
+                  onChange={(e) => {
+                    const newEventDetail = [...eventDetail];
+                    newEventDetail[index].topic = e.target.value;
+                    setEventDetail(newEventDetail);
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  value={detail.describe}
+                  onChange={(e) => {
+                    const newEventDetail = [...eventDetail];
+                    newEventDetail[index].describe = e.target.value;
+                    setEventDetail(newEventDetail);
+                  }}
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-blue-600 hover:underline"
+              onClick={() => setEventDetail([...eventDetail, { topic: '', describe: '' }])}
+            >
+              Add More Details
+            </button>
           </div>
           <button
             type="submit"
-            className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
-            style={{ backgroundColor: '#FFD700' }}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Create Event
           </button>
         </form>
         <button
           onClick={onClose}
-          className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          className="mt-4 w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
         >
-          Close
+          Cancel
         </button>
       </div>
     </div>

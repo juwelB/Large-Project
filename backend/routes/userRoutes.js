@@ -13,7 +13,8 @@ const {
     verifyUser,
     forgotPassword,
     resetPassword,
-    makeAdmin
+    makeAdmin,
+    getUserEvents // Added this line
 } = controller;
 
 //Post to register/login new user
@@ -23,6 +24,6 @@ router.get('/:id/verify/:token', verifyUser);
 router.post('/forgot-password', forgotPassword);
 router.post('/:userId/resetpassword/:token', resetPassword);
 router.put('/:id/makeAdmin', makeAdmin);
-
+router.get('/:userId/events', getUserEvents); // Added this line
 
 module.exports = router;

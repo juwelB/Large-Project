@@ -1,31 +1,32 @@
 const Event = require('../Model/Event');
+const User = require('../Model/User');
 const Club = require('../Model/Club'); // Assuming you have a Club model
 
 // Create new event
 const createEvent = async (req, res) => {
     try {
         const { Ename, date, location, eventDetail, clubId } = req.body;
+
+        // Fetch the club to get the logo
+        const club = await Club.findById(clubId);
+        if (!club) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+
         const newEvent = new Event({
             Ename,
             date,
             location,
             eventDetail,
-            clubId
+            clubId,
+            image: club.clubInfo.logo // Set the event image to the club's logo
         });
-        console.log("HERE");
-        console.log(newEvent);
+
         const savedEvent = await newEvent.save();
 
         // Add the event to the club's event list
-        const club = await Club.findById(clubId);
-        console.log("CLUB");
-        console.log(club);
-        if (club) {
-            console.log("INSIDE");
-            console.log(savedEvent);
-            club.eventList.push(savedEvent);
-            await club.save();
-        }
+        club.eventList.push(savedEvent);
+        await club.save();
 
         res.status(201).json(savedEvent);
     } catch (error) {
@@ -37,6 +38,23 @@ const createEvent = async (req, res) => {
 const deleteEvent = async (req, res) => {
     try {
         const { id } = req.params;
+        const event = await Event.findById(id);
+        if (!event) {
+            return res.status(404).json({ message: 'Event not found' });
+        }
+
+        // Remove the event from the users' event lists
+        await User.updateMany(
+            { eventList: id },
+            { $pull: { eventList: id } }
+        );
+
+        // Remove the event from the club's event list
+        await Club.updateMany(
+            { eventList: id },
+            { $pull: { eventList: id } }
+        );
+
         await Event.findByIdAndDelete(id);
         res.status(200).json({ message: 'Event deleted successfully' });
     } catch (error) {
@@ -76,13 +94,25 @@ const joinEvent = async (req, res) => {
         const { id } = req.params;
         const { userId } = req.body;
         const event = await Event.findById(id);
+        const user = await User.findById(userId);
+
         if (!event) {
             return res.status(404).json({ message: 'Event not found' });
         }
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         if (!event.participants.includes(userId)) {
             event.participants.push(userId);
             await event.save();
         }
+
+        if (!user.eventList.includes(id)) {
+            user.eventList.push(id);
+            await user.save();
+        }
+
         res.status(200).json({ message: 'Joined event successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error joining event', error });
@@ -95,14 +125,36 @@ const unjoinEvent = async (req, res) => {
         const { id } = req.params;
         const { userId } = req.body;
         const event = await Event.findById(id);
+        const user = await User.findById(userId);
+
         if (!event) {
             return res.status(404).json({ message: 'Event not found' });
         }
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         event.participants = event.participants.filter(participant => participant.toString() !== userId);
         await event.save();
+
+        user.eventList = user.eventList.filter(eventId => eventId.toString() !== id);
+        await user.save();
+
         res.status(200).json({ message: 'Unjoined event successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error unjoining event', error });
+    }
+};
+
+// Get user's RSVPs
+const getUserRsvps = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const events = await Event.find({ participants: userId }).select('_id');
+        const eventIds = events.map(event => event._id);
+        res.status(200).json(eventIds);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user RSVPs', error });
     }
 };
 
@@ -112,5 +164,6 @@ module.exports = {
     updateEvent,
     viewEvent,
     joinEvent,
-    unjoinEvent
+    unjoinEvent,
+    getUserRsvps
 };

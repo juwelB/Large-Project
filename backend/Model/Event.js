@@ -41,8 +41,18 @@ const eventSchema = new Schema(
         timeCreated: {
             type: Date,
             default: Date.now
-        }
+        },
 
+        image: {
+            type: String,
+            required: true
+        },
+
+        clubId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Club',
+            required: true
+        }
     });
 
 module.exports = mongoose.model('Event', eventSchema);

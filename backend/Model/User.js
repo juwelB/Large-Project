@@ -50,10 +50,13 @@ const userSchema = new Schema(
         isVerified: {
             type: Boolean,
             default: false
-        }
-
-
-
+        },
+        eventList: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Event'
+            }
+        ]
     });
 userSchema.methods.setClubsAdmin = function (clubId) {
     if (this.role != 1)

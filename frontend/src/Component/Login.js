@@ -10,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Add this line
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,9 +30,9 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      const errorMessage = error.response?.data?.message || 'Login failed';
+      const errorMessage = error.response?.data?.msg || 'Login failed';
       if (errorMessage.toLowerCase().includes('invalid credentials')) {
-        toast.error('Invalid Credentials');
+        toast.error('Invalid Credentials. Please Try Again.');
       } else {
         toast.error(errorMessage);
       }
@@ -64,15 +65,24 @@ const Login = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              id="password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="Enter Password Here"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"} // Update this line
+                id="password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                placeholder="Enter Password Here"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 px-3 py-2 text-gray-600"
+                onClick={() => setShowPassword(!showPassword)} // Add this line
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
           <button
             type="submit"

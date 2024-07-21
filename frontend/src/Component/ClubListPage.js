@@ -111,6 +111,7 @@ const ClubListPage = () => {
       await fetchDiscoverClubs();
       toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Created Club');
+      setIsModalOpen(false); // Close the modal after successful creation
     } catch (error) {
       console.error('Error creating club:', error.response ? error.response.data : error.message);
       setError('Error creating club: ' + (error.response ? error.response.data : error.message));

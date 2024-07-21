@@ -18,6 +18,7 @@ const LoggedInLandingPage = () => {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [rsvpedEvents, setRsvpedEvents] = useState([]);
 
   const fetchClubsAndEvents = async () => {
     try {
@@ -38,6 +39,9 @@ const LoggedInLandingPage = () => {
       } else {
         console.error('Expected an array of events');
       }
+
+      const userRsvpsResponse = await axios.get(`/api/v1/events/userRsvps/${user._id}`);
+      setRsvpedEvents(userRsvpsResponse.data);
     } catch (error) {
       console.error('Error fetching clubs and events:', error);
     }
@@ -113,6 +117,29 @@ const LoggedInLandingPage = () => {
     } catch (error) {
       console.error('Error RSVPing to event:', error.response ? error.response.data : error.message);
       toast.error('Error RSVPing to event: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
+  const handleUnRSVPEvent = async (eventId) => {
+    try {
+      await axios.post(`/api/v1/events/unjoinEvent/${eventId}`, { userId: user._id });
+      console.log(`Un-RSVP'd from event: ${eventId}`);
+      fetchClubsAndEvents();
+      toast.success('Successfully Un-RSVP\'d from Event');
+    } catch (error) {
+      console.error('Error Un-RSVPing from event:', error.response ? error.response.data : error.message);
+      toast.error('Error Un-RSVPing from event: ' + (error.response ? error.response.data : error.message));
+    }
+  };
+
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await axios.delete(`/api/v1/events/deleteEvent/${eventId}`);
+      fetchClubsAndEvents();
+      toast.success('Successfully Deleted Event');
+    } catch (error) {
+      console.error('Error deleting event:', error.response ? error.response.data : error.message);
+      toast.error('Error deleting event: ' + (error.response ? error.response.data : error.message));
     }
   };
 
@@ -225,7 +252,10 @@ const LoggedInLandingPage = () => {
                   description={event.eventDetail.map(detail => detail.describe).join(', ')}
                   location={`${event.location.address}, ${event.location.city}, ${event.location.state}`}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
-                  onRSVP={() => handleRSVPEvent(event._id)}
+                  onRSVP={() => rsvpedEvents.includes(event._id) ? handleUnRSVPEvent(event._id) : handleRSVPEvent(event._id)}
+                  rsvpStatus={rsvpedEvents.includes(event._id)}
+                  onDelete={() => handleDeleteEvent(event._id)}
+                  isAdmin={user.adminOf.includes(event.clubId)}
                 />
               ))}
             </div>

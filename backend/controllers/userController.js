@@ -241,6 +241,20 @@ const makeAdmin = async (req, res) => {
     }
 };
 
+// Get user's event list
+const getUserEvents = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId).populate('eventList');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user.eventList);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user events', error });
+    }
+};
+
 // for logged in users, get the favorite
 // add code
 module.exports = {
@@ -249,5 +263,6 @@ module.exports = {
     verifyUser,
     forgotPassword,
     resetPassword,
-    makeAdmin
+    makeAdmin,
+    getUserEvents
 };
