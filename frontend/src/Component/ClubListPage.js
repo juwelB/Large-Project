@@ -18,6 +18,7 @@ const ClubListPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Add this line
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,6 +104,8 @@ const ClubListPage = () => {
   };
 
   const handleCreateClub = async (clubData) => {
+    if (isLoading) return; // Prevent multiple submissions
+    setIsLoading(true); // Add this line
     try {
       await axios.post('/api/v1/clubs/createclub', clubData);
       console.log('Created club:', clubData);
@@ -117,6 +120,8 @@ const ClubListPage = () => {
       setError('Error creating club: ' + (error.response ? error.response.data : error.message));
       toast.dismiss();  // Dismiss existing toasts
       toast.error('Error creating club: ' + (error.response ? error.response.data : error.message));
+    } finally {
+      setIsLoading(false); // Add this line
     }
   };
 
@@ -209,6 +214,7 @@ const ClubListPage = () => {
                   description={club.clubInfo.description}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
+                  onCreateEvent={() => handleCreateEvent(club._id)} // Add this line
                   adminId={club.adminId}
                 />
               ))}
