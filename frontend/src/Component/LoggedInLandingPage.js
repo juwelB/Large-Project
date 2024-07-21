@@ -21,6 +21,7 @@ const LoggedInLandingPage = () => {
   const [rsvpedEvents, setRsvpedEvents] = useState([]);
 
   const fetchClubsAndEvents = async () => {
+    if (!user) return; // Ensure user is defined before making API calls
     try {
       const clubsResponse = await fetch('/api/v1/clubs/viewAllClubs');
       if (!clubsResponse.ok) {
@@ -49,7 +50,7 @@ const LoggedInLandingPage = () => {
 
   useEffect(() => {
     fetchClubsAndEvents();
-  }, []);
+  }, [user]); // Ensure fetchClubsAndEvents is called when user changes
 
   const handleJoinClub = async (clubId, userId) => {
     try {
@@ -255,7 +256,7 @@ const LoggedInLandingPage = () => {
                   onRSVP={() => rsvpedEvents.includes(event._id) ? handleUnRSVPEvent(event._id) : handleRSVPEvent(event._id)}
                   rsvpStatus={rsvpedEvents.includes(event._id)}
                   onDelete={() => handleDeleteEvent(event._id)}
-                  isAdmin={user.adminOf.includes(event.clubId)}
+                  isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
                 />
               ))}
             </div>
