@@ -1,31 +1,26 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
+import axios from 'axios';
+import EventCard from './EventCard'; // Import EventCard component
 
 const CalendarPage = () => {
   const { user } = useContext(AuthContext);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedClub, setSelectedClub] = useState('All Clubs');
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [userEvents, setUserEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const clubs = [
-    { name: 'Knights Experimental Rocketry' },
-    { name: 'Knight Hacks' },
-    { name: 'AI@UCF' },
-  ];
+  useEffect(() => {
+    if (user) {
+      axios.get(`/api/users/${user._id}/events`)
+        .then(response => setUserEvents(response.data))
+        .catch(error => console.error('Error fetching user events:', error));
+    }
+  }, [user]);
 
-  const events = [
-    { name: 'Knight Hacks GBM', date: '2023-05-01', description: 'General Body Meeting for Knight Hacks', location: 'Room 101', club: 'Knight Hacks' },
-    { name: 'AI@UCF Workshop', date: '2023-05-03', description: 'AI Workshop', location: 'Room 202', club: 'AI@UCF' },
-  ];
-
-  const filteredEvents = selectedClub === 'All Clubs' ? events : events.filter(event => event.club === selectedClub);
-
-  const handleEventClick = (event) => {
-    setSelectedEvent(event);
-  };
+  const filteredEvents = selectedClub === 'All Clubs' ? userEvents : userEvents.filter(event => event.club === selectedClub);
 
   const renderHeader = () => {
     const dateFormat = 'MMMM yyyy';
@@ -87,21 +82,18 @@ const CalendarPage = () => {
         const cloneDay = day;
         days.push(
           <div
-            className={`p-2 text-center cursor-pointer ${!isSameMonth(day, monthStart) ? 'text-gray-400' : ''} 
-              ${isSameDay(day, new Date()) ? 'bg-blue-200' : ''} 
-              ${selectedDate && isSameDay(day, selectedDate) ? 'bg-gray-300' : ''} hover:bg-gray-200`}
+            className={`p-2 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`}
             key={day}
-            onClick={() => {
-              setSelectedDate(cloneDay);
-              setSelectedEvent(cloneDay);
-            }}
+            onClick={() => handleDayClick(cloneDay)}
           >
-            <span>{formattedDate}</span>
+            <div className={`text-sm font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
+              {formattedDate}
+            </div>
             {filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
               <div
                 key={idx}
-                className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer"
-                onClick={() => handleEventClick(event)}
+                className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs"
+                onClick={() => setSelectedEvent(event)}
               >
                 {event.name}
               </div>
@@ -119,6 +111,15 @@ const CalendarPage = () => {
     }
 
     return <div>{rows}</div>;
+  };
+
+  const handleDayClick = (day) => {
+    const eventsOnDay = filteredEvents.filter(event => isSameDay(new Date(event.date), day));
+    if (eventsOnDay.length > 0) {
+      setSelectedEvent(eventsOnDay[0]);
+    } else {
+      setSelectedEvent(null);
+    }
   };
 
   const nextMonth = () => {
@@ -147,20 +148,16 @@ const CalendarPage = () => {
         {renderDays()}
         {renderCells()}
         {selectedEvent && (
-          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            <h3 className="text-2xl font-bold mb-4">{selectedEvent.name}</h3>
-            {selectedDate && (
-              <p className="mb-4"><strong>Date Selected:</strong> {format(selectedDate, 'MMMM d, yyyy')}</p>
-            )}
-            <p className="mb-4"><strong>Description:</strong> {selectedEvent.description}</p>
-            <p className="mb-4"><strong>When:</strong> {selectedEvent.date}</p>
-            <p className="mb-4"><strong>Where:</strong> {selectedEvent.location}</p>
-            <button
-              onClick={() => setSelectedEvent(null)}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-            >
-              Close
-            </button>
+          <div className="mt-8">
+            <EventCard
+              name={selectedEvent.name}
+              date={selectedEvent.date}
+              image={selectedEvent.image}
+              description={selectedEvent.description}
+              location={selectedEvent.location}
+              eventDetail={selectedEvent.eventDetail}
+              className="mx-auto"
+            />
           </div>
         )}
       </main>

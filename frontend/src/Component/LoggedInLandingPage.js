@@ -272,11 +272,14 @@ const LoggedInLandingPage = () => {
           onDelete={handleDeleteClub}
         />
       )}
-      <EventForm
-        isOpen={isEventModalOpen}
-        onClose={() => setIsEventModalOpen(false)}
-        clubId={selectedClub}
-      />
+       {isEventModalOpen && (
+        <EventForm
+          isOpen={isEventModalOpen}
+          onClose={handleCloseEventForm}
+          clubId={selectedClub}
+          onCreate={handleCreateEvent}
+        />
+      )}
     </div>
   );
 };
