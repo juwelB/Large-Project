@@ -102,7 +102,10 @@ const CalendarPage = () => {
               <div
                 key={idx}
                 className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs"
-                onClick={() => setSelectedEvent(event)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedEvent(event);
+                }}
               >
                 {event.name}
               </div>
