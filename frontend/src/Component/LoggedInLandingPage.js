@@ -86,7 +86,7 @@ const LoggedInLandingPage = () => {
       toast.dismiss();  // Dismiss existing toasts
       toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message));
     }
-  };
+  };;
 
   const handleDeleteClub = async (clubId) => {
     try {
@@ -114,11 +114,9 @@ const LoggedInLandingPage = () => {
       console.log(`RSVP'd to event: ${eventId}`);
       // Refetch events to update the UI
       fetchClubsAndEvents();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully RSVP\'d to Event');
     } catch (error) {
       console.error('Error RSVPing to event:', error.response ? error.response.data : error.message);
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error RSVPing to event: ' + (error.response ? error.response.data : error.message));
     }
   };
@@ -128,11 +126,9 @@ const LoggedInLandingPage = () => {
       await axios.post(`/api/v1/events/unjoinEvent/${eventId}`, { userId: user._id });
       console.log(`Un-RSVP'd from event: ${eventId}`);
       fetchClubsAndEvents();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Un-RSVP\'d from Event');
     } catch (error) {
       console.error('Error Un-RSVPing from event:', error.response ? error.response.data : error.message);
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error Un-RSVPing from event: ' + (error.response ? error.response.data : error.message));
     }
   };
@@ -141,11 +137,9 @@ const LoggedInLandingPage = () => {
     try {
       await axios.delete(`/api/v1/events/deleteEvent/${eventId}`);
       fetchClubsAndEvents();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Deleted Event');
     } catch (error) {
       console.error('Error deleting event:', error.response ? error.response.data : error.message);
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error deleting event: ' + (error.response ? error.response.data : error.message));
     }
   };
@@ -282,7 +276,6 @@ const LoggedInLandingPage = () => {
         isOpen={isEventModalOpen}
         onClose={() => setIsEventModalOpen(false)}
         clubId={selectedClub}
-        onCreate={handleCreateEvent} // Pass the handleCreateEvent function to EventForm
       />
     </div>
   );
