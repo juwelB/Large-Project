@@ -10,7 +10,7 @@ const EventList = () => {
   const [rsvpedEvents, setRsvpedEvents] = useState([]);
   const [clubEvents, setClubEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [adminStatus, setAdminStatus] = useState({}); // Store admin status for each club
+  const [adminStatus, setAdminStatus] = useState({}); 
 
   useEffect(() => {
     if (user) {
@@ -19,7 +19,7 @@ const EventList = () => {
   }, [user]);
 
   const fetchEvents = async () => {
-    if (!user) return; // Ensure user is defined before making API calls
+    if (!user) return; 
     try {
       const userEventsResponse = await axios.get(`/api/v1/users/${user._id}/events`);
       setRsvpedEvents(userEventsResponse.data);
@@ -30,12 +30,11 @@ const EventList = () => {
       let allClubEvents = [];
       let adminStatusTemp = {};
       for (const club of userClubs) {
-        if (!club._id) continue; // Ensure club._id is defined
+        if (!club._id) continue; 
         const clubEventsResponse = await axios.get(`/api/v1/clubs/${club._id}/events`);
         const clubEvents = clubEventsResponse.data;
         allClubEvents = allClubEvents.concat(clubEvents);
 
-        // Check if the user is an admin of the club
         adminStatusTemp[club._id] = club.adminId === user._id;
       }
 
@@ -145,7 +144,7 @@ const EventList = () => {
                 onRSVP={() => handleRSVP(event._id)}
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={adminStatus[event.clubId]} // Use the admin status from state
+                isAdmin={adminStatus[event.clubId]} 
               />
             ))
           ) : (

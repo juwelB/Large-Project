@@ -24,7 +24,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
         clubId
       });
       toast.success('Event created successfully', { toastId: 'eventCreated' });
-      // Clear form fields after successful creation
+      
       setEname('');
       setDate('');
       setTime('');

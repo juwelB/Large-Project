@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import EventCard from './EventCard'; // Import EventCard component
+import EventCard from './EventCard'; 
 
 const CalendarPage = () => {
   const { user } = useContext(AuthContext);
@@ -12,7 +12,7 @@ const CalendarPage = () => {
   const [selectedClub, setSelectedClub] = useState('All Clubs');
   const [userEvents, setUserEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [clubs, setClubs] = useState([]); // Initialize as an empty array
+  const [clubs, setClubs] = useState([]); 
 
   useEffect(() => {
     if (user) {
@@ -21,7 +21,7 @@ const CalendarPage = () => {
   }, [user]);
 
   const fetchUserData = async () => {
-    if (!user) return; // Ensure user is defined before making API calls
+    if (!user) return; 
     try {
       const userEventsResponse = await axios.get(`/api/v1/users/${user._id}/events`);
       setUserEvents(userEventsResponse.data);

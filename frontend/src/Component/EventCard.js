@@ -8,8 +8,7 @@ const EventCard = ({ name, date, image, description, location, eventDetail, clas
     console.log(`isAdmin: ${isAdmin}`);
     console.log(`onDelete: ${onDelete ? 'Function exists' : 'Function does not exist'}`);
   }, [name, isAdmin, onDelete]);
-
-  // Check if the date is valid
+  
   const eventDate = new Date(date);
   const formattedDate = isValid(eventDate) ? format(eventDate, 'MMMM dd, yyyy') : 'Invalid date';
   const formattedTime = isValid(eventDate) ? format(eventDate, 'hh:mm a') : 'Invalid time';

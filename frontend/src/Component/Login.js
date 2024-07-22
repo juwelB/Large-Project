@@ -10,7 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // Add this line
+  const [showPassword, setShowPassword] = useState(false); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +67,7 @@ const Login = () => {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} // Update this line
+                type={showPassword ? "text" : "password"} 
                 id="password"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 placeholder="Enter Password Here"
@@ -78,7 +78,7 @@ const Login = () => {
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 px-3 py-2 text-gray-600"
-                onClick={() => setShowPassword(!showPassword)} // Add this line
+                onClick={() => setShowPassword(!showPassword)} 
               >
                 {showPassword ? "Hide" : "Show"}
               </button>

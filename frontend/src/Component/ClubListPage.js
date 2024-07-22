@@ -18,7 +18,7 @@ const ClubListPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Add this line
+  const [isLoading, setIsLoading] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -200,7 +200,7 @@ const ClubListPage = () => {
           </div>
         </section>
       </main>
-      {selectedClub && !isEventModalOpen && ( // Ensure ClubModal is not shown when EventForm is open
+      {selectedClub && !isEventModalOpen && (
         <ClubModal
           club={selectedClub}
           onClose={() => setSelectedClub(null)}

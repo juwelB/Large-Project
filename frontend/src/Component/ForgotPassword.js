@@ -12,7 +12,7 @@ const ForgotPassword = () => {
     try {
       const response = await axios.post('/api/v1/users/forgot-password', { email });
       if (response.status === 202) {
-        navigate('/forgot-password-verification', { state: { email: email } }); // Navigate to ForgotPasswordVerification with email
+        navigate('/forgot-password-verification', { state: { email: email } }); 
       }
     } catch (error) {
       console.error('Error during password reset request:', error);

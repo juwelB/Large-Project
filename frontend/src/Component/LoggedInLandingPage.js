@@ -75,7 +75,6 @@ const LoggedInLandingPage = () => {
         clubObjId: clubId
       });
       console.log(`Left club: ${clubId}`);
-      // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
       toast.success('Successfully Left Club', { toastId: 'leaveClubSuccess' });
     } catch (error) {
@@ -88,7 +87,6 @@ const LoggedInLandingPage = () => {
     try {
       await axios.delete('/api/v1/clubs/deleteclub', { data: { clubId } });
       console.log(`Deleted club: ${clubId}`);
-      // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
       toast.success('Successfully Deleted Club', { toastId: 'deleteClubSuccess' });
     } catch (error) {
@@ -106,7 +104,6 @@ const LoggedInLandingPage = () => {
     try {
       await axios.post(`/api/v1/events/joinEvent/${eventId}`, { userId: user._id });
       console.log(`RSVP'd to event: ${eventId}`);
-      // Refetch events to update the UI
       fetchClubsAndEvents();
       toast.success('Successfully RSVP\'d to Event', { toastId: 'rsvpEventSuccess' });
     } catch (error) {
@@ -254,14 +251,14 @@ const LoggedInLandingPage = () => {
                   onRSVP={() => rsvpedEvents.includes(event._id) ? handleUnRSVPEvent(event._id) : handleRSVPEvent(event._id)}
                   rsvpStatus={rsvpedEvents.includes(event._id)}
                   onDelete={() => handleDeleteEvent(event._id)}
-                  isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
+                  isAdmin={user?.adminOf?.includes(event.clubId)} 
                 />
               ))}
             </div>
           </div>
         </section>
       </main>
-      {selectedClub && !isEventModalOpen && ( // Ensure ClubModal is not shown when EventForm is open
+      {selectedClub && !isEventModalOpen && ( 
         <ClubModal
           club={selectedClub}
           onClose={() => setSelectedClub(null)}

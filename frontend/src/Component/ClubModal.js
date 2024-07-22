@@ -14,7 +14,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
         onClose();
     } else {
         console.error('User ID not available');
-        // Optionally, show an error message to the user
+        
     }
   };
 
@@ -26,7 +26,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
         onClose();
     } else {
         console.error('User ID not available');
-        // Optionally, show an error message to the user
+        
     }
   };
 
@@ -38,7 +38,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
         onClose();
     } else {
         console.error('User ID not available');
-        // Optionally, show an error message to the user
+        
     }
   };
 
