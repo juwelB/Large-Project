@@ -10,6 +10,7 @@ const EventList = () => {
   const [rsvpedEvents, setRsvpedEvents] = useState([]);
   const [clubEvents, setClubEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [adminStatus, setAdminStatus] = useState({}); // Store admin status for each club
 
   useEffect(() => {
     if (user) {
@@ -27,13 +28,18 @@ const EventList = () => {
       const userClubs = clubsResponse.data;
 
       let allClubEvents = [];
+      let adminStatusTemp = {};
       for (const club of userClubs) {
         if (!club._id) continue; // Ensure club._id is defined
         const clubEventsResponse = await axios.get(`/api/v1/clubs/${club._id}/events`);
         const clubEvents = clubEventsResponse.data;
         allClubEvents = allClubEvents.concat(clubEvents);
+
+        // Check if the user is an admin of the club
+        adminStatusTemp[club._id] = club.adminId === user._id;
       }
 
+      setAdminStatus(adminStatusTemp);
       const nonRsvpedClubEvents = allClubEvents.filter(event => !userEventsResponse.data.some(rsvpEvent => rsvpEvent._id === event._id));
       setClubEvents(nonRsvpedClubEvents);
     } catch (error) {
@@ -74,17 +80,6 @@ const EventList = () => {
     }
   };
 
-  const isAdminOfEvent = async (clubId) => {
-    try {
-      const clubResponse = await axios.get(`/api/v1/clubs/${clubId}`);
-      const club = clubResponse.data;
-      return club.adminId === user._id;
-    } catch (error) {
-      console.error('Error fetching club details:', error);
-      return false;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-black text-white p-4">
@@ -113,7 +108,7 @@ const EventList = () => {
                 onRSVP={() => handleUnRSVP(event._id)}
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={await isAdminOfEvent(event.clubId)} // Check if user is admin of the event's club
+                isAdmin={adminStatus[event.clubId]} // Use the admin status from state
               />
             ))
           ) : (
@@ -148,7 +143,7 @@ const EventList = () => {
                 onRSVP={() => handleRSVP(event._id)}
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={await isAdminOfEvent(event.clubId)} // Check if user is admin of the event's club
+                isAdmin={adminStatus[event.clubId]} // Use the admin status from state
               />
             ))
           ) : (
