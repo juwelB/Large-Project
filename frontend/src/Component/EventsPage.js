@@ -74,6 +74,17 @@ const EventList = () => {
     }
   };
 
+  const isAdminOfEvent = async (clubId) => {
+    try {
+      const clubResponse = await axios.get(`/api/v1/clubs/${clubId}`);
+      const club = clubResponse.data;
+      return club.adminId === user._id;
+    } catch (error) {
+      console.error('Error fetching club details:', error);
+      return false;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-black text-white p-4">
@@ -102,7 +113,7 @@ const EventList = () => {
                 onRSVP={() => handleUnRSVP(event._id)}
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf && event.clubId ? user.adminOf.includes(event.clubId) : false} // Ensure user.adminOf and event.clubId are defined
+                isAdmin={await isAdminOfEvent(event.clubId)} // Check if user is admin of the event's club
               />
             ))
           ) : (
@@ -137,7 +148,7 @@ const EventList = () => {
                 onRSVP={() => handleRSVP(event._id)}
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf && event.clubId ? user.adminOf.includes(event.clubId) : false} // Ensure user.adminOf and event.clubId are defined
+                isAdmin={await isAdminOfEvent(event.clubId)} // Check if user is admin of the event's club
               />
             ))
           ) : (
