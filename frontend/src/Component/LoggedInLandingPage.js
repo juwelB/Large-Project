@@ -61,7 +61,7 @@ const LoggedInLandingPage = () => {
       console.log(`Joined club: ${clubId}`);
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
-      toast.success('Successfully Joined Club', { toastId: 'joinClubSuccess' });
+      //toast.success('Successfully Joined Club', { toastId: 'joinClubSuccess' });
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
       toast.error('Error joining club: ' + (error.response ? error.response.data : error.message), { toastId: 'joinClubError' });

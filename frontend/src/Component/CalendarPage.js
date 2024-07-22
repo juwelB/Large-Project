@@ -96,22 +96,23 @@ const CalendarPage = () => {
         const cloneDay = day;
         days.push(
           <div
-            className={`p-2 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`}
+            className={`p-6 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`}
             key={day}
             onClick={() => handleDayClick(cloneDay)}
           >
-            <div className={`text-sm font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
+            <div className={`text-xl font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
               {formattedDate}
             </div>
             {Array.isArray(filteredEvents) && filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
               <div
                 key={idx}
-                className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs"
+                className="bg-purple-500 text-white rounded-md p-2 mt-2 cursor-pointer text-sm flex items-center"
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedEvent(event);
                 }}
               >
+                {event.logo && <img src={event.logo} alt="logo" className="w-6 h-6 mr-2" />}
                 {event.name}
               </div>
             ))}
