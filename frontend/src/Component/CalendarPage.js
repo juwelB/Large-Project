@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import EventCard from './EventCard'; // Import EventCard component
 
 const CalendarPage = () => {
@@ -17,7 +18,10 @@ const CalendarPage = () => {
     if (user) {
       axios.get(`/api/users/${user._id}/events`)
         .then(response => setUserEvents(response.data))
-        .catch(error => console.error('Error fetching user events:', error));
+        .catch(error => {
+          console.error('Error fetching user events:', error);
+          toast.error('Error fetching user events', { toastId: 'fetchUserEventsError' });
+        });
     }
   }, [user]);
 
@@ -25,7 +29,10 @@ const CalendarPage = () => {
     if (user) {
       axios.get(`/api/users/${user._id}/clubs`)
         .then(response => setClubs(response.data))
-        .catch(error => console.error('Error fetching clubs:', error));
+        .catch(error => {
+          console.error('Error fetching clubs:', error);
+          toast.error('Error fetching clubs', { toastId: 'fetchClubsError' });
+        });
     }
   }, [user]);
 

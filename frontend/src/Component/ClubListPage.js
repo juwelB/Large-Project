@@ -58,11 +58,11 @@ const ClubListPage = () => {
       // Refetch user clubs and discover clubs to update the UI
       fetchUserClubs();
       fetchDiscoverClubs();
-      toast.success('Successfully Joined Club');
+      toast.success('Successfully Joined Club', { toastId: 'joinClubSuccess' });
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
       setError('Error joining club: ' + (error.response ? error.response.data : error.message));
-      toast.error('Error joining club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error joining club: ' + (error.response ? error.response.data : error.message), { toastId: 'joinClubError' });
     }
   };
 
@@ -77,12 +77,12 @@ const ClubListPage = () => {
       fetchUserClubs();
       fetchDiscoverClubs();
       toast.dismiss();  // Dismiss existing toasts
-      toast.success('Successfully Left Club');
+      toast.success('Successfully Left Club', { toastId: 'leaveClubSuccess' });
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
       setError('Error leaving club: ' + (error.response ? error.response.data : error.message));
       toast.dismiss();  // Dismiss existing toasts
-      toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message), { toastId: 'leaveClubError' });
     }
   };
 
@@ -94,12 +94,12 @@ const ClubListPage = () => {
       fetchUserClubs();
       fetchDiscoverClubs();
       toast.dismiss();  // Dismiss existing toasts
-      toast.success('Successfully Deleted Club');
+      toast.success('Successfully Deleted Club', { toastId: 'deleteClubSuccess' });
     } catch (error) {
       console.error('Error deleting club:', error.response ? error.response.data : error.message);
       setError('Error deleting club: ' + (error.response ? error.response.data : error.message));
       toast.dismiss();  // Dismiss existing toasts
-      toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message), { toastId: 'deleteClubError' });
     }
   };
 
@@ -108,7 +108,7 @@ const ClubListPage = () => {
     setAdminClubs((prevAdminClubs) => [...prevAdminClubs, createdClub]);
     setDiscoverClubs((prevDiscoverClubs) => [...prevDiscoverClubs, createdClub]);
     setIsModalOpen(false); // Close the modal after successful creation
-    toast.success('Successfully Created Club'); // Add this line
+    toast.success('Successfully Created Club', { toastId: 'createClubSuccess' }); // Add this line
   };
 
   const handleCreateEvent = (clubId) => {

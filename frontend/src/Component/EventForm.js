@@ -23,7 +23,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
         eventDetail,
         clubId
       });
-      toast.success('Event created successfully');
+      toast.success('Event created successfully', { toastId: 'eventCreated' });
       // Clear form fields after successful creation
       setEname('');
       setDate('');
@@ -33,7 +33,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
       onClose();
     } catch (error) {
       console.error('Error creating event:', error);
-      toast.error('Error creating event: ' + (error.response ? error.response.data.message : error.message));
+      toast.error('Error creating event: ' + (error.response ? error.response.data.message : error.message), { toastId: 'eventCreationError' });
     }
   };
 

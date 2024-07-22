@@ -62,11 +62,11 @@ const LoggedInLandingPage = () => {
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
       toast.dismiss();  // Dismiss existing toasts
-      toast.success('Successfully Joined Club');
+      toast.success('Successfully Joined Club', { toastId: 'joinClubSuccess' });
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
       toast.dismiss();  // Dismiss existing toasts
-      toast.error('Error joining club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error joining club: ' + (error.response ? error.response.data : error.message), { toastId: 'joinClubError' });
     }
   };
 
@@ -80,13 +80,13 @@ const LoggedInLandingPage = () => {
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
       toast.dismiss();  // Dismiss existing toasts
-      toast.success('Successfully Left Club');
+      toast.success('Successfully Left Club', { toastId: 'leaveClubSuccess' });
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
       toast.dismiss();  // Dismiss existing toasts
-      toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message), { toastId: 'leaveClubError' });
     }
-  };;
+  };
 
   const handleDeleteClub = async (clubId) => {
     try {
@@ -95,11 +95,11 @@ const LoggedInLandingPage = () => {
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
       toast.dismiss();  // Dismiss existing toasts
-      toast.success('Successfully Deleted Club');
+      toast.success('Successfully Deleted Club', { toastId: 'deleteClubSuccess' });
     } catch (error) {
       console.error('Error deleting club:', error.response ? error.response.data : error.message);
       toast.dismiss();  // Dismiss existing toasts
-      toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message), { toastId: 'deleteClubError' });
     }
   };
 
@@ -114,10 +114,10 @@ const LoggedInLandingPage = () => {
       console.log(`RSVP'd to event: ${eventId}`);
       // Refetch events to update the UI
       fetchClubsAndEvents();
-      toast.success('Successfully RSVP\'d to Event');
+      toast.success('Successfully RSVP\'d to Event', { toastId: 'rsvpEventSuccess' });
     } catch (error) {
       console.error('Error RSVPing to event:', error.response ? error.response.data : error.message);
-      toast.error('Error RSVPing to event: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error RSVPing to event: ' + (error.response ? error.response.data : error.message), { toastId: 'rsvpEventError' });
     }
   };
 
@@ -126,10 +126,10 @@ const LoggedInLandingPage = () => {
       await axios.post(`/api/v1/events/unjoinEvent/${eventId}`, { userId: user._id });
       console.log(`Un-RSVP'd from event: ${eventId}`);
       fetchClubsAndEvents();
-      toast.success('Successfully Un-RSVP\'d from Event');
+      toast.success('Successfully Un-RSVP\'d from Event', { toastId: 'unrsvpEventSuccess' });
     } catch (error) {
       console.error('Error Un-RSVPing from event:', error.response ? error.response.data : error.message);
-      toast.error('Error Un-RSVPing from event: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error Un-RSVPing from event: ' + (error.response ? error.response.data : error.message), { toastId: 'unrsvpEventError' });
     }
   };
 
@@ -137,10 +137,10 @@ const LoggedInLandingPage = () => {
     try {
       await axios.delete(`/api/v1/events/deleteEvent/${eventId}`);
       fetchClubsAndEvents();
-      toast.success('Successfully Deleted Event');
+      toast.success('Successfully Deleted Event', { toastId: 'deleteEventSuccess' });
     } catch (error) {
       console.error('Error deleting event:', error.response ? error.response.data : error.message);
-      toast.error('Error deleting event: ' + (error.response ? error.response.data : error.message));
+      toast.error('Error deleting event: ' + (error.response ? error.response.data : error.message), { toastId: 'deleteEventError' });
     }
   };
 
@@ -165,6 +165,11 @@ const LoggedInLandingPage = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  const handleCloseEventForm = () => {
+    setIsEventModalOpen(false);
+    setSelectedClub(null);
+  };
 
   const filteredClubs = clubs.filter(club =>
     club.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -274,10 +279,11 @@ const LoggedInLandingPage = () => {
       )}
       {isEventModalOpen && (
         <EventForm
-        isOpen={isEventModalOpen}
-        onClose={() => setIsEventModalOpen(false)}
-        clubId={selectedClub}
-      />
+          isOpen={isEventModalOpen}
+          onClose={handleCloseEventForm}
+          clubId={selectedClub}
+          onCreate={handleCreateEvent}
+        />
       )}
     </div>
   );
