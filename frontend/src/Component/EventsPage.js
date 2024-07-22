@@ -52,6 +52,7 @@ const EventList = () => {
       await axios.post(`/api/v1/events/unjoinEvent/${eventId}`, { userId: user._id });
       setRsvpedEvents(rsvpedEvents.filter(event => event._id !== eventId));
       toast.success('Successfully Un-RSVP\'d from Event');
+      fetchEvents(); // Re-fetch events after un-RSVPing
     } catch (error) {
       console.error('Error unRSVPing from event:', error);
       toast.error('Error Un-RSVPing from event: ' + (error.response ? error.response.data : error.message));
@@ -63,6 +64,7 @@ const EventList = () => {
       await axios.post(`/api/v1/events/joinEvent/${eventId}`, { userId: user._id });
       setRsvpedEvents([...rsvpedEvents, { _id: eventId }]);
       toast.success('Successfully RSVP\'d to Event');
+      fetchEvents(); // Re-fetch events after RSVPing
     } catch (error) {
       console.error('Error RSVPing to event:', error);
       toast.error('Error RSVPing to event: ' + (error.response ? error.response.data : error.message));

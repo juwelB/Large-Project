@@ -6,36 +6,36 @@ import { toast } from 'react-toastify';
 const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => {
   const { user } = useContext(AuthContext);
 
-  const handleJoinClick = () => {
+  const handleJoinClick = async () => {
     if (user && user.id) {
         console.log('User ID:', user.id); // Debugging
-        onJoin(club._id.toString(), user.id.toString());
-        onClose();
+        await onJoin(club._id.toString(), user.id.toString());
         toast.success('Successfully Joined Club');
+        onClose();
     } else {
         console.error('User ID not available');
         // Optionally, show an error message to the user
     }
   };
 
-  const handleLeaveClick = () => {
+  const handleLeaveClick = async () => {
     if (user && user.id) {
         console.log('User ID:', user.id); // Debugging
-        onLeave(club._id.toString(), user.id.toString());
-        onClose();
+        await onLeave(club._id.toString(), user.id.toString());
         toast.success('Successfully Left Club');
+        onClose();
     } else {
         console.error('User ID not available');
         // Optionally, show an error message to the user
     }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async () => {
     if (user && user.id) {
         console.log('User ID:', user.id); // Debugging
-        onDelete(club._id.toString());
-        onClose();
+        await onDelete(club._id.toString());
         toast.success('Successfully Deleted Club');
+        onClose();
     } else {
         console.error('User ID not available');
         // Optionally, show an error message to the user

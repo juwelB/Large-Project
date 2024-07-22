@@ -108,6 +108,7 @@ const ClubListPage = () => {
     setAdminClubs((prevAdminClubs) => [...prevAdminClubs, createdClub]);
     setDiscoverClubs((prevDiscoverClubs) => [...prevDiscoverClubs, createdClub]);
     setIsModalOpen(false); // Close the modal after successful creation
+    toast.success('Successfully Created Club'); // Add this line
   };
 
   const handleCreateEvent = (clubId) => {
