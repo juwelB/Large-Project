@@ -3,7 +3,9 @@ let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[
 const emailRegex = (email) => {
     if(!regex.test(email))
     {
+        
         return false;
+
     }
     return true;
 };
