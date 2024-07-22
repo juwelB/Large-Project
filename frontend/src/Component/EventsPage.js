@@ -97,12 +97,12 @@ const EventList = () => {
                 name={event.Ename}
                 date={event.date}
                 image={event.image}
-                description={event.eventDetail.map(detail => detail.describe).join(', ')}
+                description={Array.isArray(event.eventDetail) ? event.eventDetail.map(detail => detail.describe).join(', ') : ''}
                 location={event.location}
                 onRSVP={() => handleUnRSVP(event._id)}
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
+                isAdmin={user?.adminOf && event.clubId ? user.adminOf.includes(event.clubId) : false} // Ensure user.adminOf and event.clubId are defined
               />
             ))
           ) : (
@@ -132,12 +132,12 @@ const EventList = () => {
                 name={event.Ename}
                 date={event.date}
                 image={event.image}
-                description={event.eventDetail.map(detail => detail.describe).join(', ')}
+                description={Array.isArray(event.eventDetail) ? event.eventDetail.map(detail => detail.describe).join(', ') : ''}
                 location={event.location}
                 onRSVP={() => handleRSVP(event._id)}
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
+                isAdmin={user?.adminOf && event.clubId ? user.adminOf.includes(event.clubId) : false} // Ensure user.adminOf and event.clubId are defined
               />
             ))
           ) : (
