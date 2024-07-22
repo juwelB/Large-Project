@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import EventCard from './EventCard';
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 const EventList = () => {
   const { user, logout } = useContext(AuthContext); // Add logout
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Add state for dropdown
+  const navigate = useNavigate(); 
 
   // Add toggleDropdown and handleClickOutside functions
   const toggleDropdown = () => {

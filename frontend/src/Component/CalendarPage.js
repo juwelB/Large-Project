@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
 import axios from 'axios';
@@ -14,6 +14,7 @@ const CalendarPage = () => {
   const [userEvents, setUserEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [clubs, setClubs] = useState([]); 
+  const navigate = useNavigate(); // Define navigate
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -34,7 +35,7 @@ const CalendarPage = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/'); // Use navigate
   };
 
   useEffect(() => {
