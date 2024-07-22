@@ -216,9 +216,15 @@ const resetPassword = async (req, res) => {
             return res.status(400).json({ message: "User not found" });
         }
 
-        
+        if (!isStrongPassword(newPassword)) 
+            {
+                return res.status(400).json({
+                    message: 'Password does not meet the strength requirements. Must be 8-30 characters long, contains uppercase and lowercase letters, numbers, and special characters.'
+                });
+            }
         let salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(newPassword, salt);
+
         
         await user.save();
 
