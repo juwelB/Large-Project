@@ -19,12 +19,11 @@ const EventList = () => {
 
   const fetchEvents = async () => {
     if (!user) return; // Ensure user is defined before making API calls
-    console.log(user);
     try {
       const userEventsResponse = await axios.get(`/api/v1/users/${user._id}/events`);
       setRsvpedEvents(userEventsResponse.data);
 
-      const clubsResponse = await axios.get(`/api/v1/clubs/userClubs/${user._id}`);
+      const clubsResponse = await axios.post('/api/v1/clubs/viewMyClubs', { userId: user._id });
       const userClubs = clubsResponse.data;
 
       let allClubEvents = [];
@@ -46,8 +45,10 @@ const EventList = () => {
     try {
       await axios.post(`/api/v1/events/unjoinEvent/${eventId}`, { userId: user._id });
       setRsvpedEvents(rsvpedEvents.filter(event => event._id !== eventId));
+      toast.success('Successfully Un-RSVP\'d from Event');
     } catch (error) {
       console.error('Error unRSVPing from event:', error);
+      toast.error('Error Un-RSVPing from event: ' + (error.response ? error.response.data : error.message));
     }
   };
 
@@ -55,8 +56,10 @@ const EventList = () => {
     try {
       await axios.post(`/api/v1/events/joinEvent/${eventId}`, { userId: user._id });
       setRsvpedEvents([...rsvpedEvents, { _id: eventId }]);
+      toast.success('Successfully RSVP\'d to Event');
     } catch (error) {
       console.error('Error RSVPing to event:', error);
+      toast.error('Error RSVPing to event: ' + (error.response ? error.response.data : error.message));
     }
   };
 
@@ -91,15 +94,15 @@ const EventList = () => {
             rsvpedEvents.map((event, index) => (
               <EventCard
                 key={index}
-                name={event.name}
+                name={event.Ename}
                 date={event.date}
-                image={event.logo}
-                description={event.description}
+                image={event.image}
+                description={event.eventDetail.map(detail => detail.describe).join(', ')}
                 location={event.location}
                 onRSVP={() => handleUnRSVP(event._id)}
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
+                isAdmin={user?.adminOf?.includes(event.clubId)}
               />
             ))
           ) : (
@@ -126,15 +129,15 @@ const EventList = () => {
             clubEvents.map((event, index) => (
               <EventCard
                 key={index}
-                name={event.name}
+                name={event.Ename}
                 date={event.date}
-                image={event.logo}
-                description={event.description}
+                image={event.image}
+                description={event.eventDetail.map(detail => detail.describe).join(', ')}
                 location={event.location}
                 onRSVP={() => handleRSVP(event._id)}
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
+                isAdmin={user?.adminOf?.includes(event.clubId)}
               />
             ))
           ) : (
