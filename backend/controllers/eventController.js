@@ -5,7 +5,7 @@ const Club = require('../Model/Club'); // Assuming you have a Club model
 // Create new event
 const createEvent = async (req, res) => {
     try {
-        const { Ename, date, location, eventDetail, clubId } = req.body;
+        const { Ename, date, time, location, eventDetail, clubId } = req.body;
 
         // Fetch the club to get the logo
         const club = await Club.findById(clubId);
@@ -16,6 +16,7 @@ const createEvent = async (req, res) => {
         const newEvent = new Event({
             Ename,
             date,
+            time,
             location,
             eventDetail,
             clubId,
