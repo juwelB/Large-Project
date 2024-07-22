@@ -5,7 +5,7 @@ const cors = require('cors');
 const path = require('path');
 require("dotenv").config();
 
-// import the club, user and event routes
+// Import the club, user, and event routes
 const eventRoutes = require('./backend/routes/eventRoutes');
 const clubRoutes = require('./backend/routes/clubRoutes');
 const userRoutes = require('./backend/routes/userRoutes');
@@ -18,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// using the routes
+// Using the routes
 app.use('/api/v1/clubs', clubRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
@@ -26,17 +26,16 @@ app.use('/api/v1/events', eventRoutes);
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'frontend/build')));
 
-// Root route to serve index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+// Catch-all route to serve index.html for any unknown routes, except API routes
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    next();  // Skip this middleware if the route starts with /api/
+  } else {
+    res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+  }
 });
 
-// Catch-all route to serve index.html for any unknown routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
-});
-
-// connect to mongodb
+// Connect to MongoDB
 connectDB();
 mongoose.connection.once('open', () => {
   console.log('MongoDB connected...');

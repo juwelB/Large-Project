@@ -22,6 +22,6 @@ router.post('/register', registerUser);
 router.get('/:id/verify/:token', verifyUser);
 router.put('/forgotpassword', forgotPassword);
 router.post('/:userId/resetpassword/:token', resetPassword);
-router.get('/userInfo:userId', userInfo);
+router.get('/userInfo/:email', userInfo);
 
 module.exports = router;

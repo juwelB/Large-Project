@@ -226,10 +226,10 @@ const resetPassword = async (req, res) => {
 };
 
 const userInfo = async (req,res) => {
-    const { userId } = req.params;
+    const { email } = req.params;
 
     try{
-        const user = await User.findById(userId);
+        const user = await User.findOne({email});
 
         if(!user)
         {
@@ -240,7 +240,7 @@ const userInfo = async (req,res) => {
         
     }catch (err){
         console.err(err);
-        res.status(500).json({messaage: "Internal Server Error"});
+        res.status(500).json({message: "Internal Server Error"});
     }
 
 };
