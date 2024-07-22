@@ -11,12 +11,21 @@ const CalendarPage = () => {
   const [selectedClub, setSelectedClub] = useState('All Clubs');
   const [userEvents, setUserEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [clubs, setClubs] = useState([]); // Add state for clubs
 
   useEffect(() => {
     if (user) {
       axios.get(`/api/users/${user._id}/events`)
         .then(response => setUserEvents(response.data))
         .catch(error => console.error('Error fetching user events:', error));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      axios.get(`/api/users/${user._id}/clubs`)
+        .then(response => setClubs(response.data))
+        .catch(error => console.error('Error fetching clubs:', error));
     }
   }, [user]);
 
