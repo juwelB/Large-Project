@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 
 const EventCard = ({ name, date, image, description, location, className, onRSVP, rsvpStatus, onDelete, isAdmin }) => {
   
@@ -9,9 +9,10 @@ const EventCard = ({ name, date, image, description, location, className, onRSVP
     console.log(`onDelete: ${onDelete ? 'Function exists' : 'Function does not exist'}`);
   }, [name, isAdmin, onDelete]);
 
-  // Format date and time
-  const formattedDate = format(new Date(date), 'MMMM dd, yyyy');
-  const formattedTime = format(new Date(date), 'hh:mm a');
+  // Check if the date is valid
+  const eventDate = new Date(date);
+  const formattedDate = isValid(eventDate) ? format(eventDate, 'MMMM dd, yyyy') : 'Invalid date';
+  const formattedTime = isValid(eventDate) ? format(eventDate, 'hh:mm a') : 'Invalid time';
 
   return (
     <div className={`bg-white rounded-lg shadow-md p-6 text-center ${className}`}>

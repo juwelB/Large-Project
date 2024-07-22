@@ -111,9 +111,18 @@ const ClubListPage = () => {
     toast.success('Successfully Created Club'); // Add this line
   };
 
-  const handleCreateEvent = (clubId) => {
-    setSelectedClub(clubId);
-    setIsEventModalOpen(true);
+  const handleCreateEvent = async (eventData) => {
+    try {
+      await axios.post('/api/v1/events/createEvent', eventData);
+      fetchUserClubs();
+      fetchDiscoverClubs();
+      toast.dismiss();  // Dismiss existing toasts
+      toast.success('Successfully Created Event');
+    } catch (error) {
+      console.error('Error creating event:', error.response ? error.response.data : error.message);
+      toast.dismiss();  // Dismiss existing toasts
+      toast.error('Error creating event: ' + (error.response ? error.response.data : error.message));
+    }
   };
 
   const handleCloseEventForm = () => {
@@ -227,6 +236,7 @@ const ClubListPage = () => {
           isOpen={isEventModalOpen}
           onClose={handleCloseEventForm}
           clubId={selectedClub}
+          onCreate={handleCreateEvent} // Add this line
         />
       )}
     </div>
