@@ -9,6 +9,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [userName, setUserName] = useState('');
@@ -17,7 +18,14 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // Add this line
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Add this line
+  const [isEmailTouched, setIsEmailTouched] = useState('');
+  const [isPasswordTouched, setIsPasswordTouched] = useState('');
+  const [isPasswordTwoTouched, setIsPasswordTwoTouched] = useState('');
+  const [isUsernameTouched, setIsUsernameTouched] = useState('');
+  const [isFirstnameTouched, setIsFirstnameTouched] = useState('');
+  const [isLastnameTouched, setIsLastnameTouched] = useState('');
 
+  let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   // requirements fields
   const [passwordRequirements, setPasswordRequirements] = useState({
     hasLowercase: false,
@@ -45,6 +53,7 @@ const SignUp = () => {
       hasSpecialChar: passwordRegex.hasSpecialChar.test(password),
       minLength: passwordRegex.minLength.test(password),
     });
+
   };
 
   const handleSubmit = async (e) => {
@@ -97,6 +106,22 @@ const SignUp = () => {
     }
   };
 
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    setIsEmailValid(emailRegex.test(value));
+    setIsEmailTouched(true);
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    checkPasswordRequirements(value);
+    setIsPasswordTouched(true);
+  };
+
+
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
@@ -108,17 +133,22 @@ const SignUp = () => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              id="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="Enter Email Here"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setIsPasswordFocused(false)}
-              required
-            />
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <div className = "relative">
+              <input 
+                type="email"
+                id="email"
+                className={`w-full px-3 py-2 border rounded-md ${isEmailTouched && isEmailValid ? 'border-green-500' : (isEmailTouched && !isEmailValid ? 'border-red-500' : 'border-gray-300')}`}
+                placeholder="Enter Email Here"
+                value={email}
+                onChange = {handleEmailChange}
+                //onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => {setIsEmailTouched(true); setIsPasswordFocused(false);}}
+                required
+              />
+            </div>
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
@@ -126,14 +156,16 @@ const SignUp = () => {
               <input
                 type={showPassword ? "text" : "password"} // Update this line
                 id="password"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                //className={`w-full px-3 py-2 border rounded-md ${Object.values(passwordRequirements).every(Boolean) ? 'border-green-500' : 'border-red-500'}`}
+                className={`w-full px-3 py-2 border rounded-md ${isPasswordTouched && Object.values(passwordRequirements).every(Boolean) ? 'border-green-500' : (isPasswordTouched && !Object.values(passwordRequirements).every(Boolean) ? 'border-red-500' : 'border-gray-300')}`}
                 placeholder="Enter Password Here"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  checkPasswordRequirements(e.target.value);
-                }}
-                onFocus={() => setIsPasswordFocused(true)}
+                //onChange={(e) => {
+                //  setPassword(e.target.value);
+                 // checkPasswordRequirements(e.target.value);
+                //}}
+                onChange = {handlePasswordChange}
+                onFocus={() => {setIsPasswordTouched(true); setIsPasswordFocused(true);}}
                 required
               />
               <button
@@ -163,11 +195,12 @@ const SignUp = () => {
               <input
                 type={showConfirmPassword ? "text" : "password"} // Update this line
                 id="confirmPassword"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                //className={`w-full px-3 py-2 border rounded-md ${confirmPassword === password ? 'border-green-500' : 'border-red-500'}`}
+                className={`w-full px-3 py-2 border rounded-md ${isPasswordTwoTouched && confirmPassword === password ? 'border-green-500' : (isPasswordTwoTouched && confirmPassword !== password? 'border-red-500' : 'border-gray-300')}`}
                 placeholder="Confirm Password Here"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                onFocus={() => setIsPasswordFocused(false)}
+                onChange={(e) => {setConfirmPassword(e.target.value); setIsPasswordTwoTouched(true);}}
+                onFocus={() => {setIsPasswordFocused(false); setIsPasswordTwoTouched(true);}}
                 required
               />
               <button
@@ -184,11 +217,12 @@ const SignUp = () => {
             <input
               type="text"
               id="userName"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              //className={`w-full px-3 py-2 border rounded-md ${userName.length > 0 ? 'border-green-500' : 'border-red-500'}`}
+              className={`w-full px-3 py-2 border rounded-md ${isUsernameTouched && userName.length > 0 ? 'border-green-500' : (isUsernameTouched && userName.length === 0 ? 'border-red-500' : 'border-gray-300')}`}
               placeholder="Enter Username Here"
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              onFocus={() => setIsPasswordFocused(false)}
+              onChange={(e) => {setIsUsernameTouched(true); setUserName(e.target.value);}}
+              onFocus={() => {setIsPasswordFocused(false); setIsUsernameTouched(true);}}
               required
             />
           </div>
@@ -197,11 +231,12 @@ const SignUp = () => {
             <input
               type="text"
               id="firstName"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              //className={`w-full px-3 py-2 border rounded-md ${firstName.length > 0 ? 'border-green-500' : 'border-red-500'}`}
+              className={`w-full px-3 py-2 border rounded-md ${isFirstnameTouched && firstName.length > 0 ? 'border-green-500' : (isFirstnameTouched && firstName.length === 0 ? 'border-red-500' : 'border-gray-300')}`}
               placeholder="Enter First Name Here"
               value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              onFocus={() => setIsPasswordFocused(false)}
+              onChange={(e) => {setFirstName(e.target.value); setIsFirstnameTouched(true);}}
+              onFocus={() => {setIsPasswordFocused(false); setIsFirstnameTouched(true);}}
               required
             />
           </div>
@@ -210,11 +245,12 @@ const SignUp = () => {
             <input
               type="text"
               id="lastName"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              //className={`w-full px-3 py-2 border rounded-md ${lastName.length > 0 ? 'border-green-500' : 'border-red-500'}`}
+              className={`w-full px-3 py-2 border rounded-md ${isLastnameTouched && lastName.length > 0 ? 'border-green-500' : (isLastnameTouched && lastName.length === 0 ? 'border-red-500' : 'border-gray-300')}`}
               placeholder="Enter Last Name Here"
               value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              onFocus={() => setIsPasswordFocused(false)}
+              onChange={(e) => {setLastName(e.target.value); setIsLastnameTouched(true);}}
+              onFocus={() => {setIsPasswordFocused(false); setIsLastnameTouched(true);}}
               required
             />
           </div>
