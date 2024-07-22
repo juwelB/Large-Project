@@ -1,30 +1,28 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
 const clubSchema = new Schema({
     name: {
         type: String,
         required: true
     },
     clubInfo: {
-
         industry: String,
-        description: String
+        description: String,
+        logo: String
     },
     eventList: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
-
     }],
     memberList: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
     adminId: {
-        type: mongoose.Types.ObjectId,
-        required: true
-
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: false
     }
 });
 

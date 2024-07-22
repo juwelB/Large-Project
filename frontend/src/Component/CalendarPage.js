@@ -1,30 +1,40 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import EventCard from './EventCard'; 
 
 const CalendarPage = () => {
   const { user } = useContext(AuthContext);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedClub, setSelectedClub] = useState('All Clubs');
+  const [userEvents, setUserEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [clubs, setClubs] = useState([]); 
 
-  const clubs = [
-    { name: 'Knights Experimental Rocketry' },
-    { name: 'Knight Hacks' },
-    { name: 'AI@UCF' },
-  ];
+  useEffect(() => {
+    if (user) {
+      fetchUserData();
+    }
+  }, [user]);
 
-  const events = [
-    { name: 'Knight Hacks GBM', date: '2023-05-01', description: 'General Body Meeting for Knight Hacks', location: 'Room 101', club: 'Knight Hacks' },
-    { name: 'AI@UCF Workshop', date: '2023-05-03', description: 'AI Workshop', location: 'Room 202', club: 'AI@UCF' },
-  ];
+  const fetchUserData = async () => {
+    if (!user) return; 
+    try {
+      const userEventsResponse = await axios.get(`/api/v1/users/${user._id}/events`);
+      setUserEvents(userEventsResponse.data);
 
-  const filteredEvents = selectedClub === 'All Clubs' ? events : events.filter(event => event.club === selectedClub);
-
-  const handleEventClick = (event) => {
-    setSelectedEvent(event);
+      const clubsResponse = await axios.post('/api/v1/clubs/viewMyClubs', { userId: user._id });
+      setClubs(clubsResponse.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      toast.error('Error fetching user data', { toastId: 'fetchUserDataError' });
+    }
   };
+
+  const filteredEvents = selectedClub === 'All Clubs' ? userEvents : userEvents.filter(event => event.club === selectedClub);
 
   const renderHeader = () => {
     const dateFormat = 'MMMM yyyy';
@@ -42,7 +52,7 @@ const CalendarPage = () => {
           className="border border-gray-300 rounded-md p-2"
         >
           <option value="All Clubs">All Clubs</option>
-          {clubs.map((club, index) => (
+          {Array.isArray(clubs) && clubs.map((club, index) => (
             <option key={index} value={club.name}>{club.name}</option>
           ))}
         </select>
@@ -86,17 +96,23 @@ const CalendarPage = () => {
         const cloneDay = day;
         days.push(
           <div
-            className={`p-2 text-center ${!isSameMonth(day, monthStart) ? 'text-gray-400' : ''} ${isSameDay(day, new Date()) ? 'bg-blue-200' : ''}`}
+            className={`p-6 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`}
             key={day}
-            onClick={() => handleEventClick(cloneDay)}
+            onClick={() => handleDayClick(cloneDay)}
           >
-            <span>{formattedDate}</span>
-            {filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
+            <div className={`text-xl font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
+              {formattedDate}
+            </div>
+            {Array.isArray(filteredEvents) && filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
               <div
                 key={idx}
-                className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer"
-                onClick={() => handleEventClick(event)}
+                className="bg-purple-500 text-white rounded-md p-2 mt-2 cursor-pointer text-sm flex items-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedEvent(event);
+                }}
               >
+                {event.logo && <img src={event.logo} alt="logo" className="w-6 h-6 mr-2" />}
                 {event.name}
               </div>
             ))}
@@ -115,12 +131,21 @@ const CalendarPage = () => {
     return <div>{rows}</div>;
   };
 
+  const handleDayClick = (day) => {
+    const eventsOnDay = Array.isArray(filteredEvents) ? filteredEvents.filter(event => isSameDay(new Date(event.date), day)) : [];
+    if (eventsOnDay.length > 0) {
+      setSelectedEvent(eventsOnDay[0]);
+    } else {
+      setSelectedEvent(null);
+    }
+  };
+
   const nextMonth = () => {
-    setCurrentMonth(addDays(currentMonth, 30));
+    setCurrentMonth(addMonths(currentMonth, 1));
   };
 
   const prevMonth = () => {
-    setCurrentMonth(addDays(currentMonth, -30));
+    setCurrentMonth(subMonths(currentMonth, 1));
   };
 
   return (
@@ -141,17 +166,16 @@ const CalendarPage = () => {
         {renderDays()}
         {renderCells()}
         {selectedEvent && (
-          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            <h3 className="text-2xl font-bold mb-4">{selectedEvent.name}</h3>
-            <p className="mb-4"><strong>Description:</strong> {selectedEvent.description}</p>
-            <p className="mb-4"><strong>When:</strong> {selectedEvent.date}</p>
-            <p className="mb-4"><strong>Where:</strong> {selectedEvent.location}</p>
-            <button
-              onClick={() => setSelectedEvent(null)}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-            >
-              Close
-            </button>
+          <div className="mt-8">
+            <EventCard
+              name={selectedEvent.name}
+              date={selectedEvent.date}
+              image={selectedEvent.image}
+              description={selectedEvent.description}
+              location={selectedEvent.location}
+              eventDetail={selectedEvent.eventDetail}
+              className="mx-auto"
+            />
           </div>
         )}
       </main>

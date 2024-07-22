@@ -13,6 +13,9 @@ const {
     verifyUser,
     forgotPassword,
     resetPassword,
+    makeAdmin,
+    getUserEvents,
+    getUserClubs,// Added this line,
     userInfo
 } = controller;
 
@@ -20,8 +23,11 @@ const {
 router.post('/login', loginUser);
 router.post('/register', registerUser);
 router.get('/:id/verify/:token', verifyUser);
-router.put('/forgotpassword', forgotPassword);
+router.post('/forgot-password', forgotPassword);
 router.post('/:userId/resetpassword/:token', resetPassword);
+router.put('/:id/makeAdmin', makeAdmin);
+router.get('/:userId/events', getUserEvents);
+router.get('/:userId/clubs', getUserClubs); // Added this line
 router.get('/userInfo/:email', userInfo);
 
 module.exports = router;

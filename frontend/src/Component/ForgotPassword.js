@@ -10,11 +10,9 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('https://ucf-club-and-event-manager-1c53fb944ab8.herokuapp.com/api/v1/users/forgot-password', {
-        email
-      });
-      if (response.status === 200) {
-        navigate('/forgot-password-verification', { state: { email: email } }); // Navigate to ForgotPasswordVerification with email
+      const response = await axios.post('/api/v1/users/forgot-password', { email });
+      if (response.status === 202) {
+        navigate('/forgot-password-verification', { state: { email: email } }); 
       }
     } catch (error) {
       console.error('Error during password reset request:', error);

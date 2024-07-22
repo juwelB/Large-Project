@@ -1,10 +1,12 @@
 const User = require('../Model/User');
 const bcrypt = require('bcrypt');
-const Token = require("../Model/token");
+const Token = require("../Model/myToken"); // Updated the path to match the correct file name
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const { isStrongPassword } = require('../../passwordValidator');
 const { emailRegex } = require('../../emailRegex');
+
+const Club = require('../Model/Club'); // Import the Club model
 
 require('dotenv').config(); // Ensure this is at the very top
 
@@ -46,24 +48,27 @@ const registerUser = async (req, res) => {
         let salt = await bcrypt.genSalt(10);
         userData.password = await bcrypt.hash(userData.password, salt);
 
-        //add user to db
+        // Add user to db
         const newUser = await userData.save();
-
-        const token = await new Token({
+        const userToken = await new Token({
             userId: newUser._id,
             token: crypto.randomBytes(32).toString("hex")
         }).save();
-        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${token.token}`;
-        await sendEmail(newUser.email,"Verify Email",url);
+        const url = `${process.env.BASE_URL}api/v1/users/${newUser._id}/verify/${userToken.token}`;
+        await sendEmail(newUser.email, "Verify Email", url);
 
-        // const result = await User.findOne({ newUser }).select('-password'); // help here!
-        const result = await User.findOne({_id: newUser._id}).select('-password -email');
+        // Automatically add new user to the "UCF"
+        const publicClub = await Club.findOne({ name: 'UCF' });
+        if (publicClub) {
+            newUser.clubList.push(publicClub._id);
+            await newUser.save();
+        }
 
-        res.status(201).json({message: "An email was sent to your account please verify"});
+        res.status(201).json({ message: "An email was sent to your account please verify" });
     } catch (err) {
         res.status(400).json({
             message: err.message
-        })
+        });
     }
 }
 
@@ -92,7 +97,8 @@ const verifyUser = async (req, res) => {
         await Token.deleteOne({ _id: token._id });
         //console.log("Token removed", token);
 
-        res.status(200).json({ message: "Email verified successfully" });
+        // Redirect to the email verified page
+        res.redirect(`${process.env.FRONTEND_URL}email-verified`);
     } catch (err) {
         console.error("Error in verifyUser:", err);
         res.status(500).json({ message: "Internal Server Error" });
@@ -140,14 +146,19 @@ const loginUser = async (req, res) => {
               const url = `${process.env.BASE_URL}api/v1/users/${user._id}/verify/${token.token}`;
               await sendEmail(user.email, "Verify Email", url);
             }
-            return res.status(400).json({message: "An email was sent to your account please verify"});
+            return res.status(400).json({ message: "An email was sent to your account please verify" });
         }
 
-        // successfull resond msg
-        res.status(201).json({
-            name: user.firstName,
-            msg: "login succesfull"
-        })
+        // Send user data including ID
+        res.status(200).json({
+            user: {
+                _id: user._id,
+                name: user.firstName,
+                email: user.email,
+                // Include other necessary user data, but be careful not to send sensitive information
+            },
+            message: "Login successful"
+        });
     }
     catch (err) {
         console.error(err);
@@ -161,8 +172,7 @@ const forgotPassword = async (req, res) => {
     try {
         console.log("Finding user with email:", email);
         const user = await User.findOne({ email });
-        if (!user) 
-        {
+        if (!user) {
             console.log("User not found");
             return res.status(404).json({ message: "User not found" });
         }
@@ -173,8 +183,7 @@ const forgotPassword = async (req, res) => {
 
         // Find existing token or create a new one
         let userToken = await Token.findOne({ userId: user._id });
-        if (userToken) 
-        {
+        if (userToken) {
             userToken.token = token;
         } else {
             userToken = new Token({
@@ -186,13 +195,17 @@ const forgotPassword = async (req, res) => {
         console.log("Saving token:", userToken);
         await userToken.save();
 
-        const url = `${process.env.BASE_URL}api/v1/users/${user._id}/resetpassword/${token.token}`;
+        console.log("Token generated and saved:", token);
 
-        await sendEmail(user.email,"Forgot Password",url);
+        // Send the email
+        const resetUrl = `${process.env.BASE_URL}reset-password/${user._id}/${token}`;
+        console.log("Sending email to:", email, "with reset URL:", resetUrl);
+        await sendEmail(email, 'Password Reset', `Please use the following link to reset your password: ${resetUrl}`);
 
-        res.status(202).json({message: "An email was sent to your account please reset password"});
-    }catch(err){
-        console.error(err);
+        console.log("Password reset email sent to:", email);
+        res.status(202).json({ message: "Password reset email sent", email });
+    } catch (error) {
+        console.error("Error during password reset request:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
@@ -257,14 +270,60 @@ const userInfo = async (req,res) => {
 
 };
 
+const makeAdmin = async (req, res) => {
+    try {
+        const { clubId } = req.body;
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-// for logged in users, get the favorite
-// add code
+        user.role = 1;
+        user.adminOf.push(clubId);
+        await user.save();
+
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// Get user's event list
+const getUserEvents = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId).populate('eventList');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user.eventList);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user events', error });
+    }
+};
+
+// Get user's clubs
+const getUserClubs = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId).populate('clubList');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user.clubList);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user clubs', error });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
     verifyUser,
     forgotPassword,
     resetPassword,
+    makeAdmin,
+    getUserEvents,
+    getUserClubs,
     userInfo
 };
