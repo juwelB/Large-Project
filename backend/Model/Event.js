@@ -11,11 +11,12 @@ const eventSchema = new Schema(
 
         date: {
             type: Date,
+            required: true // Ensure date is required
         },
 
         time: {
             type: String,
-            required: true
+            required: true // Ensure time is required
         },
 
         location: {

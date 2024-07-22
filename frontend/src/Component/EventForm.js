@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 const EventForm = ({ isOpen, onClose, clubId }) => {
   const [Ename, setEname] = useState('');
   const [date, setDate] = useState('');
-  const [time, setTime] = useState(''); // Add this line
+  const [time, setTime] = useState(''); // Added this line
   const [location, setLocation] = useState('');
   const [eventDetail, setEventDetail] = useState([{ topic: '', describe: '' }]);
 
@@ -15,7 +15,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
       const response = await axios.post('/api/v1/events/createEvent', {
         Ename,
         date,
-        time, // Add this line
+        time, // Added this line
         location,
         eventDetail,
         clubId
@@ -24,7 +24,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
       // Clear form fields after successful creation
       setEname('');
       setDate('');
-      setTime(''); // Add this line
+      setTime(''); // Added this line
       setLocation('');
       setEventDetail([{ topic: '', describe: '' }]);
       onClose();

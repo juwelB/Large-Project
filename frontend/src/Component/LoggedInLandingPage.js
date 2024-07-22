@@ -103,17 +103,9 @@ const LoggedInLandingPage = () => {
     }
   };
 
-  const handleCreateEvent = async (eventData) => {
-    try {
-      await axios.post('/api/v1/events/createEvent', eventData);
-      fetchClubsAndEvents();
-      toast.dismiss();  // Dismiss existing toasts
-      toast.success('Successfully Created Event');
-    } catch (error) {
-      console.error('Error creating event:', error.response ? error.response.data : error.message);
-      toast.dismiss();  // Dismiss existing toasts
-      toast.error('Error creating event: ' + (error.response ? error.response.data : error.message));
-    }
+  const handleCreateEvent = (clubId) => {
+    setSelectedClub(clubId);
+    setIsEventModalOpen(true);
   };
 
   const handleRSVPEvent = async (eventId) => {
