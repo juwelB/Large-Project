@@ -140,7 +140,7 @@ const viewMyClubs = async (req, res) => {
 };
 
 const viewClubEvents = async (req, res) => {
-    const { clubId } = req.body;
+    const { clubId } = req.params;
     try {
         const club = await Club.findById(clubId).populate('eventList');
 

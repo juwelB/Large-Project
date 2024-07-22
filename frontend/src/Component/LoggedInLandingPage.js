@@ -251,7 +251,7 @@ const LoggedInLandingPage = () => {
                   date={event.date}
                   image={event.image}
                   description={event.eventDetail.map(detail => detail.describe).join(', ')}
-                  location={`${event.location.address}, ${event.location.city}, ${event.location.state}`}
+                  location={event.location}
                   className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
                   onRSVP={() => rsvpedEvents.includes(event._id) ? handleUnRSVPEvent(event._id) : handleRSVPEvent(event._id)}
                   rsvpStatus={rsvpedEvents.includes(event._id)}

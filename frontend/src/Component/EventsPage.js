@@ -102,7 +102,7 @@ const EventList = () => {
                 onRSVP={() => handleUnRSVP(event._id)}
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf?.includes(event.clubId)}
+                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
               />
             ))
           ) : (
@@ -137,7 +137,7 @@ const EventList = () => {
                 onRSVP={() => handleRSVP(event._id)}
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user?.adminOf?.includes(event.clubId)}
+                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
               />
             ))
           ) : (

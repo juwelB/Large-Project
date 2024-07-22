@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const EventCard = ({ name, date, image, description, location, className, onRSVP, rsvpStatus, onDelete, isAdmin }) => {
+  
+  useEffect(() => {
+    console.log(`EventCard Debug - Event: ${name}`);
+    console.log(`isAdmin: ${isAdmin}`);
+    console.log(`onDelete: ${onDelete ? 'Function exists' : 'Function does not exist'}`);
+  }, [name, isAdmin, onDelete]);
+
   return (
     <div className={`bg-white rounded-lg shadow-md p-6 text-center ${className}`}>
       <img src={image} alt={`${name} event`} className="w-full h-48 object-cover mb-4" />

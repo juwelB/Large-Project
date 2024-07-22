@@ -50,5 +50,8 @@ router.get('/viewPublicClubEvents', async (req, res) => {
 });
 router.post('/upload', uploadFile);
 
+// Get request to view events of a specific club
+router.get('/:clubId/events', viewClubEvents);
+
 // export the router
 module.exports = router;
