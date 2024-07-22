@@ -134,7 +134,7 @@ const EventList = () => {
       </header>
       <main className="container mx-auto py-12 px-4">
         <h2 className="text-3xl font-bold mb-6">Your RSVP'ed Events</h2>
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {rsvpedEvents.length > 0 ? (
             rsvpedEvents.map((event, index) => (
               <EventCard
@@ -148,11 +148,11 @@ const EventList = () => {
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
                 isAdmin={adminStatus[event.clubId]} // Use the admin status from state
-                className="mb-4 p-4 text-sm" // Adjust padding and text size
+                className="mb-4 p-2 text-sm" // Adjust padding and text size
               />
             ))
           ) : (
-            <p className="text-center text-gray-600">No RSVP'ed events found.</p>
+            <p className="text-center text-gray-600 col-span-full">No RSVP'ed events found.</p>
           )}
         </div>
         {selectedEvent && (
@@ -170,7 +170,7 @@ const EventList = () => {
           </div>
         )}
         <h2 className="text-3xl font-bold mb-6 mt-12">Discover Your Club Events</h2>
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {clubEvents.length > 0 ? (
             clubEvents.map((event, index) => (
               <EventCard
@@ -184,11 +184,11 @@ const EventList = () => {
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
                 isAdmin={adminStatus[event.clubId]} 
-                className="mb-4 p-4 text-sm" // Adjust padding and text size
+                className="mb-4 p-2 text-sm" // Adjust padding and text size
               />
             ))
           ) : (
-            <p className="text-center text-gray-600">No events found for your clubs.</p>
+            <p className="text-center text-gray-600 col-span-full">No events found for your clubs.</p>
           )}
         </div>
       </main>

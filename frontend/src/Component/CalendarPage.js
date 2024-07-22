@@ -58,7 +58,11 @@ const CalendarPage = () => {
     }
   };
 
-  const filteredEvents = selectedClub === 'All Clubs' ? userEvents : userEvents.filter(event => event.club === selectedClub);
+  // Ensure the events have a 'clubId' field and filter accordingly
+  const filteredEvents = selectedClub === 'All Clubs' ? userEvents : userEvents.filter(event => {
+    const club = clubs.find(club => club._id === event.clubId);
+    return club && club.name === selectedClub;
+  });
 
   // Debugging logs
   console.log('Selected Club:', selectedClub);
@@ -132,19 +136,22 @@ const CalendarPage = () => {
             <div className={`text-lg font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
               {formattedDate}
             </div>
-            {Array.isArray(filteredEvents) && filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
-              <div
-                key={idx}
-                className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs flex items-center"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedEvent(event);
-                }}
-              >
-                {event.logo && <img src={event.logo} alt="logo" className="w-4 h-4 mr-1" />}
-                {event.name}
-              </div>
-            ))}
+            {Array.isArray(filteredEvents) && filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => {
+              const club = clubs.find(club => club._id === event.clubId);
+              return (
+                <div
+                  key={idx}
+                  className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs flex items-center"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedEvent(event);
+                  }}
+                >
+                  {club && club.clubInfo && <img src={club.clubInfo.logo} alt="logo" className="w-4 h-4 mr-1" />}
+                  {event.name}
+                </div>
+              );
+            })}
           </div>
         );
         day = addDays(day, 1);
