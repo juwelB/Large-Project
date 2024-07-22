@@ -1,7 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import SignUp from './SignUp';
 import Login from './Login';
 import LandingPage from './LandingPage';
@@ -15,12 +13,15 @@ import EventsPage from './EventsPage';
 import ResetPassword from './ResetPassword';
 import EmailVerified from './EmailVerified';
 import { AuthProvider } from '../context/AuthContext';
-import ClubForm from './ClubForm'
+import ClubForm from './ClubForm';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
+        <ToastContainer />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUp />} />
@@ -37,7 +38,6 @@ const App = () => {
           <Route path="/create-club" element={<ClubForm />} />
           {/* Other routes */}
         </Routes>
-        <ToastContainer />
       </Router>
     </AuthProvider>
   );

@@ -16,25 +16,23 @@ const CalendarPage = () => {
 
   useEffect(() => {
     if (user) {
-      axios.get(`/api/users/${user._id}/events`)
-        .then(response => setUserEvents(response.data))
-        .catch(error => {
-          console.error('Error fetching user events:', error);
-          toast.error('Error fetching user events', { toastId: 'fetchUserEventsError' });
-        });
+      fetchUserData();
     }
   }, [user]);
 
-  useEffect(() => {
-    if (user) {
-      axios.get(`/api/users/${user._id}/clubs`)
-        .then(response => setClubs(response.data))
-        .catch(error => {
-          console.error('Error fetching clubs:', error);
-          toast.error('Error fetching clubs', { toastId: 'fetchClubsError' });
-        });
+  const fetchUserData = async () => {
+    if (!user) return; // Ensure user is defined before making API calls
+    try {
+      const userEventsResponse = await axios.get(`/api/v1/users/${user._id}/events`);
+      setUserEvents(userEventsResponse.data);
+
+      const clubsResponse = await axios.post('/api/v1/clubs/viewMyClubs', { userId: user._id });
+      setClubs(clubsResponse.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      toast.error('Error fetching user data', { toastId: 'fetchUserDataError' });
     }
-  }, [user]);
+  };
 
   const filteredEvents = selectedClub === 'All Clubs' ? userEvents : userEvents.filter(event => event.club === selectedClub);
 

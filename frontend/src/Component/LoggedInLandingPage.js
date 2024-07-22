@@ -61,11 +61,9 @@ const LoggedInLandingPage = () => {
       console.log(`Joined club: ${clubId}`);
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Joined Club', { toastId: 'joinClubSuccess' });
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error joining club: ' + (error.response ? error.response.data : error.message), { toastId: 'joinClubError' });
     }
   };
@@ -79,11 +77,9 @@ const LoggedInLandingPage = () => {
       console.log(`Left club: ${clubId}`);
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Left Club', { toastId: 'leaveClubSuccess' });
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message), { toastId: 'leaveClubError' });
     }
   };
@@ -94,11 +90,9 @@ const LoggedInLandingPage = () => {
       console.log(`Deleted club: ${clubId}`);
       // Refetch clubs and events to update the UI
       fetchClubsAndEvents();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Deleted Club', { toastId: 'deleteClubSuccess' });
     } catch (error) {
       console.error('Error deleting club:', error.response ? error.response.data : error.message);
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message), { toastId: 'deleteClubError' });
     }
   };
@@ -177,7 +171,6 @@ const LoggedInLandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <ToastContainer />
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>

@@ -55,7 +55,6 @@ const ClubListPage = () => {
         clubId: clubId
       });
       console.log(`Joined club: ${clubId}`);
-      // Refetch user clubs and discover clubs to update the UI
       fetchUserClubs();
       fetchDiscoverClubs();
       toast.success('Successfully Joined Club', { toastId: 'joinClubSuccess' });
@@ -73,15 +72,12 @@ const ClubListPage = () => {
         clubObjId: clubId
       });
       console.log(`Left club: ${clubId}`);
-      // Refetch user clubs and discover clubs to update the UI
       fetchUserClubs();
       fetchDiscoverClubs();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Left Club', { toastId: 'leaveClubSuccess' });
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
       setError('Error leaving club: ' + (error.response ? error.response.data : error.message));
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message), { toastId: 'leaveClubError' });
     }
   };
@@ -90,15 +86,12 @@ const ClubListPage = () => {
     try {
       await axios.delete('/api/v1/clubs/deleteclub', { data: { clubId } });
       console.log(`Deleted club: ${clubId}`);
-      // Refetch user clubs and discover clubs to update the UI
       fetchUserClubs();
       fetchDiscoverClubs();
-      toast.dismiss();  // Dismiss existing toasts
       toast.success('Successfully Deleted Club', { toastId: 'deleteClubSuccess' });
     } catch (error) {
       console.error('Error deleting club:', error.response ? error.response.data : error.message);
       setError('Error deleting club: ' + (error.response ? error.response.data : error.message));
-      toast.dismiss();  // Dismiss existing toasts
       toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message), { toastId: 'deleteClubError' });
     }
   };
@@ -123,7 +116,6 @@ const ClubListPage = () => {
 
   return (
     <div className="min-h-screen bg-lightGray">
-      <ToastContainer />
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
