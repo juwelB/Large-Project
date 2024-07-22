@@ -5,17 +5,19 @@ import { toast } from 'react-toastify';
 const EventForm = ({ isOpen, onClose, clubId }) => {
   const [Ename, setEname] = useState('');
   const [date, setDate] = useState('');
-  const [time, setTime] = useState(''); // Added this line
+  const [time, setTime] = useState('');
   const [location, setLocation] = useState('');
   const [eventDetail, setEventDetail] = useState([{ topic: '', describe: '' }]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Combine date and time into a single DateTime value
+      const dateTime = new Date(`${date}T${time}:00`);
+
       const response = await axios.post('/api/v1/events/createEvent', {
         Ename,
-        date,
-        time, // Added this line
+        date: dateTime, // Use the combined DateTime value
         location,
         eventDetail,
         clubId
@@ -24,7 +26,7 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
       // Clear form fields after successful creation
       setEname('');
       setDate('');
-      setTime(''); // Added this line
+      setTime('');
       setLocation('');
       setEventDetail([{ topic: '', describe: '' }]);
       onClose();
