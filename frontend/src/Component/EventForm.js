@@ -13,7 +13,8 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
     e.preventDefault();
     try {
       // Combine date and time into a single DateTime value
-      const dateTime = new Date(`${date}T${time}:00`);
+      const dateTime = new Date(`${date}T${time}`);
+      console.log(dateTime);
 
       const response = await axios.post('/api/v1/events/createEvent', {
         Ename,
