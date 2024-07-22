@@ -103,26 +103,11 @@ const ClubListPage = () => {
     }
   };
 
-  const handleCreateClub = async (clubData) => {
-    if (isLoading) return; // Prevent multiple submissions
-    setIsLoading(true); // Add this line
-    try {
-      await axios.post('/api/v1/clubs/createclub', clubData);
-      console.log('Created club:', clubData);
-      // Refetch user clubs and discover clubs to update the UI
-      await fetchUserClubs();
-      await fetchDiscoverClubs();
-      toast.dismiss();  // Dismiss existing toasts
-      toast.success('Successfully Created Club');
-      setIsModalOpen(false); // Close the modal after successful creation
-    } catch (error) {
-      console.error('Error creating club:', error.response ? error.response.data : error.message);
-      setError('Error creating club: ' + (error.response ? error.response.data : error.message));
-      toast.dismiss();  // Dismiss existing toasts
-      toast.error('Error creating club: ' + (error.response ? error.response.data : error.message));
-    } finally {
-      setIsLoading(false); // Add this line
-    }
+  const handleCreateClub = async (createdClub) => {
+    // Update the state with the newly created club
+    setAdminClubs((prevAdminClubs) => [...prevAdminClubs, createdClub]);
+    setDiscoverClubs((prevDiscoverClubs) => [...prevDiscoverClubs, createdClub]);
+    setIsModalOpen(false); // Close the modal after successful creation
   };
 
   const handleCreateEvent = (clubId) => {
@@ -222,7 +207,7 @@ const ClubListPage = () => {
           </div>
         </section>
       </main>
-      {selectedClub && (
+      {selectedClub && !isEventModalOpen && ( // Ensure ClubModal is not shown when EventForm is open
         <ClubModal
           club={selectedClub}
           onClose={() => setSelectedClub(null)}

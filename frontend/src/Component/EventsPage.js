@@ -18,6 +18,8 @@ const EventList = () => {
   }, [user]);
 
   const fetchEvents = async () => {
+    if (!user) return; // Ensure user is defined before making API calls
+    console.log(user);
     try {
       const userEventsResponse = await axios.get(`/api/v1/users/${user._id}/events`);
       setRsvpedEvents(userEventsResponse.data);
@@ -27,6 +29,7 @@ const EventList = () => {
 
       let allClubEvents = [];
       for (const club of userClubs) {
+        if (!club._id) continue; // Ensure club._id is defined
         const clubEventsResponse = await axios.get(`/api/v1/clubs/${club._id}/events`);
         const clubEvents = clubEventsResponse.data;
         allClubEvents = allClubEvents.concat(clubEvents);
@@ -96,7 +99,7 @@ const EventList = () => {
                 onRSVP={() => handleUnRSVP(event._id)}
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user.adminOf.includes(event.clubId)}
+                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
               />
             ))
           ) : (
@@ -131,7 +134,7 @@ const EventList = () => {
                 onRSVP={() => handleRSVP(event._id)}
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
-                isAdmin={user.adminOf.includes(event.clubId)}
+                isAdmin={user?.adminOf?.includes(event.clubId)} // Ensure user.adminOf is defined
               />
             ))
           ) : (

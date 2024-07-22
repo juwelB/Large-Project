@@ -263,7 +263,7 @@ const LoggedInLandingPage = () => {
           </div>
         </section>
       </main>
-      {selectedClub && (
+      {selectedClub && !isEventModalOpen && ( // Ensure ClubModal is not shown when EventForm is open
         <ClubModal
           club={selectedClub}
           onClose={() => setSelectedClub(null)}

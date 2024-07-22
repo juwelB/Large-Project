@@ -8,7 +8,11 @@ const EventCard = ({ name, date, image, description, location, className, onRSVP
         <h3 className="text-xl font-semibold mb-2">{name}</h3>
         <p className="text-gray-600">{date}</p>
         {description && <p className="text-gray-600 mt-2">{description}</p>}
-        {location && <p className="text-gray-600 mt-2">{location}</p>}
+        {location && (
+          <p className="text-gray-600 mt-2">
+            {location.address ? location.address : ''}{location.city ? `, ${location.city}` : ''}{location.state ? `, ${location.state}` : ''}
+          </p>
+        )}
         {onRSVP && (
           <button
             onClick={(e) => {

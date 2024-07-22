@@ -57,7 +57,7 @@ const ClubForm = ({ isOpen, onClose, onCreate }) => {
       setDescription('');
       setLogo(null);
 
-      onCreate(clubData); // Call the onCreate callback to refetch clubs
+      onCreate(createdClub); // Pass the created club to the onCreate callback
       onClose();
     } catch (error) {
       console.error('Error creating club:', error.response ? error.response.data : error);

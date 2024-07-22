@@ -19,6 +19,11 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
         clubId
       });
       toast.success('Event created successfully');
+      // Clear form fields after successful creation
+      setEname('');
+      setDate('');
+      setLocation('');
+      setEventDetail([{ topic: '', describe: '' }]);
       onClose();
     } catch (error) {
       console.error('Error creating event:', error);
@@ -94,13 +99,6 @@ const EventForm = ({ isOpen, onClose, clubId }) => {
                 />
               </div>
             ))}
-            <button
-              type="button"
-              className="text-blue-600 hover:underline"
-              onClick={() => setEventDetail([...eventDetail, { topic: '', describe: '' }])}
-            >
-              Add More Details
-            </button>
           </div>
           <button
             type="submit"
