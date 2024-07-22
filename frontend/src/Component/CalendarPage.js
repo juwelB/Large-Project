@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
 
 const CalendarPage = () => {
   const { user } = useContext(AuthContext);
@@ -22,7 +22,6 @@ const CalendarPage = () => {
   ];
 
   const filteredEvents = selectedClub === 'All Clubs' ? events : events.filter(event => event.club === selectedClub);
-  
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
@@ -123,11 +122,11 @@ const CalendarPage = () => {
   };
 
   const nextMonth = () => {
-    setCurrentMonth(addDays(currentMonth, 30));
+    setCurrentMonth(addMonths(currentMonth, 1));
   };
 
   const prevMonth = () => {
-    setCurrentMonth(addDays(currentMonth, -30));
+    setCurrentMonth(subMonths(currentMonth, 1));
   };
 
   return (

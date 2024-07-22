@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { format, isValid } from 'date-fns';
 
-const EventCard = ({ name, date, image, description, location, className, onRSVP, rsvpStatus, onDelete, isAdmin }) => {
+const EventCard = ({ name, date, image, description, location, eventDetail, className, onRSVP, rsvpStatus, onDelete, isAdmin }) => {
   
   useEffect(() => {
     console.log(`EventCard Debug - Event: ${name}`);
@@ -20,12 +20,14 @@ const EventCard = ({ name, date, image, description, location, className, onRSVP
       <div className="p-4">
         <h3 className="text-xl font-semibold mb-2">{name}</h3>
         <p className="text-gray-600">{formattedDate} at {formattedTime}</p>
-        {description && <p className="text-gray-600 mt-2">{description}</p>}
-        {location && (
-          <p className="text-gray-600 mt-2">
-            {location.address ? location.address : ''}{location.city ? `, ${location.city}` : ''}{location.state ? `, ${location.state}` : ''}
-          </p>
+        {location && <p className="text-gray-600 mt-2">{location}</p>}
+        {eventDetail && eventDetail.length > 0 && (
+          <div className="mt-2">
+            <p className="text-gray-600"><strong>Topic:</strong> {eventDetail[0].topic}</p>
+            <p className="text-gray-600"><strong>Description:</strong> {eventDetail[0].describe}</p>
+          </div>
         )}
+        {description && <p className="text-gray-600 mt-2">{description}</p>}
         {onRSVP && (
           <button
             onClick={(e) => {
