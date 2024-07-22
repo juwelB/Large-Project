@@ -4,12 +4,18 @@ const Token = require("../Model/token");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const { isStrongPassword } = require('../../passwordValidator');
+const { emailRegex } = require('../../emailRegex');
 
 require('dotenv').config(); // Ensure this is at the very top
 
 // create/register new user
 const registerUser = async (req, res) => {
     const { email, userName, password, firstName, lastName } = req.body;
+
+    if(!emailRegex(email))
+    {
+        return res.status(400).json({message: 'Invalid email format'});
+    }
 
     try {
         // Check if the email already exists
@@ -29,7 +35,7 @@ const registerUser = async (req, res) => {
         if (!isStrongPassword(password)) 
         {
             return res.status(400).json({
-                message: 'Password does not meet the strength requirements. Ensure it is 8-30 characters long, contains uppercase and lowercase letters, numbers, and special characters.'
+                message: 'Password does not meet the strength requirements. Must be 8-30 characters long, contains uppercase and lowercase letters, numbers, and special characters.'
             });
         }
 
