@@ -14,7 +14,6 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
         onClose();
     } else {
         console.error('User ID not available');
-        
     }
   };
 
@@ -26,7 +25,6 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
         onClose();
     } else {
         console.error('User ID not available');
-        
     }
   };
 
@@ -38,7 +36,6 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
         onClose();
     } else {
         console.error('User ID not available');
-        
     }
   };
 
@@ -63,12 +60,6 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
             >
               Sign Up to Join
             </Link>
-            <button
-              onClick={onClose}
-              className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-            >
-              Close
-            </button>
           </>
         ) : (
           user ? (

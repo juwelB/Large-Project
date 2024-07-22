@@ -10,7 +10,32 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ClubListPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext); // Add logout
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Add state for dropdown
+
+  // Add toggleDropdown and handleClickOutside functions
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (event.target.closest('.dropdown') === null) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   const [userClubs, setUserClubs] = useState([]);
   const [adminClubs, setAdminClubs] = useState([]);
   const [discoverClubs, setDiscoverClubs] = useState([]);
@@ -57,7 +82,6 @@ const ClubListPage = () => {
       console.log(`Joined club: ${clubId}`);
       fetchUserClubs();
       fetchDiscoverClubs();
-      toast.success('Successfully Joined Club', { toastId: 'joinClubSuccess' });
     } catch (error) {
       console.error('Error joining club:', error.response ? error.response.data : error.message);
       setError('Error joining club: ' + (error.response ? error.response.data : error.message));
@@ -74,7 +98,6 @@ const ClubListPage = () => {
       console.log(`Left club: ${clubId}`);
       fetchUserClubs();
       fetchDiscoverClubs();
-      toast.success('Successfully Left Club', { toastId: 'leaveClubSuccess' });
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
       setError('Error leaving club: ' + (error.response ? error.response.data : error.message));
@@ -88,7 +111,6 @@ const ClubListPage = () => {
       console.log(`Deleted club: ${clubId}`);
       fetchUserClubs();
       fetchDiscoverClubs();
-      toast.success('Successfully Deleted Club', { toastId: 'deleteClubSuccess' });
     } catch (error) {
       console.error('Error deleting club:', error.response ? error.response.data : error.message);
       setError('Error deleting club: ' + (error.response ? error.response.data : error.message));
@@ -119,11 +141,23 @@ const ClubListPage = () => {
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
-          <nav>
+          <nav className="flex items-center relative">
             <Link to="/dashboard" className="mx-2 hover:text-gold">Home</Link>
             <Link to="/events" className="mx-2 hover:text-gold">Events</Link>
             <Link to="/calendar" className="mx-2 hover:text-gold">Calendar</Link>
-            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
+            <div className="dropdown relative mx-2">
+              <span onClick={toggleDropdown} className="cursor-pointer">Hey, {user ? user.name : 'Guest'}</span>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                  <button
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white w-full text-left"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
         </div>
       </header>

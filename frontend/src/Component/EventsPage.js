@@ -6,7 +6,32 @@ import EventCard from './EventCard';
 import { toast } from 'react-toastify';
 
 const EventList = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext); // Add logout
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Add state for dropdown
+
+  // Add toggleDropdown and handleClickOutside functions
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (event.target.closest('.dropdown') === null) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   const [rsvpedEvents, setRsvpedEvents] = useState([]);
   const [clubEvents, setClubEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -86,11 +111,23 @@ const EventList = () => {
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
-          <nav>
+          <nav className="flex items-center relative">
             <Link to="/calendar" className="mx-2 hover:text-gray-300">Calendar</Link>
             <Link to="/dashboard" className="mx-2 hover:text-gray-300">Home</Link>
             <Link to="/clubs" className="mx-2 hover:text-gray-300">Clubs</Link>
-            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
+            <div className="dropdown relative mx-2">
+              <span onClick={toggleDropdown} className="cursor-pointer">Hey, {user ? user.name : 'Guest'}</span>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                  <button
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white w-full text-left"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
         </div>
       </header>
@@ -110,6 +147,7 @@ const EventList = () => {
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
                 isAdmin={adminStatus[event.clubId]} // Use the admin status from state
+                className="mb-4 p-4 text-sm" // Adjust padding and text size
               />
             ))
           ) : (
@@ -145,6 +183,7 @@ const EventList = () => {
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
                 isAdmin={adminStatus[event.clubId]} 
+                className="mb-4 p-4 text-sm" // Adjust padding and text size
               />
             ))
           ) : (

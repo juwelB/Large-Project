@@ -7,12 +7,35 @@ import { toast } from 'react-toastify';
 import EventCard from './EventCard'; 
 
 const CalendarPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedClub, setSelectedClub] = useState('All Clubs');
   const [userEvents, setUserEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [clubs, setClubs] = useState([]); 
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (event.target.closest('.dropdown') === null) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   useEffect(() => {
     if (user) {
@@ -35,6 +58,11 @@ const CalendarPage = () => {
   };
 
   const filteredEvents = selectedClub === 'All Clubs' ? userEvents : userEvents.filter(event => event.club === selectedClub);
+
+  // Debugging logs
+  console.log('Selected Club:', selectedClub);
+  console.log('User Events:', userEvents);
+  console.log('Filtered Events:', filteredEvents);
 
   const renderHeader = () => {
     const dateFormat = 'MMMM yyyy';
@@ -96,23 +124,23 @@ const CalendarPage = () => {
         const cloneDay = day;
         days.push(
           <div
-            className={`p-6 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`}
+            className={`p-4 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`}
             key={day}
             onClick={() => handleDayClick(cloneDay)}
           >
-            <div className={`text-xl font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
+            <div className={`text-lg font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
               {formattedDate}
             </div>
             {Array.isArray(filteredEvents) && filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
               <div
                 key={idx}
-                className="bg-purple-500 text-white rounded-md p-2 mt-2 cursor-pointer text-sm flex items-center"
+                className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs flex items-center"
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedEvent(event);
                 }}
               >
-                {event.logo && <img src={event.logo} alt="logo" className="w-6 h-6 mr-2" />}
+                {event.logo && <img src={event.logo} alt="logo" className="w-4 h-4 mr-1" />}
                 {event.name}
               </div>
             ))}
@@ -153,11 +181,23 @@ const CalendarPage = () => {
       <header className="bg-black text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">UCF Portal</div>
-          <nav>
+          <nav className="flex items-center relative">
             <Link to="/dashboard" className="mx-2 hover:text-gray-300">Home</Link>
             <Link to="/clubs" className="mx-2 hover:text-gray-300">Clubs</Link>
             <Link to="/events" className="mx-2 hover:text-gray-300">Events</Link>
-            <span className="mx-2">Hey, {user ? user.name : 'Guest'}</span>
+            <div className="dropdown relative mx-2">
+              <span onClick={toggleDropdown} className="cursor-pointer">Hey, {user ? user.name : 'Guest'}</span>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                  <button
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white w-full text-left"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
         </div>
       </header>
@@ -174,7 +214,7 @@ const CalendarPage = () => {
               description={selectedEvent.description}
               location={selectedEvent.location}
               eventDetail={selectedEvent.eventDetail}
-              className="mx-auto"
+              className="mx-auto max-w-xs"
             />
           </div>
         )}

@@ -76,7 +76,6 @@ const LoggedInLandingPage = () => {
       });
       console.log(`Left club: ${clubId}`);
       fetchClubsAndEvents();
-      toast.success('Successfully Left Club', { toastId: 'leaveClubSuccess' });
     } catch (error) {
       console.error('Error leaving club:', error.response ? error.response.data : error.message);
       toast.error('Error leaving club: ' + (error.response ? error.response.data : error.message), { toastId: 'leaveClubError' });
