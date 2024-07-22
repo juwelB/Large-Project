@@ -11,7 +11,7 @@ const CalendarPage = () => {
   const [selectedClub, setSelectedClub] = useState('All Clubs');
   const [userEvents, setUserEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [clubs, setClubs] = useState([]); // Add state for clubs
+  const [clubs, setClubs] = useState([]); // Initialize as an empty array
 
   useEffect(() => {
     if (user) {
@@ -47,7 +47,7 @@ const CalendarPage = () => {
           className="border border-gray-300 rounded-md p-2"
         >
           <option value="All Clubs">All Clubs</option>
-          {clubs.map((club, index) => (
+          {Array.isArray(clubs) && clubs.map((club, index) => (
             <option key={index} value={club.name}>{club.name}</option>
           ))}
         </select>
