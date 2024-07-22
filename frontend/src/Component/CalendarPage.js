@@ -98,7 +98,7 @@ const CalendarPage = () => {
             <div className={`text-sm font-bold ${isSameDay(day, new Date()) ? 'text-blue-600' : ''}`}>
               {formattedDate}
             </div>
-            {filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
+            {Array.isArray(filteredEvents) && filteredEvents.filter(event => isSameDay(new Date(event.date), day)).map((event, idx) => (
               <div
                 key={idx}
                 className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs"
@@ -126,7 +126,7 @@ const CalendarPage = () => {
   };
 
   const handleDayClick = (day) => {
-    const eventsOnDay = filteredEvents.filter(event => isSameDay(new Date(event.date), day));
+    const eventsOnDay = Array.isArray(filteredEvents) ? filteredEvents.filter(event => isSameDay(new Date(event.date), day)) : [];
     if (eventsOnDay.length > 0) {
       setSelectedEvent(eventsOnDay[0]);
     } else {
