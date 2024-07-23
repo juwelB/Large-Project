@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import EditModal from './EditModal';
 
-const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId, clubId }) => {
+const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId, clubId, refetchClubs }) => {
   console.log(clubId);
   const { user } = useContext(AuthContext);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -57,6 +57,7 @@ const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId, cl
         isOpen={isEditModalOpen}
         onClose={handleEditClose}
         onSave={handleEditSave}
+        refetchClubs={refetchClubs}
       />
     </div>
   );

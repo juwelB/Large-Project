@@ -229,7 +229,8 @@ const LoggedInLandingPage = () => {
                   onClick={() => setSelectedClub(club)}
                   onCreateEvent={() => handleCreateEvent(club._id)}
                   adminId={club.adminId}
-                  clubId = {club._id}
+                  clubId={club._id}
+                  refetchClubs={fetchClubsAndEvents}
                 />
               ))}
             </div>

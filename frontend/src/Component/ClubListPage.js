@@ -180,6 +180,8 @@ const ClubListPage = () => {
                     onClick={() => setSelectedClub(club)}
                     onCreateEvent={() => handleCreateEvent(club._id)}
                     adminId={club.adminId}
+                    clubId={club._id}
+                    refetchClubs={fetchUserClubs}
                   />
                 ))
               ) : (
@@ -198,6 +200,8 @@ const ClubListPage = () => {
                     className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl"
                     onClick={() => setSelectedClub(club)}
                     adminId={club.adminId}
+                    clubId={club._id}
+                    refetchClubs={fetchUserClubs}
                   />
                 ))
               ) : (
@@ -230,6 +234,8 @@ const ClubListPage = () => {
                   onClick={() => setSelectedClub(club)}
                   onCreateEvent={() => handleCreateEvent(club._id)}
                   adminId={club.adminId}
+                  clubId={club._id}
+                  refetchClubs={fetchUserClubs}
                 />
               ))}
             </div>
