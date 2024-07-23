@@ -269,25 +269,30 @@ const getUserClubs = async (req, res) => {
     }
 };
 
-const userInfo = async (req,res) => {
+const userInfo = async (req, res) => {
     const { email } = req.params;
 
-    try{
-        const user = await User.findOne({email});
+    try {
+        const user = await User.findOne({ email })
+            .populate({
+                path: 'clubList',
+                select: 'name'  // Populates only the 'name' field from each club in clubList
+            })
+            .populate({
+                path: 'eventList',
+                select: 'title date location description'  // Selects multiple fields from each event in eventList
+            });
 
-        if(!user)
-        {
-            return res.status(404).json({message : "User not found"});
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json(user);
-
-    }catch (err){
-        console.err(err);
-        res.status(500).json({message: "Internal Server Error"});
+        res.status(200).json(user);  // This will now include populated details of clubs and events
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
     }
-
-}
+};
 
 module.exports = {
     registerUser,
