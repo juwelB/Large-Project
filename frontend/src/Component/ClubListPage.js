@@ -106,15 +106,17 @@ const ClubListPage = () => {
   };
 
   const handleDeleteClub = async (clubId) => {
-    try {
-      await axios.delete('/api/v1/clubs/deleteclub', { data: { clubId } });
-      console.log(`Deleted club: ${clubId}`);
-      fetchUserClubs();
-      fetchDiscoverClubs();
-    } catch (error) {
-      console.error('Error deleting club:', error.response ? error.response.data : error.message);
-      setError('Error deleting club: ' + (error.response ? error.response.data : error.message));
-      toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message), { toastId: 'deleteClubError' });
+    if(window.confirm("Are you sure you want to delete this club?")) {
+      try {
+        await axios.delete('/api/v1/clubs/deleteclub', { data: { clubId } });
+        console.log(`Deleted club: ${clubId}`);
+        fetchUserClubs();
+        fetchDiscoverClubs();
+      } catch (error) {
+        console.error('Error deleting club:', error.response ? error.response.data : error.message);
+        setError('Error deleting club: ' + (error.response ? error.response.data : error.message));
+        toast.error('Error deleting club: ' + (error.response ? error.response.data : error.message), { toastId: 'deleteClubError' });
+      }
     }
   };
 
@@ -174,7 +176,7 @@ const ClubListPage = () => {
                     name={club.name}
                     logo={club.clubInfo.logo}
                     description={club.clubInfo.description}
-                    className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
+                    className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl"
                     onClick={() => setSelectedClub(club)}
                     onCreateEvent={() => handleCreateEvent(club._id)}
                     adminId={club.adminId}
@@ -193,7 +195,7 @@ const ClubListPage = () => {
                     name={club.name}
                     logo={club.clubInfo.logo}
                     description={club.clubInfo.description}
-                    className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
+                    className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl"
                     onClick={() => setSelectedClub(club)}
                     adminId={club.adminId}
                   />
@@ -224,7 +226,7 @@ const ClubListPage = () => {
                   name={club.name}
                   logo={club.clubInfo.logo}
                   description={club.clubInfo.description}
-                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-gold hover:shadow-xl"
+                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                   onCreateEvent={() => handleCreateEvent(club._id)}
                   adminId={club.adminId}

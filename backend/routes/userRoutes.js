@@ -15,7 +15,8 @@ const {
     resetPassword,
     makeAdmin,
     getUserEvents,
-    getUserClubs // Added this line
+    getUserClubs, // Added this line
+    userInfo
 } = controller;
 
 //Post to register/login new user
@@ -27,5 +28,5 @@ router.post('/:userId/resetpassword/:token', resetPassword);
 router.put('/:id/makeAdmin', makeAdmin);
 router.get('/:userId/events', getUserEvents);
 router.get('/:userId/clubs', getUserClubs); // Added this line
-
+router.get('/userInfo/:email', userInfo);
 module.exports = router;

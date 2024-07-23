@@ -269,6 +269,26 @@ const getUserClubs = async (req, res) => {
     }
 };
 
+const userInfo = async (req,res) => {
+    const { email } = req.params;
+
+    try{
+        const user = await User.findOne({email});
+
+        if(!user)
+        {
+            return res.status(404).json({message : "User not found"});
+        }
+
+        res.status(200).json(user);
+
+    }catch (err){
+        console.err(err);
+        res.status(500).json({message: "Internal Server Error"});
+    }
+
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -277,5 +297,6 @@ module.exports = {
     resetPassword,
     makeAdmin,
     getUserEvents,
-    getUserClubs
+    getUserClubs,
+    userInfo
 };

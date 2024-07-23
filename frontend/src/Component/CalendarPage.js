@@ -129,7 +129,7 @@ const CalendarPage = () => {
         const cloneDay = day;
         days.push(
           <div
-            className={`p-4 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`}
+            className={`p-4 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''} transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl`} // Add hover effects
             key={day}
             onClick={() => handleDayClick(cloneDay)}
           >

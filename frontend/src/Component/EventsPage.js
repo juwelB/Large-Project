@@ -97,13 +97,15 @@ const EventList = () => {
   };
 
   const handleDeleteEvent = async (eventId) => {
-    try {
-      await axios.delete(`/api/v1/events/deleteEvent/${eventId}`);
-      fetchEvents();
-      toast.success('Successfully Deleted Event');
-    } catch (error) {
-      console.error('Error deleting event:', error.response ? error.response.data : error.message);
-      toast.error('Error deleting event: ' + (error.response ? error.response.data : error.message));
+    if(window.confirm("Are you sure you want to delete this event?")) {
+      try {
+        await axios.delete(`/api/v1/events/deleteEvent/${eventId}`);
+        fetchEvents();
+        toast.success('Successfully Deleted Event');
+      } catch (error) {
+        console.error('Error deleting event:', error.response ? error.response.data : error.message);
+        toast.error('Error deleting event: ' + (error.response ? error.response.data : error.message));
+      }
     }
   };
 
@@ -148,7 +150,7 @@ const EventList = () => {
                 rsvpStatus={true}
                 onDelete={() => handleDeleteEvent(event._id)}
                 isAdmin={adminStatus[event.clubId]} // Use the admin status from state
-                className="mb-4 p-2 text-sm" // Adjust padding and text size
+                className="mb-4 p-2 text-sm transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl" // Add hover effects
               />
             ))
           ) : (
@@ -184,7 +186,7 @@ const EventList = () => {
                 rsvpStatus={false}
                 onDelete={() => handleDeleteEvent(event._id)}
                 isAdmin={adminStatus[event.clubId]} 
-                className="mb-4 p-2 text-sm" // Adjust padding and text size
+                className="mb-4 p-2 text-sm transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl" // Add hover effects
               />
             ))
           ) : (

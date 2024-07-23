@@ -55,8 +55,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
             <p className="text-gray-600 mb-4">Sign up to join this club and participate in its activities.</p>
             <Link
               to="/signup"
-              className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded block text-center"
-              style={{ backgroundColor: '#FFD700' }}
+              className="w-full bg-darkGold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded block text-center"
             >
               Sign Up to Join
             </Link>
@@ -80,8 +79,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
             ) : (
               <button
                 onClick={handleJoinClick}
-                className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
-                style={{ backgroundColor: '#FFD700' }}
+                className="w-full bg-darkGold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
               >
                 Join Club
               </button>
@@ -91,14 +89,13 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
               <p className="text-gray-600 mb-4">Sign up to join this club and participate in its activities.</p>
               <Link
                 to="/signup"
-                className="w-full bg-gold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded block text-center"
-                style={{ backgroundColor: '#FFD700' }}
+                className="w-full bg-darkGold hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded block text-center"
               >
                 Sign Up to Join
               </Link>
               <Link
                 to="/"
-                className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded block text-center"
+                className="w-full mt-4 bg-darkGray hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded block text-center"
               >
                 Back to Home
               </Link>
@@ -107,7 +104,7 @@ const ClubModal = ({ club, onClose, onJoin, onLeave, onDelete, showSignUp }) => 
         )}
         <button
           onClick={onClose}
-          className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          className="w-full mt-4 bg-darkGray hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
         >
           Close
         </button>

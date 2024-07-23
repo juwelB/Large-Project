@@ -225,7 +225,7 @@ const LoggedInLandingPage = () => {
                   name={club.name}
                   logo={club.clubInfo.logo}
                   description={club.clubInfo.description}
-                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
+                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl"
                   onClick={() => setSelectedClub(club)}
                   onCreateEvent={() => handleCreateEvent(club._id)}
                   adminId={club.adminId}
@@ -246,7 +246,7 @@ const LoggedInLandingPage = () => {
                   image={event.image}
                   description={event.eventDetail.map(detail => detail.describe).join(', ')}
                   location={event.location}
-                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-blue-500 hover:shadow-xl"
+                  className="transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl"
                   onRSVP={() => rsvpedEvents.includes(event._id) ? handleUnRSVPEvent(event._id) : handleRSVPEvent(event._id)}
                   rsvpStatus={rsvpedEvents.includes(event._id)}
                   onDelete={() => handleDeleteEvent(event._id)}
