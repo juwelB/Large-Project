@@ -152,7 +152,7 @@ const CalendarPage = () => {
                   }}
                 >
                   {club && club.clubInfo && <img src={club.clubInfo.logo} alt="logo" className="w-4 h-4 mr-1" />}
-                  {event.name}
+                  <span className="ml-1">{event.Ename}</span> {/* Display event title using Ename */}
                 </div>
               );
             })}
@@ -220,7 +220,7 @@ const CalendarPage = () => {
         {selectedEvent && (
           <div className="mt-8">
             <EventCard
-              name={selectedEvent.name}
+              name={selectedEvent.Ename}
               date={selectedEvent.date}
               image={selectedEvent.image}
               description={selectedEvent.description}
