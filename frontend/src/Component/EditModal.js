@@ -12,14 +12,19 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
     }
   });
 
+  console.log(clubId);
+
   useEffect(() => {
     if (isOpen) {
       // Fetch the club data when the modal is opened
       const fetchClubData = async () => {
         try {
           const response = await axios.post('/api/v1/clubs/viewMyClubs', { userId: user._id });
+          console.log(response);
           const data = response.data;
+          console.log(data);
           const club = data.find(club => club._id === clubId);
+          console.log(club);
           if (club) {
             setClubData(club);
           }
