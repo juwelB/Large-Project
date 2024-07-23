@@ -229,22 +229,7 @@ const LoggedInLandingPage = () => {
                   onClick={() => setSelectedClub(club)}
                   onCreateEvent={() => handleCreateEvent(club._id)}
                   adminId={club.adminId}
-                >
-                  <button
-                    onClick={onClick}
-                    className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded mb-2 border border-black"
-                  >
-                    View Club
-                  </button>
-                  {user && user._id === adminId && (
-                    <button
-                      onClick={onCreateEvent}
-                      className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black"
-                    >
-                      Create Event
-                    </button>
-                  )}
-                </ClubCard>
+                />
               ))}
             </div>
           </div>
