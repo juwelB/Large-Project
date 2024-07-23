@@ -52,7 +52,7 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put('/api/v1/clubs/update', { clubId, ...clubData })
+    axios.put('/api/v1/clubs/updateclub', { clubId, ...clubData })
       .then(response => {
         onSave(response.data);
         onClose();
