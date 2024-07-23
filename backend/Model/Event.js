@@ -11,6 +11,7 @@ const eventSchema = new Schema(
 
         date: {
             type: Date,
+            required: true 
         },
 
         location: {
@@ -31,11 +32,28 @@ const eventSchema = new Schema(
             }
         ],
 
+        participants: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        ],
+
         timeCreated: {
             type: Date,
             default: Date.now
-        }
+        },
 
+        image: {
+            type: String,
+            required: true
+        },
+
+        clubId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Club',
+            required: true
+        }
     });
 
 module.exports = mongoose.model('Event', eventSchema);

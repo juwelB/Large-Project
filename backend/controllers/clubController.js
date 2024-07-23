@@ -9,25 +9,31 @@ const User = require('../Model/User');
 // create a new club
 const createClub = async (req, res) => {
     try {
-        // create a new club
+        console.log('Received club data:', req.body); // Debug log
+        const { name, clubInfo, adminId } = req.body;
+
         const club = new Club({
-            name: req.body.name,
-            clubInfo: {
-                industry: req.body.industry,
-                description: req.body.description
-            },
-            adminId: req.body.adminId
+            name,
+            clubInfo,
+            adminId: adminId || null, // Make adminId optional
+            eventList: [],
+            memberList: adminId ? [adminId] : [] // Only add admin to memberList if provided
         });
 
-        // save the club
         const savedClub = await club.save();
 
-        // return the saved club
-        res.json(savedClub);
+        if (adminId) {
+            // Update the user to be an admin of this club only if adminId is provided
+            await User.findByIdAndUpdate(adminId, {
+                $push: { adminOf: savedClub._id }
+            });
+        }
+
+        res.status(201).json(savedClub);
     }
     catch (err) {
-        // return an error if there is one
-        res.json({ message: err });
+        console.error('Error creating club:', err);
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -48,15 +54,16 @@ const deleteClub = async (req, res) => {
 }
 
 const updateClub = async (req, res) => {
-    const { clubId, name, industry, description } = req.body;
+    const { clubId, name, industry, description, logo } = req.body;
     try {
-        // update bessed on Id
+        // update based on Id
         const updatedClub = await Club.findByIdAndUpdate(
             clubId,
             {
                 name: name,
                 "clubInfo.industry": industry,
-                "clubInfo.description": description
+                "clubInfo.description": description,
+                "clubInfo.logo": logo
             },
             { new: true, runValidators: true } // This option returns the updated document
         );
@@ -134,7 +141,7 @@ const viewMyClubs = async (req, res) => {
 };
 
 const viewClubEvents = async (req, res) => {
-    const { clubId } = req.body;
+    const { clubId } = req.params;
     try {
         const club = await Club.findById(clubId).populate('eventList');
 
@@ -150,53 +157,41 @@ const viewClubEvents = async (req, res) => {
 };
 
 const joinClub = async (req, res) => {
-    const { userObjId, clubObjId } = req.body;
+    const { userId, clubId } = req.body;
 
     try {
-        //check if aready udpated
-        const club = await Club.findById(clubObjId);
-        const user = await User.findById(userObjId);
+        console.log('Joining club with userId:', userId, 'and clubId:', clubId);
 
-        if (!user)
-            return res.status(404).json({ error: 'User not found' });
-        if (!club)
-            return res.status(404).json({ error: 'Club not found' });
+        // Find the user and club
+        const user = await User.findById(userId);
+        const club = await Club.findById(clubId);
 
-        if (club.memberList.includes(userObjId))
-            return res.status(400).json({ error: 'User already in the club' });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-        if (user.clubList.includes(clubObjId))
-            return res.status(400).json({ error: 'Club already in user\'s list' });
+        if (!club) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
 
+        // Add the club to the user's clubList if not already there
+        if (!user.clubList.includes(clubId)) {
+            user.clubList.push(clubId);
+        }
 
+        // Add the user to the club's memberList if not already there
+        if (!club.memberList.includes(userId)) {
+            club.memberList.push(userId);
+        }
 
-        // Update user's clubList
-        const updateUser = await User.findByIdAndUpdate(
-            userObjId,
-            { $push: { clubList: clubObjId } },
-            { new: true } // To return the updated document
-        );
+        // Save the updated user and club
+        await user.save();
+        await club.save();
 
-
-
-        // Update club's memberList
-        const updateClubMember = await Club.findByIdAndUpdate(
-            clubObjId,
-            { $push: { memberList: userObjId } },
-            { new: true } // To return the updated document
-        );
-
-
-
-        // Return successful response
-        return res.status(201).json({
-            user: updateUser,
-            club: updateClubMember
-        });
-
+        res.status(200).json({ message: 'Successfully joined the club' });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Server Error' });
+        console.error('Error joining club:', err);
+        res.status(500).json({ message: err.message, stack: err.stack });
     }
 };
 
