@@ -54,15 +54,16 @@ const deleteClub = async (req, res) => {
 }
 
 const updateClub = async (req, res) => {
-    const { clubId, name, industry, description } = req.body;
+    const { clubId, name, industry, description, logo } = req.body;
     try {
-        // update bessed on Id
+        // update based on Id
         const updatedClub = await Club.findByIdAndUpdate(
             clubId,
             {
                 name: name,
                 "clubInfo.industry": industry,
-                "clubInfo.description": description
+                "clubInfo.description": description,
+                "clubInfo.logo": logo
             },
             { new: true, runValidators: true } // This option returns the updated document
         );

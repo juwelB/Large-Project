@@ -280,7 +280,11 @@ const userInfo = async (req, res) => {
             })
             .populate({
                 path: 'eventList',
-                select: 'Ename date location description'  // Selects multiple fields from each event in eventList
+                select: 'Ename date location description',  // Selects multiple fields from each event in eventList
+                populate: {
+                    path: 'eventDetail',
+                    selct: 'topic describe'
+                }
             });
 
         if (!user) {
