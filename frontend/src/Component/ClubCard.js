@@ -1,4 +1,3 @@
-// holy fuck
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
@@ -15,14 +14,14 @@ const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId }) 
       <div className="mt-auto">
         <button
           onClick={onClick}
-          className="w-full bg-darkGold hover:bg-darkYellow text-white font-bold py-2 px-4 rounded mb-2"
+          className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black mb-2"
         >
           View Club
         </button>
         {user && user._id === adminId && (
           <button
             onClick={onCreateEvent}
-            className="w-full bg-darkGold hover:bg-darkYellow text-white font-bold py-2 px-4 rounded"
+            className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black"
           >
             Create Event
           </button>

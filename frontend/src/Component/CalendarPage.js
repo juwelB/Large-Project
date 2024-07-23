@@ -75,9 +75,9 @@ const CalendarPage = () => {
     return (
       <div className="flex justify-between items-center mb-6">
         <div>
-          <button onClick={prevMonth} className="text-gray-600 hover:text-gray-800">&lt;</button>
+          <button onClick={prevMonth} className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black">&lt;</button>
           <span className="mx-2 font-bold">{format(currentMonth, dateFormat)}</span>
-          <button onClick={nextMonth} className="text-gray-600 hover:text-gray-800">&gt;</button>
+          <button onClick={nextMonth} className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black">&gt;</button>
         </div>
         <div className="flex items-center">
           <label htmlFor="clubFilter" className="mr-2 text-gray-700">Filter by Club:</label> {/* Added label */}
@@ -133,7 +133,7 @@ const CalendarPage = () => {
         const cloneDay = day;
         days.push(
           <div
-            className={`p-4 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''} transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl`} // Add hover effects
+            className={`p-4 text-center cursor-pointer border border-gray-200 ${!isSameMonth(day, monthStart) ? 'bg-gray-100' : ''}`} // Removed hover effects
             key={day}
             onClick={() => handleDayClick(cloneDay)}
           >
@@ -145,7 +145,7 @@ const CalendarPage = () => {
               return (
                 <div
                   key={idx}
-                  className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs flex items-center"
+                  className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs flex items-center transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl" // Added hover effects
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedEvent(event);
