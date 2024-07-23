@@ -1,8 +1,23 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import EditModal from './EditModal';
 
-const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId }) => {
+const ClubCard = ({ name, logo, description, onClick, onCreateEvent, onEditClub, adminId, clubId }) => {
   const { user } = useContext(AuthContext);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+  const handleEditClick = () => {
+    setEditModalOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setEditModalOpen(false);
+  };
+
+  const handleEditSave = (updatedClub) => {
+    // Handle the updated club data (e.g., update the state or re-fetch the club list)
+    console.log('Club updated:', updatedClub);
+  };
 
   return (
     <div className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between h-full">
@@ -19,14 +34,28 @@ const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId }) 
           View Club
         </button>
         {user && user._id === adminId && (
-          <button
-            onClick={onCreateEvent}
-            className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black"
-          >
-            Create Event
-          </button>
+          <>
+            <button
+              onClick={onCreateEvent}
+              className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black mb-2"
+            >
+              Create Event
+            </button>
+            <button
+              onClick={handleEditClick}
+              className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black"
+            >
+              Edit Club
+            </button>
+          </>
         )}
       </div>
+      <EditModal
+        clubId={clubId}
+        isOpen={isEditModalOpen}
+        onClose={handleEditClose}
+        onSave={handleEditSave}
+      />
     </div>
   );
 };
