@@ -79,16 +79,20 @@ const CalendarPage = () => {
           <span className="mx-2 font-bold">{format(currentMonth, dateFormat)}</span>
           <button onClick={nextMonth} className="text-gray-600 hover:text-gray-800">&gt;</button>
         </div>
-        <select
-          value={selectedClub}
-          onChange={(e) => setSelectedClub(e.target.value)}
-          className="border border-gray-300 rounded-md p-2"
-        >
-          <option value="All Clubs">All Clubs</option>
-          {Array.isArray(clubs) && clubs.map((club, index) => (
-            <option key={index} value={club.name}>{club.name}</option>
-          ))}
-        </select>
+        <div className="flex items-center">
+          <label htmlFor="clubFilter" className="mr-2 text-gray-700">Filter by Club:</label> {/* Added label */}
+          <select
+            id="clubFilter" // Added id for accessibility
+            value={selectedClub}
+            onChange={(e) => setSelectedClub(e.target.value)}
+            className="border border-gray-300 rounded-md p-2"
+          >
+            <option value="All Clubs">All Clubs</option>
+            {Array.isArray(clubs) && clubs.map((club, index) => (
+              <option key={index} value={club.name}>{club.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
     );
   };
