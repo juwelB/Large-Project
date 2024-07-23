@@ -75,7 +75,7 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
             <input
               type="text"
               name="industry"
-              value={clubData.clubInfo.industry}
+              value={clubData.clubInfo?.industry || ''}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
@@ -84,7 +84,7 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
             <label className="block text-gray-700">Description</label>
             <textarea
               name="description"
-              value={clubData.clubInfo.description}
+              value={clubData.clubInfo?.description || ''}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />

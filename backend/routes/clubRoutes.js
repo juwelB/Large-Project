@@ -57,6 +57,7 @@ router.get('/:clubId/events', viewClubEvents);
 router.get('/:clubId', async (req, res) => {
   try {
     const club = await Club.findById(req.params.clubId);
+    console.log(club);
     if (!club) {
       return res.status(404).json({ message: 'Club not found' });
     }
