@@ -145,7 +145,7 @@ const CalendarPage = () => {
               return (
                 <div
                   key={idx}
-                  className="bg-purple-500 text-white rounded-md p-1 mt-1 cursor-pointer text-xs flex items-center transform transition-all duration-300 hover:scale-105 hover:border-4 hover:border-darkGold hover:shadow-xl" // Added hover effects
+                  className="w-full bg-darkGold hover:bg-darkYellow text-gray-800 font-bold py-2 px-4 rounded border border-black mt-1 cursor-pointer text-xs flex items-center transform transition-all duration-300" // Updated styles
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedEvent(event);
