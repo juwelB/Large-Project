@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
-const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
+const EditModal = ({ clubId, isOpen, onClose, onSave, refetchClubs }) => {
   const { user } = useContext(AuthContext);
   const [clubData, setClubData] = useState({
     name: '',
@@ -11,8 +11,6 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
       description: ''
     }
   });
-
-  console.log(clubId);
 
   useEffect(() => {
     if (isOpen) {
@@ -61,6 +59,7 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
       .then(response => {
         onSave(response.data);
         onClose();
+        refetchClubs(); // Refetch clubs after successful update
       })
       .catch(error => {
         console.error('Error updating club:', error);
