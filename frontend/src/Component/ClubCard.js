@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import EditModal from './EditModal';
 
-const ClubCard = ({ name, logo, description, onClick, onCreateEvent, onEditClub, adminId, clubId }) => {
+const ClubCard = ({ name, logo, description, onClick, onCreateEvent, adminId, clubId }) => {
   const { user } = useContext(AuthContext);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
 
@@ -17,6 +17,7 @@ const ClubCard = ({ name, logo, description, onClick, onCreateEvent, onEditClub,
   const handleEditSave = (updatedClub) => {
     // Handle the updated club data (e.g., update the state or re-fetch the club list)
     console.log('Club updated:', updatedClub);
+    // Optionally, update the state or re-fetch the club list here
   };
 
   return (
