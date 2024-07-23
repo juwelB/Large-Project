@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
+  const { user } = useContext(AuthContext);
   const [clubData, setClubData] = useState({
     name: '',
     clubInfo: {
@@ -13,15 +15,22 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
   useEffect(() => {
     if (isOpen) {
       // Fetch the club data when the modal is opened
-      axios.get(`/api/clubs/${clubId}`)
-        .then(response => {
-          setClubData(response.data);
-        })
-        .catch(error => {
+      const fetchClubData = async () => {
+        try {
+          const response = await axios.post('/api/v1/clubs/viewMyClubs', { userId: user._id });
+          const data = response.data;
+          const club = data.find(club => club._id === clubId);
+          if (club) {
+            setClubData(club);
+          }
+        } catch (error) {
           console.error('Error fetching club data:', error);
-        });
+        }
+      };
+
+      fetchClubData();
     }
-  }, [isOpen, clubId]);
+  }, [isOpen, clubId, user._id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,7 +52,7 @@ const EditModal = ({ clubId, isOpen, onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put('/api/clubs/updateclub', { clubId, ...clubData })
+    axios.put('/api/v1/clubs/update', { clubId, ...clubData })
       .then(response => {
         onSave(response.data);
         onClose();
