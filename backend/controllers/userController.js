@@ -287,7 +287,7 @@ const userInfo = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json(user);  // This will now include populated details of clubs and events
+        res.status(200).json(user);  // This will now include populated details of clubs and eventsgit 
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
